@@ -2212,7 +2212,8 @@ try { renderHome(); } catch {}
 
 /* ---------- Sincronização entre aparelhos (mesmo User ID + API Key) ---------- */
 const SYNC_KEYS = ["r34_favs", "r34_black", "r34_cols", "n34_galeria", "r34_semia"];
-const SYNC_URL = "/api/sync";
+let SYNC_URL = "/api/sync";
+const SYNC_FALTA = "a função de sincronização não está publicada neste site (404)";
 let aplicandoRemoto = false, pushT = null, syncBusy = false, syncPend = false, syncUltima = 0;
 const syncSt = t => { const el = $("syncSt"); if (el) el.textContent = "Sincronização: " + t; };
 const _si = Storage.prototype.setItem;
@@ -2265,6 +2266,7 @@ const baseLer = () => { try { return JSON.parse(LS.get("n34_sync_base", "{}")) |
 async function enviarSync(d) {
   const { id } = await chaveSync();
   const r = await fetch(`${SYNC_URL}?id=${id}`, { method: "PUT", body: await cifrar({ d }) });
+  if (r.status === 404) throw new Error(SYNC_FALTA);
   if (!r.ok) throw new Error("servidor " + r.status);
 }
 function resumoSync(d) {
@@ -2280,7 +2282,12 @@ async function sincronizar() {
   syncBusy = true; syncSt("sincronizando...");
   try {
     const { id } = await chaveSync();
-    const r = await fetch(`${SYNC_URL}?id=${id}`, { cache: "no-store" });
+    let r = await fetch(`${SYNC_URL}?id=${id}`, { cache: "no-store" });
+    if (r.status === 404 && SYNC_URL !== "/.netlify/functions/sync") {   // tenta o endereço direto da função
+      const r2 = await fetch(`/.netlify/functions/sync?id=${id}`, { cache: "no-store" });
+      if (r2.status !== 404) { SYNC_URL = "/.netlify/functions/sync"; r = r2; }
+    }
+    if (r.status === 404) throw new Error(SYNC_FALTA);
     let remoto = null;
     if (r.status === 200) { try { remoto = await decifrar(await r.text()); } catch { throw new Error("função de sincronização não encontrada"); } }
     else if (r.status !== 204) throw new Error("servidor " + r.status);
