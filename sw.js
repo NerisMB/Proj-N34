@@ -1,6 +1,6 @@
 /* N34 — service worker: deixa o app instalável e abre mesmo sem internet.
    Só cuida de arquivos do próprio site; chamadas à API (rule34 etc.) passam direto. */
-const V = "n34-shell-v3";
+const V = "n34-shell-v14";
 const SHELL = ["/", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", e => {

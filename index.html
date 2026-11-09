@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="rating" content="RTA-5042-1996-1400-1577-RTA">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://api.rule34.xxx" crossorigin>
 <meta name="theme-color" content="#050209">
 <meta name="color-scheme" content="dark">
 <meta name="description" content="N34 — explore, pesquise e acompanhe seus artistas favoritos.">
@@ -643,12 +646,259 @@
   .topact .iconbtn { width:44px; height:44px; border-radius:14px; color:#f1e4ff; background:linear-gradient(145deg,rgba(168,85,247,.38),rgba(124,58,237,.1)); border:1px solid rgba(216,180,254,.4); box-shadow:0 4px 18px rgba(124,58,237,.3), inset 0 1px 0 rgba(255,255,255,.18); }
   .topact .iconbtn svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; transition:transform .45s cubic-bezier(.3,.7,.2,1); }
   .topact .iconbtn:hover { border-color:#e9d5ff; }
-  .topact .iconbtn:hover svg, #gear[aria-expanded="true"] svg { transform:rotate(75deg); }  /* ---------- sincronização ---------- */
+  #gear:hover svg, #gear[aria-expanded="true"] svg { transform:rotate(75deg); }  /* ---------- sincronização ---------- */
   .sync { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:14px 0 6px; font-size:.82rem; color:#cdb9f0; }
   .sync .ghost { padding:6px 12px; font-size:.8rem; }
+
+  /* ---------- correções: recentes, favoritos, blacklist, player ---------- */
+  #view-explorar, .explorar, .conteudo, #recentes { min-width:0; max-width:100%; }
+  #recentes { width:100%; contain:inline-size; }
+  main { overflow-x:clip; }
+  .rec.x { position:sticky; left:0; z-index:2; background:#1a0c2e; border-color:rgba(192,132,252,.45); }
+  @media (hover:hover) {
+    .recentes { scrollbar-width:thin; scrollbar-color:#5b2fa0 transparent; }
+    .recentes::-webkit-scrollbar { display:block; height:6px; }
+    .recentes::-webkit-scrollbar-thumb { background:#5b2fa0; border-radius:99px; }
+  }
+  .twrow { display:flex; align-items:flex-end; justify-content:space-between; gap:4px 12px; flex-wrap:wrap; }
+  .twrow label { margin:12px 0 4px; }
+  .flinks { margin:12px 0 4px; white-space:nowrap; }
+  .fab { display:none; position:fixed; right:14px; bottom:calc(88px + env(safe-area-inset-bottom,0px)); z-index:45; place-items:center; width:48px; height:48px; padding:0; border-radius:50%; border:1px solid rgba(216,180,254,.45); background:linear-gradient(145deg,rgba(168,85,247,.55),rgba(124,58,237,.3)); color:#fff; box-shadow:0 8px 22px rgba(124,58,237,.45); cursor:pointer; }
+  .fab svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  body[data-aba="explorar"] .fab { display:grid; }
+  #blkModal { position:fixed; inset:0; z-index:150; display:flex; align-items:flex-end; justify-content:center; background:rgba(5,2,9,.7); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
+  #blkSheet { width:min(520px,100%); max-height:86dvh; overflow:auto; padding:18px 18px calc(22px + env(safe-area-inset-bottom,0px)); background:#14081f; border:1px solid var(--line); border-radius:22px 22px 0 0; }
+  #blkSheet .top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  @media (min-width:700px) { #blkModal { align-items:center; } #blkSheet { border-radius:22px; } }
+  .vbar { flex-wrap:wrap; row-gap:6px; justify-content:center; }
+  .pl { display:contents; }
+  .plimg { transition:filter .25s; }
+  .plimg.blur { filter:blur(10px); }
+  .plspin { position:absolute; left:50%; top:50%; z-index:3; width:44px; height:44px; margin:-22px 0 0 -22px; border:3px solid rgba(255,255,255,.25); border-top-color:#c084fc; border-radius:50%; animation:plgira .8s linear infinite; opacity:0; pointer-events:none; transition:opacity .2s; }
+  .plspin.on { opacity:1; }
+  @keyframes plgira { to { transform:rotate(360deg); } }
+  .plc { position:absolute; left:8px; right:8px; bottom:8px; z-index:4; display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:14px; background:rgba(12,5,22,.72); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); color:#fff; font-size:.78rem; }
+  .plb { min-width:34px; height:32px; padding:0 8px; border:0; border-radius:10px; background:rgba(255,255,255,.1); color:#fff; font:600 .8rem var(--fd); cursor:pointer; }
+  .plseek { position:relative; flex:1; display:flex; align-items:center; height:22px; }
+  .plseek .tr { position:absolute; left:0; right:0; height:4px; overflow:hidden; border-radius:99px; background:rgba(255,255,255,.18); }
+  .plseek .bf, .plseek .ps { position:absolute; left:0; top:0; bottom:0; width:0; }
+  .plseek .bf { background:rgba(255,255,255,.35); }
+  .plseek .ps { background:linear-gradient(90deg,#a855f7,#c084fc); }
+  .plseek input { position:relative; width:100%; height:22px; margin:0; padding:0; border:0; background:transparent; -webkit-appearance:none; appearance:none; }
+  .plseek input::-webkit-slider-runnable-track { height:4px; background:transparent; }
+  .plseek input::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; margin-top:-5px; border-radius:50%; background:#fff; }
+  .plseek input::-moz-range-thumb { width:14px; height:14px; border:0; border-radius:50%; background:#fff; }
+  #galMid { position:relative; }
+
+  /* ---------- armazenamento, backup, economia ---------- */
+  .cfgbox { margin:6px 0 4px; }
+  .cfgchk { display:flex; align-items:flex-start; gap:8px; margin:10px 0 0; font-size:.82rem; line-height:1.35; color:#cdb9f0; cursor:pointer; }
+  .cfgchk input { flex:none; width:auto; margin:2px 0 0; padding:0; accent-color:#a855f7; }
+  html[data-eco="1"] #bg { display:none; }
+  html[data-eco="1"] *, html[data-eco="1"] *::before, html[data-eco="1"] *::after { -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+
+  /* ===== acabamento visual (mesmo roxo) ===== */
+  :root { --r-card:18px; --r-panel:22px; }
+  * { scrollbar-width:thin; scrollbar-color:#5b2fa3 transparent; }
+  ::selection { background:rgba(168,85,247,.45); }
+  *::-webkit-scrollbar { width:8px; height:8px; } *::-webkit-scrollbar-thumb { background:#4c2a86; border-radius:8px; } *::-webkit-scrollbar-track { background:transparent; }
+  /* fundo com profundidade */
+  body::before { content:""; position:fixed; inset:-20%; z-index:0; pointer-events:none;
+    background:radial-gradient(40% 35% at 20% 15%, rgba(168,85,247,.28), transparent 70%), radial-gradient(35% 30% at 85% 30%, rgba(236,72,153,.15), transparent 70%), radial-gradient(45% 40% at 55% 95%, rgba(124,58,237,.26), transparent 70%);
+    animation:aurora 22s ease-in-out infinite alternate; }
+  @keyframes aurora { to { transform:translate3d(4%,3%,0) scale(1.08) rotate(2deg); } }
+  /* títulos */
+  .phead h2, h1 { font-weight:600; font-size:2.1rem; letter-spacing:-.02em; background:linear-gradient(90deg,#fff,#d8b4fe); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .phead p { color:#9d8cc4; font-weight:400; font-size:.95rem; }
+  /* barra de baixo */
+  .bnav a { position:relative; }
+  .bnav a.active { background:transparent; box-shadow:none; }
+  .bnav a.active svg { filter:drop-shadow(0 0 8px rgba(192,132,252,.9)); }
+  .bnav a.active::after { content:""; position:absolute; left:50%; bottom:3px; width:18px; height:3px; margin-left:-9px; border-radius:3px; background:linear-gradient(90deg,#c084fc,#ec4899); }
+  /* início */
+  .hgirl { animation:flutua 7s ease-in-out infinite; }
+  @keyframes flutua { 50% { translate:0 -8px; } }
+  .hlogo { background-image:linear-gradient(100deg,#c084fc 0%,#fff 25%,#a855f7 50%,#fff 75%,#c084fc 100%); background-size:200% 100%; background-repeat:repeat-x; animation:brilho 8s linear infinite; }
+  @keyframes brilho { to { background-position-x:200%; } }
+  .hcard { border-radius:var(--r-panel); }
+  .hcard:hover { border-color:transparent; box-shadow:0 0 0 1px #c084fc, 0 0 0 4px rgba(236,72,153,.22), 0 16px 40px -12px rgba(168,85,247,.55); }
+  /* botões */
+  .btn { position:relative; overflow:hidden; border-radius:14px; box-shadow:0 10px 26px -10px rgba(168,85,247,.7); }
+  .btn::after { content:""; position:absolute; top:0; left:-60%; width:40%; height:100%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent); transform:skewX(-20deg); transition:left .6s; pointer-events:none; }
+  .btn:hover::after { left:130%; }
+  /* painéis e campos */
+  .painel, .card, #cfg { border-radius:var(--r-panel); }
+  .painel { background:rgba(18,8,34,.55); -webkit-backdrop-filter:blur(18px) saturate(140%); backdrop-filter:blur(18px) saturate(140%); border:1px solid rgba(192,132,252,.16); }
+  input, textarea, select { border-radius:14px; }
+  #expTags { padding-left:44px; background-repeat:no-repeat; background-position:15px center; background-size:18px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c084fc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E"); }
+  /* miniaturas */
+  a.gitem, .gth { border-radius:var(--r-card); transition:transform .25s, box-shadow .25s; animation:gin .5s cubic-bezier(.2,.8,.2,1) both; }
+  a.gitem::after { content:""; position:absolute; inset:auto 0 0 0; height:42%; background:linear-gradient(transparent,rgba(8,2,20,.7)); opacity:.6; transition:opacity .25s; pointer-events:none; }
+  @keyframes gin { from { opacity:0; transform:translateY(14px) scale(.98); } }
+  @media (hover:hover) {
+    a.gitem:hover, .gth:hover { transform:translateY(-3px); box-shadow:0 0 0 1px rgba(192,132,252,.7), 0 18px 40px -14px rgba(168,85,247,.65); }
+    a.gitem:hover::after { opacity:1; }
+  }
+  @media (hover:none) { a.gitem .galbtn { width:32px; height:32px; font-size:1rem; } }
+  @media (prefers-reduced-motion:reduce) { body::before, .hgirl, .hlogo, a.gitem, .gth { animation:none; } }
+
+  /* confirmação de idade e foco por teclado */
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline:2px solid #c084fc; outline-offset:2px; }
+
+  /* links do artista: três opções que quebram linha */
+  .flinks { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:4px 12px; white-space:normal; }
+  .flinks a + a::before { content:"·"; margin-right:12px; color:var(--muted); }
+  /* barra do visualizador: grade 4×2 organizada (ações principais em cima) */
+  #viewer .vbar { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+  #viewer .vbar #vGal { order:1; } #viewer .vbar #vGrupo { order:2; } #viewer .vbar #vBaixar { order:3; }
+  #viewer .vbar #vSite { order:4; } #viewer .vbar #vCopiar { order:5; } #viewer .vbar #vBlk { order:6; }
+  #viewer .vbar .ghost, #viewer .vbar .btn, #viewer .vbar #vSite { min-height:48px; border-radius:14px; font-size:.8rem; overflow:hidden; text-overflow:ellipsis; }
+  #viewer .vbar #vBlk { color:#e9d5ff; border-color:rgba(168,85,247,.5); background:rgba(168,85,247,.14); }
+  #viewer.solo .vnav { display:none; }
+  #menuBtn, #menuBtn svg { transition:none; }
+  #menuBtn:active { transform:none; }
+
+  /* ===== TOP 10 ===== */
+  #tab-top, #tab-seg { display:none; }
+  .topper { display:flex; gap:6px; padding:5px; margin:0 0 16px; border:1px solid var(--line); border-radius:16px; background:rgba(18,8,34,.55); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); }
+  .topper button { flex:1; min-width:0; min-height:42px; padding:0 8px; border:0; border-radius:12px; background:transparent; color:#cdb9f0; font:700 .85rem var(--fd); cursor:pointer; transition:background .18s, color .18s; }
+  .topper button:hover { color:#fff; }
+  .topper button.on { background:linear-gradient(135deg,#a855f7,#7c3aed); color:#fff; box-shadow:0 6px 18px rgba(168,85,247,.4); }
+  #topList { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:0; padding:0; list-style:none; }
+  .topit { position:relative; aspect-ratio:3/4; }
+  .topit:first-child { grid-column:1 / -1; aspect-ratio:16/11; }
+  .topit .tcard { position:relative; display:block; width:100%; height:100%; padding:0; overflow:hidden; border:1px solid var(--line); border-radius:18px; background:#0c0516; cursor:pointer; transition:transform .25s, box-shadow .25s; }
+  .topit .tcard:hover { transform:translateY(-3px); box-shadow:0 0 0 1px rgba(192,132,252,.7), 0 18px 40px -14px rgba(168,85,247,.65); }
+  .topit img { display:block; width:100%; height:100%; object-fit:cover; }
+  .topit .tcard::after { content:""; position:absolute; inset:auto 0 0 0; height:45%; background:linear-gradient(transparent,rgba(8,2,20,.78)); pointer-events:none; }
+  .rk { position:absolute; left:12px; top:6px; z-index:2; font:800 2.3rem/1 var(--fd); color:#fff; text-shadow:0 2px 14px rgba(0,0,0,.85); }
+  .topit:first-child .rk { font-size:3.4rem; }
+  .r1 .rk { color:#fcd34d; } .r2 .rk { color:#e5e7eb; } .r3 .rk { color:#fdba74; }
+  .topit .scorebadge { z-index:2; }
+  .topit.sk { border-radius:18px; background:linear-gradient(100deg,#120824 30%,#24103f 50%,#120824 70%) 0 0/200% 100%; animation:topsk 1.2s linear infinite; }
+  @keyframes topsk { to { background-position:-200% 0; } }
+  @media (min-width:700px) {
+    #topList { grid-template-columns:repeat(5,minmax(0,1fr)); }
+    .topit:first-child { grid-column:span 2; grid-row:span 2; aspect-ratio:auto; }
+  }
+  @media (prefers-reduced-motion:reduce) { .topit.sk { animation:none; } }
+
+  /* ===== TOP 10 na home e Seguindo ===== */
+  .hsec { position:relative; z-index:1; margin-top:22px; text-align:left; }
+  .hshead { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px; }
+  .hshead b { font:700 1.05rem var(--fd); }
+  .hshead a { font-size:.85rem; }
+  .hts { display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; }
+  .htc { position:relative; flex:none; width:118px; height:158px; padding:0; overflow:hidden; border:1px solid var(--line); border-radius:16px; background:#0c0516; scroll-snap-align:start; cursor:pointer; transition:transform .25s, box-shadow .25s; }
+  .htc:hover { transform:translateY(-3px); box-shadow:0 0 0 1px rgba(192,132,252,.7), 0 14px 30px -12px rgba(168,85,247,.65); }
+  .htc img { display:block; width:100%; height:100%; object-fit:cover; }
+  .htc::after { content:""; position:absolute; inset:auto 0 0 0; height:45%; background:linear-gradient(transparent,rgba(8,2,20,.78)); pointer-events:none; }
+  .htc .rk { left:8px; top:4px; font-size:1.9rem; }
+  .htc.sk { background:linear-gradient(100deg,#120824 30%,#24103f 50%,#120824 70%) 0 0/200% 100%; animation:topsk 1.2s linear infinite; }
+  .tseg { min-width:28px; min-height:28px; margin:0 6px 0 -2px; padding:0 6px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.06); color:#d8b4fe; font-weight:700; cursor:pointer; }
+  .tseg.on { background:#a855f7; border-color:#a855f7; color:#fff; }
+  .segadd { display:flex; gap:8px; margin-bottom:12px; }
+  .segadd input { flex:1; min-width:0; }
+  .segadd .btn { flex:none; padding:0 20px; }
+  .segchips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+  .schip { display:inline-flex; align-items:center; overflow:hidden; border:1px solid var(--line); border-radius:999px; background:var(--card); }
+  .schip.on { border-color:var(--accent); background:rgba(168,85,247,.22); }
+  .schip button { min-height:36px; padding:0 12px; border:0; background:transparent; color:var(--fg); font:600 .84rem var(--fb); cursor:pointer; }
+  .schip button + button { padding:0 10px; color:var(--muted); border-left:1px solid var(--line); }
+  .schip button + button:hover { color:#ff8a8a; }
+  .segtop { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+  .segtop p { margin:0; }
+  #segGrid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  @media (min-width:700px) { #segGrid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+  @media (min-width:1100px) { #segGrid { grid-template-columns:repeat(5,minmax(0,1fr)); } }
+  .segc { position:relative; display:block; width:100%; aspect-ratio:3/4; padding:0; overflow:hidden; border:1px solid var(--line); border-radius:18px; background:#0c0516; cursor:pointer; transition:transform .25s, box-shadow .25s; }
+  .segc:hover { transform:translateY(-3px); box-shadow:0 0 0 1px rgba(192,132,252,.7), 0 18px 40px -14px rgba(168,85,247,.65); }
+  .segc img { display:block; width:100%; height:100%; object-fit:cover; }
+  .segc.sk { background:linear-gradient(100deg,#120824 30%,#24103f 50%,#120824 70%) 0 0/200% 100%; animation:topsk 1.2s linear infinite; }
+  .segmais { text-align:center; margin:16px 0; }
+  .segmais[hidden], #segMais[hidden] { display:none; }
+
+  /* setas e botão de fechar do visualizador */
+  .vnav { display:grid; place-items:center; width:52px; height:52px; padding:0; border-radius:50%; background:rgba(20,8,36,.62); border:1px solid rgba(192,132,252,.35); box-shadow:0 8px 24px rgba(0,0,0,.45); transition:background .18s, transform .18s, box-shadow .18s; }
+  .vnav svg { width:26px; height:26px; fill:none; stroke:#fff; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; transition:transform .18s; }
+  .vnav:hover { background:rgba(168,85,247,.55); transform:translateY(-50%) scale(1.08); box-shadow:0 0 0 4px rgba(168,85,247,.22), 0 10px 28px rgba(0,0,0,.5); }
+  #vPrev:hover svg, #ivPrev:hover svg, #galPrev:hover svg { transform:translateX(-2px); }
+  #vNext:hover svg, #ivNext:hover svg, #galNext:hover svg { transform:translateX(2px); }
+  .vnav:active { transform:translateY(-50%) scale(.96); }
+  @media (max-width:640px) { .vnav { width:44px; height:44px; } .vnav svg { width:22px; height:22px; } }
+  #vFechar, #ivFechar, #galFechar { display:grid; place-items:center; width:44px; height:44px; min-height:44px; padding:0 !important; border-radius:50% !important; background:rgba(20,8,36,.62); border:1px solid rgba(192,132,252,.35); }
+  #vFechar svg, #ivFechar svg, #galFechar svg { width:20px; height:20px; fill:none; stroke:#fff; stroke-width:2.4; stroke-linecap:round; }
+  #vFechar:hover, #ivFechar:hover, #galFechar:hover { background:rgba(168,85,247,.55); }
+  /* TOP 10 com 5 períodos, e 6 itens na barra de baixo */
+  @media (max-width:820px) { .bnav { grid-template-columns:repeat(6,1fr); } .bnav a span { font-size:.58rem; } }
+  @media (max-width:430px) { .topper button { font-size:.74rem; padding:0 3px; } }
+  /* inicial maiúscula nas tags */
+  .tchip, .schip button[data-t] { text-transform:capitalize; }
+
+  .sav { position:relative; display:grid; place-items:center; flex:none; width:30px; height:30px; margin:3px 0 3px 4px; padding:0; overflow:hidden; border:0; border-radius:50%; background:linear-gradient(135deg,#a855f7,#7c3aed); color:#fff; font:700 .8rem var(--fd); cursor:pointer; }
+  .sav img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .schip .sav + button { padding-left:8px; }
+  #icoModal { position:fixed; inset:0; z-index:108; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(5,2,10,.8); }
+  #icoModal[hidden] { display:none; }
+  #icoModal .card { width:100%; max-width:420px; max-height:90vh; overflow:auto; }
+  #icoModal .top { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+  .icoprev { width:96px; height:96px; margin:10px auto 14px; font-size:2rem; border:2px solid var(--accent); cursor:default; }
+  #icoGoogle { width:100%; margin-bottom:6px; }
+  .icobtns { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .icobtns .ghost { flex:1 1 auto; }
+
+  /* janela do artista, tags extras e home */
+  .favnome { display:flex; align-items:center; gap:10px; min-width:0; }
+  .favav { width:44px; height:44px; flex:none; border-radius:50%; object-fit:cover; border:2px solid var(--accent); }
+  .favact { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .favact .btn, .favact .ghost { display:inline-flex; align-items:center; justify-content:center; flex:1 1 auto; min-height:44px; padding:0 14px; border-radius:14px; text-decoration:none; font-size:.88rem; }
+  .favedit { margin-top:14px; padding:8px 12px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.03); }
+  .favedit summary { cursor:pointer; font:600 .88rem var(--fd); color:#e5d4ff; }
+  .favedit[open] summary { margin-bottom:8px; }
+  .tmaisw { text-align:center; margin-top:8px; }
+  .tmais { min-height:34px; padding:0 16px; border:1px solid rgba(168,85,247,.5); border-radius:999px; background:rgba(168,85,247,.14); color:#e9d5ff; font:600 .8rem var(--fd); cursor:pointer; }
+  .tgeral { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:8px; max-height:28vh; overflow:auto; }
+  .tchip.geral { border-color:var(--line); color:#d9c9f5; }
+  .hstat { text-transform:capitalize; }
+  .sav img { object-position:50% 18%; }
+
+  /* ---------- Favoritos: visual novo ---------- */
+  #view-favs > #favFiltro { flex:1 1 100%; }
+  #view-favs .favadd { display:flex; flex-wrap:nowrap; align-items:center; gap:6px; padding:5px; border:1px solid var(--line); border-radius:16px; background:rgba(8,3,16,.72); transition:border-color .18s, box-shadow .18s; }
+  #view-favs .favadd:focus-within { border-color:#c084fc; box-shadow:0 0 0 3px rgba(168,85,247,.22); }
+  #view-favs .favadd input { flex:1 1 auto; min-width:0; min-height:44px; padding:0 12px; border:0; border-radius:12px; background:transparent; box-shadow:none; outline:none; }
+  #view-favs .favadd button { flex:none; min-height:44px; padding-inline:22px; border:0; border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-weight:700; }
+  #view-favs #attFavs, #view-favs #vistoTodos { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:46px; border-radius:14px; }
+  #view-favs #attFavs svg, #view-favs #vistoTodos svg { flex:none; width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  #view-favs #attFavs:disabled svg { animation:favgira 1s linear infinite; }
+  @keyframes favgira { to { transform:rotate(360deg); } }
+  @media (prefers-reduced-motion:reduce) { #view-favs #attFavs:disabled svg { animation:none; } }
+  .favtabs { display:flex; flex-wrap:wrap; gap:8px; margin-top:2px; }
+  .favtabs[hidden] { display:none; }
+  .favtabs button { display:inline-flex; align-items:center; gap:7px; min-height:36px; padding:0 14px; border:1px solid var(--line); border-radius:999px; background:rgba(20,8,36,.6); color:#d8c7f5; font-size:.85rem; font-weight:600; cursor:pointer; }
+  .favtabs button b { padding:1px 8px; border-radius:999px; background:rgba(168,85,247,.25); color:#fff; font:700 .74rem var(--fd); }
+  .favtabs button.on { border-color:#c084fc; background:linear-gradient(135deg,rgba(168,85,247,.5),rgba(124,58,237,.3)); color:#fff; }
+  #view-favs #favlist { grid-template-columns:repeat(auto-fill,minmax(132px,1fr)); gap:12px; }
+  @media (max-width:520px) { #view-favs #favlist { grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px 8px; } }
+  #view-favs .favcell { position:relative; justify-content:flex-start; padding:15px 6px 12px; border:1px solid rgba(124,58,237,.3); border-radius:20px; background:linear-gradient(180deg,rgba(32,14,58,.72),rgba(16,8,28,.72)); cursor:pointer; transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+  #view-favs .favcell .avatar { max-width:86px; }
+  #view-favs .favcell.novo { border-color:#c084fc; background:linear-gradient(180deg,rgba(76,29,149,.55),rgba(20,8,36,.78)); box-shadow:0 0 0 1px rgba(192,132,252,.25), 0 10px 26px rgba(124,58,237,.3); }
+  #view-favs .favname { font-size:.84rem; }
+  #view-favs .favdata { margin-top:-3px; font-size:.7rem; }
+  @media (hover:hover) {
+    #view-favs .favcell:hover { transform:translateY(-3px); border-color:#a855f7; box-shadow:0 14px 30px rgba(124,58,237,.32); }
+    #view-favs .favcell:hover .avatar { transform:none; }
+  }
+  @media (max-width:480px) {
+    #view-favs #attFavs, #view-favs #vistoTodos { font-size:.88rem; padding-inline:10px; gap:6px; }
+    #view-favs #attFavs, #view-favs #vistoTodos { flex:1 1 100% !important; }
+  }
+  #view-favs .favcell:focus-visible { outline:2px solid #e9d5ff; outline-offset:2px; }
 </style>
 </head>
 <body data-aba="inicio">
+<noscript><p style="padding:24px;color:#ddd;font:16px system-ui">Ative o JavaScript para usar o N34.</p></noscript>
 <canvas id="bg"></canvas>
 <main>
 
@@ -668,6 +918,8 @@
   <nav class="tabs" id="menu" aria-label="Menu">
     <button class="tab active" id="tab-inicio">Início</button>
     <button class="tab" id="tab-explorar">Explorar</button>
+    <button class="tab" id="tab-top" hidden>TOP 10</button>
+    <button class="tab" id="tab-seg" hidden>Seguindo</button>
     <button class="tab" id="tab-favs">★ Favoritos (0)</button>
     <button class="tab" id="tab-grupos">Grupos</button>
     <button class="tab" id="tab-galeria">Galeria</button>
@@ -675,6 +927,7 @@
   <nav class="bnav" aria-label="Navegação">
     <a href="#" data-go="inicio" class="active"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/></svg><span>Início</span></a>
     <a href="#" data-go="explorar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg><span>Explorar</span></a>
+    <a href="#" data-go="top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3"/><path d="M12 13v4M9 20h6"/></svg><span>Top 10</span></a>
     <a href="#" data-go="favs"><i class="bdg" hidden></i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9l-5.2 2.8 1-5.9L3.5 9.7l5.9-.8z"/></svg><span>Favoritos</span></a>
     <a href="#" data-go="grupos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 4.5-9 4.5-9-4.5z"/><path d="M3 12l9 4.5 9-4.5"/><path d="M3 16.5L12 21l9-4.5"/></svg><span>Grupos</span></a>
     <a href="#" data-go="galeria"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 3.5 3L15.5 13 20 17"/></svg><span>Galeria</span></a>
@@ -691,7 +944,13 @@
         <a href="#" class="hcard" data-go="favs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9l-5.2 2.8 1-5.9L3.5 9.7l5.9-.8z"/></svg><span class="htxt"><b>Favoritos</b><small>Seus artistas</small></span></a>
         <a href="#" class="hcard" data-go="grupos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 4.5-9 4.5-9-4.5z"/><path d="M3 12l9 4.5 9-4.5"/><path d="M3 16.5L12 21l9-4.5"/></svg><span class="htxt"><b>Grupos</b><small>Suas coleções</small></span></a>
         <a href="#" class="hcard" data-go="galeria"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 3.5 3L15.5 13 20 17"/></svg><span class="htxt"><b>Galeria</b><small>Salvas no site</small></span></a>
+        <a href="#" class="hcard" data-go="top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3"/><path d="M12 13v4M9 20h6"/></svg><span class="htxt"><b>TOP 10</b><small>Os mais votados</small></span></a>
+        <a href="#" class="hcard" data-go="seg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z"/></svg><span class="htxt"><b>Seguindo</b><small>Seus personagens</small></span></a>
       </nav>
+      <section id="homeTop" class="hsec" hidden>
+        <div class="hshead"><b>TOP 10</b><a href="#" data-go="top">Ver tudo</a></div>
+        <div class="hts" id="homeTopStrip"></div>
+      </section>
       <button id="instHome" class="hinst" type="button" hidden>
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M12 8v6M9.3 11.8L12 14.5l2.7-2.7"/></svg>
         <span class="htxt"><b>Instalar o N34 no celular</b><small>Abre em tela cheia, direto da tela inicial</small></span>
@@ -766,6 +1025,24 @@
     <div id="grupoLista"></div>
   </section>
 
+  <section id="view-top" hidden>
+    <div class="phead"><h2>TOP 10</h2><p id="topSub">Os 10 posts mais bem avaliados de hoje.</p></div>
+    <div class="topper" id="topPer" role="tablist" aria-label="Período">
+      <button type="button" data-p="0.0417">1 hora</button><button type="button" data-p="0.5">12 horas</button><button type="button" data-p="1" class="on">Hoje</button><button type="button" data-p="7">Semana</button><button type="button" data-p="30">Mês</button>
+    </div>
+    <ol id="topList"></ol>
+    <p id="topMsg" class="muted" role="status"></p>
+  </section>
+
+  <section id="view-seg" hidden>
+    <div class="phead"><h2>Seguindo</h2><p>Personagens que você segue, com posts em ordem aleatória.</p></div>
+    <div class="segadd"><input id="segIn" placeholder="Nome do personagem" autocomplete="off" autocapitalize="off" spellcheck="false"><button id="segAdd" class="btn" type="button">Seguir</button></div>
+    <div id="segChips" class="segchips"></div>
+    <div class="segtop"><p id="segMsg" class="muted" role="status"></p><button id="segShuf" class="ghost" type="button">Embaralhar</button></div>
+    <div id="segGrid"></div>
+    <div class="segmais"><button id="segMais" class="ghost" type="button" hidden>Mais posts</button></div>
+  </section>
+
   <section id="view-galeria" hidden>
     <div class="phead"><h2>Galeria</h2><p>As imagens que você salvou.</p></div>
     <div class="galtop">
@@ -777,14 +1054,15 @@
 
   <section id="view-favs" hidden>
     <div class="phead"><h2>Favoritos</h2><p>Veja quando seus artistas postam algo novo.</p></div>
-    <div class="bar">
-      <input id="novoFav" placeholder="tag do artista">
-      <button id="addFav" class="ghost">Adicionar</button>
+    <div class="bar favadd">
+      <input id="novoFav" aria-label="Tag do artista" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button id="addFav" class="ghost" type="button">Adicionar</button>
     </div>
-    <button id="attFavs" class="btn">Atualizar todos</button>
-    <button id="vistoTodos" class="ghost" style="margin-left:8px">Marcar tudo como visto</button>
-    <div id="grupos" class="chips" style="margin-top:14px"></div>
-    <span id="favStatus" class="muted" style="margin-left:10px"></span>
+    <button id="attFavs" class="btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg><span>Atualizar todos</span></button>
+    <button id="vistoTodos" class="ghost" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Marcar tudo como visto</span></button>
+    <div id="favFiltro" class="favtabs" hidden></div>
+    <div id="grupos" class="chips"></div>
+    <span id="favStatus" class="muted"></span>
     <div id="favlist"></div>
   </section>
 </main>
@@ -798,9 +1076,15 @@
       <div><label for="key">API key</label><input id="key" type="password" autocomplete="off"></div>
     </div>
     <ol class="passos"><li>Entre em <b>rule34.xxx</b> e abra <b>Minha conta → Opções</b>.</li><li>Copie o <b>User ID</b> e gere/copie a <b>API key</b>.</li><li>Cole aqui e toque em <b>Testar conexão</b>. Fica salvo só neste navegador.</li></ol>
-    <label for="proxy">Proxy CORS (opcional, só se der erro de bloqueio)</label>
-    <input id="proxy" placeholder="https://seu-proxy.exemplo/?url=">
+    <div hidden><label for="proxy">Proxy CORS</label>
+    <input id="proxy" placeholder="https://seu-proxy.exemplo/?url="></div>
     <div class="sync"><span id="syncSt">Sincronização: aguardando</span><button type="button" id="syncAgora" class="ghost">Sincronizar agora</button></div>
+    <div class="cfgbox">
+      <div class="sync"><span id="usoLS">Armazenamento: calculando...</span><button type="button" id="bkExp" class="ghost">Exportar backup</button></div>
+      <div class="sync"><span id="bkSt">Backup: nunca feito</span><button type="button" id="bkImp" class="ghost">Importar backup</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div>
+      <label class="cfgchk"><input type="checkbox" id="optEco"> Modo economia (sem partículas e sem desfoque; poupa bateria)</label>
+      <label class="cfgchk"><input type="checkbox" id="optNoKey"> Não lembrar a API key neste aparelho (peço de novo ao reabrir)</label>
+    </div>
     <div class="cfgbtns"><button id="testarCfg" class="ghost" type="button">Testar conexão</button><button id="salvarCfg" class="btn">Salvar</button></div>
     <button id="instalar" class="ghost" type="button" style="margin-top:10px;width:100%" hidden>Instalar o N34 como app</button>
   </section>
@@ -815,20 +1099,32 @@
   </div>
 </div>
 <button id="toTop" class="iconbtn fab" type="button" aria-label="Voltar ao topo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+<div id="icoModal" hidden>
+  <section class="card" role="dialog" aria-label="Ícone do personagem">
+    <div class="top"><b id="icoT">Ícone</b><button class="ghost" id="icoX" type="button">Fechar</button></div>
+    <div class="sav icoprev" id="icoPrev"></div>
+    <button id="icoGoogle" class="ghost" type="button">Buscar no Google</button>
+    <label for="icoUrl">Colar o endereço da imagem</label>
+    <div class="segadd"><input id="icoUrl" placeholder="https://…" autocomplete="off" autocapitalize="off" spellcheck="false"><button id="icoSalva" class="btn" type="button">Usar</button></div>
+    <div class="icobtns"><button id="icoFoto" class="ghost" type="button">Enviar foto</button><button id="icoAuto" class="ghost" type="button">Buscar automático</button><button id="icoDel" class="ghost" type="button">Remover</button></div>
+    <input type="file" id="icoArq" accept="image/*" hidden>
+    <small id="icoMsg" role="status"></small>
+  </section>
+</div>
 <div id="toast" hidden></div>
 <div id="galView" hidden>
-  <button class="ghost" id="galFechar" aria-label="Fechar" style="position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:10px;min-height:44px">✕</button>
-  <button class="vnav" id="galPrev" style="left:6px">‹</button>
+  <button class="ghost" id="galFechar" aria-label="Fechar" style="position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:10px;min-height:44px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button class="vnav" id="galPrev" style="left:6px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
   <div id="galMid"></div>
-  <button class="vnav" id="galNext" style="right:6px">›</button>
-  <div class="vbar"><span id="galInfo"></span><a id="galSite" target="_blank" rel="noopener">abrir no site</a><button class="btn" id="galBaixar">Baixar</button><button class="ghost" id="galDel">Remover</button></div>
+  <button class="vnav" id="galNext" style="right:6px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+  <div class="vbar"><span id="galInfo"></span><a id="galSite" target="_blank" rel="noopener">Abrir no site</a><button class="ghost" id="galCopiar">Copiar</button><button class="btn" id="galBaixar">Baixar</button><button class="ghost" id="galDel">Remover</button></div>
 </div>
 <div id="grpModal" hidden><div class="sheet" id="grpSheet"></div></div>
 <div id="itemView" hidden>
-  <button class="ghost" id="ivFechar" aria-label="Fechar" style="position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:10px;min-height:44px">✕</button>
-  <button class="vnav" id="ivPrev" style="left:6px">‹</button>
+  <button class="ghost" id="ivFechar" aria-label="Fechar" style="position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:10px;min-height:44px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button class="vnav" id="ivPrev" style="left:6px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
   <div id="ivMid"></div>
-  <button class="vnav" id="ivNext" style="right:6px">›</button>
+  <button class="vnav" id="ivNext" style="right:6px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
   <div class="vbar">
     <span id="ivInfo"></span>
     <button class="btn" id="ivCopiar">Copiar imagem</button>
@@ -840,20 +1136,37 @@
 </div>
 <div id="favModal" hidden><div class="sheet" id="favSheet"></div></div>
 
+<button id="btnBlk" class="fab" type="button" aria-label="Blacklist" title="Blacklist"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></button>
+<div id="blkModal" hidden><div id="blkSheet"><div class="top"><b>Blacklist</b><button class="ghost" id="blkFechar" type="button">Fechar</button></div><div id="blkSlot"></div></div></div>
 <div id="viewer" hidden>
-  <button class="ghost" id="vFechar" aria-label="Fechar">✕</button>
-  <button class="vnav" id="vPrev">‹</button>
+  <button class="ghost" id="vFechar" aria-label="Fechar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button class="vnav" id="vPrev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
   <div id="vMid"></div>
-  <button class="vnav" id="vNext">›</button>
+  <button class="vnav" id="vNext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
   <div id="vTags" hidden></div>
-  <div class="vbar"><span id="vInfo"></span><a id="vSite" target="_blank" rel="noopener">Site ↗</a><button id="vGrupo" class="ghost">＋ Grupo</button><button id="vGal" class="ghost">♡ Galeria</button><button id="vShare" class="ghost">Enviar</button><button id="vBaixar" class="btn">Baixar</button></div>
+  <div class="vbar"><span id="vInfo"></span><a id="vSite" target="_blank" rel="noopener">Site ↗</a><button id="vGrupo" class="ghost">＋ Grupo</button><button id="vGal" class="ghost">♡ Galeria</button><button id="vCopiar" class="ghost">Copiar</button><button id="vBlk" class="ghost">Blacklist</button><button id="vBaixar" class="btn">Baixar</button></div>
 </div>
 <script>
+/* ---------- Pedidos com tempo limite (evita "Carregando" infinito) ---------- */
+(function () {
+  const orig = window.fetch.bind(window);
+  window.fetch = (u, o = {}) => {
+    if (o.signal) return orig(u, o);
+    const url = String(u), ctl = new AbortController(), t = setTimeout(() => ctl.abort(), /\/api\/sync\?img=/.test(url) ? 60000 : 20000);
+    return orig(u, { ...o, signal: ctl.signal }).catch(e => { if (e && e.name === "AbortError") { const x = new Error("tempo esgotado (mais de 20 s sem resposta)"); x.name = "TimeoutError"; throw x; } throw e; }).finally(() => clearTimeout(t));
+  };
+})();
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let quotaAvisado = false;
+function quotaAviso(e) {
+  if (!e || quotaAvisado || !(e.name === "QuotaExceededError" || e.code === 22 || e.code === 1014)) return;
+  quotaAvisado = true;
+  setTimeout(() => { try { toast("Armazenamento do navegador cheio: algumas alterações não foram salvas. Exporte um backup e limpe itens da galeria."); } catch {} }, 0);
+}
 const LS = {
   get(k, d = "") { try { return localStorage.getItem(k) ?? d; } catch { return d; } },
-  set(k, v) { try { localStorage.setItem(k, v); } catch {} }
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) { quotaAviso(e); } }
 };
 const normTag = a => a.trim().toLowerCase().replace(/\s+/g, "_");
 const linkPost = id => "https://rule34.xxx/index.php?page=post&s=view&id=" + encodeURIComponent(id);
@@ -874,19 +1187,23 @@ function bloqueado(tagsStr) {
 
 /* ---------- Configuração (API escondida) ---------- */
 $("uid").value = LS.get("r34_uid");
-$("key").value = LS.get("r34_key");
+$("key").value = credKey();
 $("proxy").value = LS.get("r34_proxy");
 $("black").value = LS.get("r34_black");
 $("semIA").checked = LS.get("r34_semia") === "1";
-const creds = () => ({ uid: LS.get("r34_uid").trim(), key: LS.get("r34_key").trim(), proxy: LS.get("r34_proxy").trim() });
-function abrirCfg(msg) { menuAbrir(false); $("cfgModal").hidden = false; $("cfgmsg").textContent = msg || ""; }
+function credKey() { try { return LS.get("n34_nolembrar") === "1" ? (sessionStorage.getItem("r34_key") || "") : LS.get("r34_key"); } catch { return LS.get("r34_key"); } }
+function guardarKey(v) {
+  try { if (LS.get("n34_nolembrar") === "1") { sessionStorage.setItem("r34_key", v); localStorage.removeItem("r34_key"); } else LS.set("r34_key", v); } catch { LS.set("r34_key", v); }
+}
+const creds = () => ({ uid: LS.get("r34_uid").trim(), key: credKey().trim(), proxy: LS.get("r34_proxy").trim() });
+function abrirCfg(msg) { menuAbrir(false); pintarUso(); pintarBackup(); $("cfgModal").hidden = false; $("cfgmsg").textContent = msg || ""; }
 function fecharCfg() { $("cfgModal").hidden = true; }
 $("gear").onclick = () => { $("cfgModal").hidden ? abrirCfg() : fecharCfg(); };
 $("cfgFechar").onclick = fecharCfg;
 $("cfgModal").addEventListener("click", e => { if (e.target === $("cfgModal")) fecharCfg(); });
 $("salvarCfg").onclick = () => {
   LS.set("r34_uid", $("uid").value.trim());
-  LS.set("r34_key", $("key").value.trim());
+  guardarKey($("key").value.trim());
   LS.set("r34_proxy", $("proxy").value.trim());
   $("grid").innerHTML = "";
   if (!$("view-explorar").hidden) carregarGrid(0);
@@ -967,6 +1284,8 @@ const observarDur = root => root.querySelectorAll(".vidbadge[data-src]").forEach
 let favs = []; try { favs = JSON.parse(LS.get("r34_favs", "[]")); } catch {}
 const errs = {};
 let grupoAtual = "";
+let favSoNovos = false;
+let homeTopL = [], homeTopSeq = 0;   // declarado cedo: a tela inicial usa isto assim que a página abre
 const saveFavs = () => LS.set("r34_favs", JSON.stringify(favs));
 const isFav = t => favs.some(f => f.tag === t);
 function contarFavs() {
@@ -986,18 +1305,25 @@ function renderFavs() {
   if (grupoAtual && !grupos.includes(grupoAtual)) grupoAtual = "";
   $("grupos").innerHTML = grupos.length ? [["", "Todos", favs.length], ...grupos.map(g => [g, g, favs.filter(f => f.grupo === g).length])]
     .map(([g, n, c]) => `<button class="chip gchip${g === grupoAtual ? " active" : ""}" data-g="${esc(g)}">${esc(n)} (${c})</button>`).join("") : "";
-  const lista = favs.filter(f => !grupoAtual || f.grupo === grupoAtual).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  const eNovo = f => !!(f.id && f.id !== f.visto);
+  const nNov = favs.filter(eNovo).length;
+  if (!nNov) favSoNovos = false;
+  const ft = $("favFiltro"); ft.hidden = !nNov;
+  ft.innerHTML = nNov ? `<button type="button" data-f=""${favSoNovos ? "" : ' class="on"'}>Todos <b>${favs.length}</b></button><button type="button" data-f="1"${favSoNovos ? ' class="on"' : ""}>Com novidade <b>${nNov}</b></button>` : "";
+  const lista = favs.filter(f => (!grupoAtual || f.grupo === grupoAtual) && (!favSoNovos || eNovo(f)))
+    .sort((a, b) => (eNovo(b) - eNovo(a)) || ((b.ts || 0) - (a.ts || 0)));   // novidades primeiro, depois pela data
   const box = $("favlist");
   if (!lista.length) { box.innerHTML = '<p class="muted">Nenhum favorito aqui ainda. Use a ☆ nos resultados ou adicione acima.</p>'; return; }
   box.innerHTML = lista.map(f => {
     const novo = f.id && f.id !== f.visto;
     return `<button class="favcell${novo ? " novo" : ""}" data-tag="${esc(f.tag)}" title="${esc(f.tag)}">
       <span class="avatar"><span class="ini">${esc(f.tag.charAt(0).toUpperCase())}</span>${fontesFoto(f)[0] ? `<img src="${esc(fontesFoto(f)[0])}" data-fb="${esc(fontesFoto(f)[1] || "")}" referrerpolicy="no-referrer" loading="lazy" alt="" onerror="if(this.dataset.fb&&this.src!==this.dataset.fb){this.src=this.dataset.fb}else{this.remove()}">` : ""}${novo ? '<span class="novodot">NOVO</span>' : ""}</span>
-      <span class="favname">${esc(f.tag)}</span>${f.ts ? `<span class="favdata">${fmtData(new Date(f.ts))}</span>` : ""}</button>`;
+      <span class="favname">${esc(nomeBonito(f.tag))}</span>${f.ts ? `<span class="favdata">${fmtData(new Date(f.ts))}</span>` : ""}</button>`;
   }).join("");
   completarAvatares();
 }
 $("favlist").addEventListener("click", e => { const c = e.target.closest(".favcell"); if (c) abrirFav(c.dataset.tag); });
+$("favFiltro").addEventListener("click", e => { const b = e.target.closest("button[data-f]"); if (!b) return; favSoNovos = !!b.dataset.f; renderFavs(); });
 
 /* foto de perfil = post de maior nota do artista */
 const avTentado = new Set(); let avRodando = false;
@@ -1085,20 +1411,26 @@ function abrirFav(tag) {
   const grupos = gruposFav(), sheet = $("favSheet");
   const novo = f.id && f.id !== f.visto;
   sheet.innerHTML = `
-    <div class="top"><b>${esc(f.tag)}${novo ? '<span class="novo">NOVO</span>' : ""}</b><span class="btns"><button class="star" title="Remover dos favoritos">★</button><button class="ghost" id="favFechar">Fechar</button></span></div>
+    <div class="top"><b class="favnome">${(f.fotoProp || f.twAvatar || f.avatar) ? `<img class="favav" src="${esc(f.fotoProp || f.twAvatar || f.avatar)}" referrerpolicy="no-referrer" alt="" onerror="this.remove()">` : ""}<span>${esc(nomeBonito(f.tag))}</span>${novo ? '<span class="novo">NOVO</span>' : ""}</b><span class="btns"><button class="star" title="Remover dos favoritos">★</button><button class="ghost" id="favFechar">Fechar</button></span></div>
     ${errs[f.tag] ? `<div class="data" style="color:var(--err);font-size:.95rem">Erro: ${esc(errs[f.tag])}</div>`
       : f.ts ? (f.thumb ? "" : `<div class="data">${fmtData(new Date(f.ts))}</div>`) : '<div class="muted">Ainda não consultado</div>'}
-    <small>${f.id ? `<a href="${linkPost(f.id)}" target="_blank" rel="noopener">abrir post</a> · ` : ""}<a href="${linkTag(f.tag)}" target="_blank" rel="noopener">ver artista</a></small>
-    ${f.thumb ? `<a class="imgwrap${f.video ? " hasvid" : ""}" href="${linkPost(f.id)}" target="_blank" rel="noopener"><img class="thumb" src="${esc(f.thumb)}" referrerpolicy="no-referrer" alt="">${f.video && f.vurl ? vidBadge(f.vurl) : ""}${f.ts && !errs[f.tag] ? `<span class="datebadge">${fmtData(new Date(f.ts))}</span>` : ""}</a>` : ""}
+    ${f.thumb ? `<a class="imgwrap${f.video ? " hasvid" : ""}" href="${linkPost(f.id)}" data-n34post="${esc(f.id)}" target="_blank" rel="noopener"><img class="thumb" src="${esc(f.thumb)}" referrerpolicy="no-referrer" alt="">${f.video && f.vurl ? vidBadge(f.vurl) : ""}${f.ts && !errs[f.tag] ? `<span class="datebadge">${fmtData(new Date(f.ts))}</span>` : ""}</a>` : ""}
+    <div class="favact">
+      ${f.id ? `<a class="btn" href="${linkPost(f.id)}" data-n34post="${esc(f.id)}">Abrir no N34</a><a class="ghost" href="${linkPost(f.id)}" target="_blank" rel="noopener">Post no Rule 34 ↗</a>` : ""}
+      <button class="ghost" type="button" id="favPosts">Ver posts do artista</button>
+      <a class="ghost" href="${linkTag(f.tag)}" target="_blank" rel="noopener">Artista no Rule 34 ↗</a>
+    </div>
+    <details class="favedit"><summary>Editar perfil e foto</summary>
     <label for="twIn">Perfil do X/Twitter (foto de perfil)</label>
     <div class="bar" style="margin-bottom:6px"><input id="twIn" value="${esc(f.twitter ? "@" + f.twitter : "")}" autocomplete="off" autocapitalize="off"><button class="ghost" id="twSalvar" type="button">Salvar</button></div>
     <small>${f.twitter ? `Foto de <a href="https://x.com/${esc(f.twitter)}" target="_blank" rel="noopener">@${esc(f.twitter)}</a>.` : "Não achei o X desse artista automaticamente. Digite o @ para usar a foto dele."}</small>
     <label>Foto de perfil própria</label>
     <div class="bar" style="margin-bottom:6px"><button class="ghost" id="fotoBtn" type="button">${f.fotoProp ? "Trocar foto" : "Escolher foto"}</button>${f.fotoProp ? '<button class="ghost" id="fotoDel" type="button">Remover</button>' : ""}<input type="file" id="fotoIn" accept="image/*" hidden></div>
-    <small>${f.fotoProp ? "Sua foto está sendo usada no lugar das outras." : f.twitter ? "Opcional: use uma foto sua no lugar da foto do X." : "Esse artista não tem X: escolha uma foto da sua galeria."}</small>`;
+    <small>${f.fotoProp ? "Sua foto está sendo usada no lugar das outras." : f.twitter ? "Opcional: use uma foto sua no lugar da foto do X." : "Esse artista não tem X: escolha uma foto da sua galeria."}</small></details>`;
   $("favModal").hidden = false; document.body.style.overflow = "hidden";
   observarDur(sheet);
   $("favFechar").onclick = fecharFav;
+  $("favPosts").onclick = () => { fecharFav(); $("expTags").value = f.tag; $("grid").innerHTML = ""; showTab("explorar"); };
   sheet.querySelector(".star").onclick = () => { toggleFav(f.tag); fecharFav(); };
   sheet.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
     if (f.visto !== f.id) { f.visto = f.id; saveFavs(); contarFavs(); sheet.querySelector(".novo")?.remove(); }
@@ -1176,12 +1508,14 @@ addEventListener("keydown", e => {
 /* ---------- Abas ---------- */
 function showTab(nome, modo) {
   menuAbrir(false);
-  for (const n of ["inicio", "explorar", "favs", "grupos", "galeria"]) {
+  for (const n of ["inicio", "explorar", "top", "seg", "favs", "grupos", "galeria"]) {
     $("view-" + n).hidden = n !== nome;
     $("tab-" + n).classList.toggle("active", n === nome);
   }
   document.querySelector("main").classList.toggle("wide", nome === "explorar");
-  if (nome === "inicio") { contarPosts(); try { renderHome(); } catch {} }
+  if (nome === "inicio") { contarPosts(); try { renderHome(); } catch {} try { topHome(); } catch {} }
+  if (nome === "top") carregarTop();
+  if (nome === "seg") segRender(true);
   if (nome === "favs") renderFavs();
   if (nome === "grupos") renderGrupos();
   if (nome === "galeria") galCarregar();
@@ -1192,11 +1526,11 @@ function showTab(nome, modo) {
 }
 
 /* ---------- Rotas: botão voltar do navegador navega entre as abas ---------- */
-const ROTAS = { inicio: "/", explorar: "/explore", favs: "/favorites", grupos: "/groups", galeria: "/gallery" };
-const TITULOS = { inicio: "N34", explorar: "Explorar · N34", favs: "Favoritos · N34", grupos: "Grupos · N34", galeria: "Galeria · N34" };
+const ROTAS = { inicio: "/", explorar: "/explore", favs: "/favorites", grupos: "/groups", galeria: "/gallery", top: "/top", seg: "/following" };
+const TITULOS = { inicio: "N34", explorar: "Explorar · N34", favs: "Favoritos · N34", grupos: "Grupos · N34", galeria: "Galeria · N34", top: "TOP 10 · N34", seg: "Seguindo · N34" };
 function abaDaUrl() {
   const p = location.pathname.replace(/\/+$/, "").split("/").pop().toLowerCase();
-  const m = { search: "explorar", favorites: "favs", groups: "grupos", gallery: "galeria", explorar: "explorar", explore: "explorar", buscar: "explorar", favoritos: "favs", favs: "favs", grupos: "grupos", galeria: "galeria" };
+  const m = { following: "seg", seguindo: "seg", top: "top", top10: "top", search: "explorar", favorites: "favs", groups: "grupos", gallery: "galeria", explorar: "explorar", explore: "explorar", buscar: "explorar", favoritos: "favs", favs: "favs", grupos: "grupos", galeria: "galeria" };
   return m[p] || "inicio";
 }
 function rotaAtualizar(nome, modo) {
@@ -1254,6 +1588,8 @@ addEventListener("popstate", () => {
 })();
 $("tab-inicio").onclick = () => showTab("inicio");
 $("tab-explorar").onclick = () => showTab("explorar");
+$("tab-top").onclick = () => showTab("top");
+$("tab-seg").onclick = () => showTab("seg");
 $("tab-favs").onclick = () => showTab("favs");
 $("tab-grupos").onclick = () => showTab("grupos");
 $("tab-galeria").onclick = () => showTab("galeria");
@@ -1275,7 +1611,7 @@ contarFavs();
 showTab("inicio", "pop");
 
 /* ---------- Explorar (todos os posts) ---------- */
-const POR_PAGINA = 42;
+const POR_PAGINA = 42, GRID_MAX = 900;
 let expModo = "recentes", expSeq = 0;
 const cacheTrend = {};
 async function buscarLista(tags, pid, limit = POR_PAGINA, semFiltro = false) {
@@ -1351,12 +1687,12 @@ async function carregarGrid(pag = 0) {
       if (seq !== expSeq) return;
       const ok = r.posts.filter(passaFiltros);
       oculto += r.posts.length - ok.length; gridPosts.push(...ok);
-      temMais = r.posts.length === POR_PAGINA; expPag = p++; tent++;
+      temMais = r.posts.length === POR_PAGINA && gridPosts.length < GRID_MAX; expPag = p++; tent++;
     } while (temMais && gridPosts.length - ini < 12 && tent < 6);
     limparSkel();
     $("grid").insertAdjacentHTML("beforeend", gridPosts.slice(ini).map((x, k) => cardGrid(x, ini + k)).join(""));
     observarDur($("grid"));
-    $("expMsg").textContent = gridPosts.length ? (temMais ? "" : "Fim dos resultados.") : `Nenhum post encontrado${oculto ? ` (${oculto} ocultado(s) pelos filtros)` : ""}.`;
+    $("expMsg").textContent = gridPosts.length ? (temMais ? "" : (gridPosts.length >= GRID_MAX ? "Limite de " + GRID_MAX + " itens na tela, para economizar memória. Toque em Pesquisar para recomeçar." : "Fim dos resultados.")) : `Nenhum post encontrado${oculto ? ` (${oculto} ocultado(s) pelos filtros)` : ""}.`;
     setTimeout(checarSentinela, 100);
   } catch (e) { $("expMsg").innerHTML = "Erro: " + msgErro(e); }
   finally { if (seq === expSeq) { expBusy = false; limparSkel(); } }
@@ -1376,7 +1712,7 @@ const normTipo = t => {
 const tipoCache = Object.assign(Object.create(null), (() => { try { return JSON.parse(LS.get("r34_tipos", "{}")); } catch { return {}; } })());
 function salvarTipos() {
   const ks = Object.keys(tipoCache);
-  if (ks.length > 8000) ks.slice(0, 2000).forEach(k => delete tipoCache[k]);
+  if (ks.length > 3000) ks.slice(0, 1000).forEach(k => delete tipoCache[k]);
   LS.set("r34_tipos", JSON.stringify(tipoCache));
 }
 async function r34Texto(params) {
@@ -1427,7 +1763,10 @@ async function mostrarTags(p) {
   const nomes = { artista: "Artista", copyright: "Copyright", personagem: "Personagem" };
   const linhas = Object.keys(nomes).filter(k => cat && cat[k].length).map(k =>
     `<div class="trow"><span class="tlab ${k}">${nomes[k]}</span>${cat[k].map(t => `<button class="tchip ${k}" data-tag="${esc(t)}">${esc(t.replace(/_/g, " "))}</button>`).join("")}</div>`);
-  box.innerHTML = linhas.join("") || `<span class="vazio">${cat ? "Esse post não tem artista, copyright ou personagem marcados." : "Não consegui carregar as categorias das tags."}</span>`;
+  const usadas = new Set(cat ? [...cat.artista, ...cat.copyright, ...cat.personagem] : []);
+  const gerais = String(p.tags || "").trim().split(/\s+/).filter(t => t && !usadas.has(t));
+  const mais = gerais.length ? `<div class="tmaisw"><button type="button" class="tmais" data-n="${gerais.length}" aria-expanded="false">Mais tags (${gerais.length})</button></div><div class="tgeral" hidden>${gerais.slice(0, 80).map(t => `<button class="tchip geral" data-tag="${esc(t)}">${esc(t.replace(/_/g, " "))}</button>`).join("")}</div>` : "";
+  box.innerHTML = (linhas.join("") || `<span class="vazio">${cat ? "Esse post não tem artista, copyright ou personagem marcados." : "Não consegui carregar as categorias das tags."}</span>`) + mais;
 }
 $("vTags").addEventListener("click", e => {
   const c = e.target.closest(".tchip"); if (!c) return;
@@ -1440,15 +1779,14 @@ function mostrarViewer(i) {
   const p = gridPosts[i]; if (!p) return;
   vI = i; $("viewer").hidden = false; document.body.style.overflow = "hidden";
   const t = tipoDe(p);
-  $("vMid").innerHTML = t === "video" ? `<video src="${esc(p.file_url)}" controls autoplay loop></video>`
-    : `<img src="${esc(t === "gif" ? p.file_url : (p.sample_url || p.file_url))}" referrerpolicy="no-referrer" alt="">`;
+  playerMidia($("vMid"), { id: p.id, tipo: t, thumb: p.preview_url, sample: p.sample_url, full: p.file_url }, { avancar: () => { if (!$("viewer").hidden) $("vNext").click(); } });
   const d = postDate(p);
   $("vInfo").textContent = `${i + 1}/${gridPosts.length}${isNaN(d) ? "" : " · " + fmtData(d)}${p.score != null ? " · ▲ " + p.score : ""}`;
   $("vSite").href = linkPost(p.id);
   $("vGal").textContent = galTem(p.id) ? "♥ Na galeria" : "♡ Galeria";
   mostrarTags(p);
 }
-function fecharViewer() { $("viewer").hidden = true; $("vTags").hidden = true; $("vMid").innerHTML = ""; document.body.style.overflow = ""; vI = -1; }
+function fecharViewer() { playerLimpar(); $("viewer").hidden = true; $("vTags").hidden = true; $("vMid").innerHTML = ""; document.body.style.overflow = ""; vI = -1; }
 async function irViewer(d) {
   const n = vI + d;
   if (n >= gridPosts.length && temMais && !expBusy) await carregarGrid(expPag + 1);
@@ -1613,8 +1951,7 @@ function galCarregar() {
 function galAbrir(i) {
   const it = galItens[i]; if (!it) return;
   galI = i; $("galView").hidden = false; document.body.style.overflow = "hidden";
-  $("galMid").innerHTML = it.tipo === "video" ? `<video src="${esc(it.full)}" controls autoplay loop playsinline></video>`
-    : `<img src="${esc(it.tipo === "gif" ? it.full : (it.sample || it.full))}" data-fb="${esc(it.thumb || it.prev)}" onerror="if(this.dataset.fb&&this.src!==this.dataset.fb)this.src=this.dataset.fb" referrerpolicy="no-referrer" alt="">`;
+  playerMidia($("galMid"), galMi(it)); playerPrefetch([galMi(galItens[i + 1]), galMi(galItens[i - 1])]);
   $("galInfo").textContent = `${i + 1}/${galItens.length}${it.data ? " · " + fmtData(new Date(it.data)) : ""}${it.score != null && it.score !== "" ? " · ▲ " + it.score : ""}`;
   $("galSite").href = linkPost(it.id);
 }
@@ -1746,21 +2083,28 @@ if (creds().uid && creds().key && favs.length) atualizarTodos();
     const n = Math.min(170, Math.round(W * H / 9000));
     ps = Array.from({ length: n }, () => nova(true));
   }
-  function frame() {
+  let last = 0, parado = false;
+  function frame(t) {
+    if (document.hidden || document.documentElement.dataset.eco === "1") { parado = true; return; }   // aba oculta ou modo economia
+    if (document.body.style.overflow === "hidden") { setTimeout(() => requestAnimationFrame(frame), 400); return; }   // visualizador aberto
+    if (t && last && t - last < 30) { requestAnimationFrame(frame); return; }                          // ~30 quadros por segundo
+    const k = t && last ? Math.min(3, (t - last) / 16.7) : 1; last = t || 0;
     ctx.clearRect(0, 0, W, H);
     for (const p of ps) {
       ctx.globalAlpha = p.a;
       ctx.fillStyle = "#fff";
       ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.2832); ctx.fill();
       if (!reduzir) {
-        p.x += p.vx; p.y += p.vy;
+        p.x += p.vx * k; p.y += p.vy * k;
         if (p.y > H + 10 || p.x > W + 10) Object.assign(p, nova(false));
       }
     }
     if (!reduzir) requestAnimationFrame(frame);
   }
+  window.n34Particulas = () => { if (parado) { parado = false; last = 0; requestAnimationFrame(frame); } };
+  document.addEventListener("visibilitychange", () => window.n34Particulas());
   addEventListener("resize", ajustar);
-  ajustar(); frame();
+  ajustar(); frame(0);
 })();
 
 /* ---------- Ajustes para celular ---------- */
@@ -1856,9 +2200,13 @@ function menuGrupo(g) {
 }
 
 /* copiar / compartilhar */
-async function blobItem(it) {
+async function blobItem(it) {   // original primeiro (máxima qualidade); pelo servidor do site, que evita o bloqueio do navegador
   let erro;
   for (const u of [it.f, it.s].filter(Boolean)) {
+    let host = ""; try { host = new URL(u).hostname; } catch {}
+    if (/(^|\.)rule34\.xxx$/.test(host)) {
+      try { const r = await fetch("/api/sync?img=" + encodeURIComponent(u)); if (r.ok && r.headers.get("x-n34-proxy")) return await r.blob(); } catch (e) { erro = e; }
+    }
     try { const r = await fetch(u, { referrerPolicy: "no-referrer" }); if (r.ok) return await r.blob(); } catch (e) { erro = e; }
   }
   throw erro || new Error("falha ao baixar");
@@ -1874,11 +2222,12 @@ async function copiarLink(it) {
 }
 async function copiarImg(it) {
   if (it.v) return copiarLink(it);
+  toast("Preparando a imagem em alta qualidade...");
   try {
     await navigator.clipboard.write([new ClipboardItem({ "image/png": blobItem(it).then(pngDe) })]);
-    toast(/\.gif(\?|$)/i.test(it.f || "") ? "Copiado (GIF vira imagem parada). Cole no Discord." : "Imagem copiada. Cole no Discord.");
+    toast(/\.gif(\?|$)/i.test(it.f || "") ? "Copiado (GIF vira imagem parada). Cole no Discord." : "Imagem copiada em alta qualidade. Cole no Discord.");
   } catch {
-    try { await navigator.clipboard.writeText(linkPost(it.id)); toast("O site bloqueou copiar a imagem. Copiei o link no lugar."); } catch { toast("Não consegui copiar."); }
+    try { await navigator.clipboard.writeText(linkPost(it.id)); toast("Não consegui copiar a imagem (atualize o sync.mjs no Netlify). Copiei o link no lugar."); } catch { toast("Não consegui copiar."); }
   }
 }
 async function arquivoDe(it) {
@@ -1902,8 +2251,7 @@ let iv = { gid: null, i: -1 };
 function abrirItem(gid, i) {
   const g = grupoPorId(gid), it = g && g.itens[i]; if (!it) return;
   iv = { gid, i };
-  $("ivMid").innerHTML = it.v ? `<video src="${esc(it.f)}" controls autoplay loop playsinline></video>`
-    : `<img src="${esc(/\.gif(\?|$)/i.test(it.f || "") ? it.f : (it.s || it.f))}" referrerpolicy="no-referrer" alt="">`;
+  playerMidia($("ivMid"), grpMi(it)); playerPrefetch([grpMi(g.itens[i + 1]), grpMi(g.itens[i - 1])]);
   $("ivInfo").textContent = `${g.nome} · ${i + 1}/${g.itens.length}`;
   $("ivCopiar").textContent = it.v ? "Copiar link" : "Copiar imagem";
   $("ivLink").hidden = it.v;
@@ -1991,7 +2339,7 @@ setTimeout(() => autoAtualizar(false), 800);
   const ler = () => { try { return JSON.parse(LS.get("n34_recentes", "[]")) || []; } catch { return []; } };
   const render = () => {
     const l = ler();
-    box.innerHTML = l.length ? l.map(t => `<button type="button" class="rec" data-t="${esc(t)}">${esc(t)}</button>`).join("") + '<button type="button" class="rec x" data-x="1">Limpar ✕</button>' : "";
+    box.innerHTML = l.length ? '<button type="button" class="rec x" data-x="1">Limpar ✕</button>' + l.map(t => `<button type="button" class="rec" data-t="${esc(t)}">${esc(t)}</button>`).join("") : "";
   };
   const salvar = txt => {
     const t = String(txt || "").trim().toLowerCase().split(/\s+/).filter(Boolean).join(" ");
@@ -2004,6 +2352,9 @@ setTimeout(() => autoAtualizar(false), 800);
     if (b.dataset.x) { LS.set("n34_recentes", "[]"); render(); return; }
     $("expTags").value = b.dataset.t; carregarGrid(0); scrollTo({ top: 0, behavior: "smooth" });
   });
+  box.addEventListener("wheel", e => {   // PC: a roda do mouse rola a lista de lado
+    if (box.scrollWidth > box.clientWidth && Math.abs(e.deltaY) > Math.abs(e.deltaX)) { box.scrollLeft += e.deltaY; e.preventDefault(); }
+  }, { passive: false });
   const _carregarGrid = carregarGrid;
   carregarGrid = function (pag = 0) { if (pag === 0) salvar($("expTags").value); return _carregarGrid(pag); };
   render();
@@ -2068,11 +2419,6 @@ setTimeout(() => autoAtualizar(false), 800);
       const p = gridPosts[k]; if (!p || tipoDe(p) === "video") return;
       const im = new Image(); im.referrerPolicy = "no-referrer"; im.src = tipoDe(p) === "gif" ? p.file_url : (p.sample_url || p.file_url);
     });
-  };
-  $("vShare").onclick = async () => {
-    const p = gridPosts[vI]; if (!p) return;
-    const url = linkPost(p.id);
-    try { if (navigator.share) await navigator.share({ title: "N34", url }); else { await navigator.clipboard.writeText(url); toast("Link copiado"); } } catch { /* cancelado */ }
   };
 })();
 
@@ -2155,7 +2501,7 @@ atualizarNovos();
 
 $("testarCfg").onclick = async () => {
   const m = $("cfgmsg"), b = $("testarCfg");
-  LS.set("r34_uid", $("uid").value.trim()); LS.set("r34_key", $("key").value.trim()); LS.set("r34_proxy", $("proxy").value.trim());
+  LS.set("r34_uid", $("uid").value.trim()); guardarKey($("key").value.trim()); LS.set("r34_proxy", $("proxy").value.trim());
   if (!creds().uid || !creds().key) { m.textContent = "Preencha o User ID e a API key primeiro."; return; }
   b.disabled = true; m.textContent = "Testando conexão…";
   try {
@@ -2179,9 +2525,6 @@ $("testarCfg").onclick = async () => {
   $("expMsg").addEventListener("click", e => { if (e.target.closest("#tentarDeNovo")) carregarGrid(expPag > 0 ? expPag : 0); });
 })();
 
-/* abre a aba da URL (ex.: /explorar) ao carregar a página */
-showTab(abaDaUrl(), "replace");
-
 /* ---------- Página inicial: seus artistas, pesquisas recentes e resumo ---------- */
 function renderHome() {
   const box = $("homeExtra"); if (!box) return;
@@ -2199,7 +2542,7 @@ function renderHome() {
         return `<button class="hav${novo(f) ? " hnew" : ""}" data-tag="${esc(f.tag)}" title="${esc(f.tag)}"><span class="ring">${u ? `<img src="${esc(u)}" referrerpolicy="no-referrer" loading="lazy" alt="">` : `<i>${esc((f.tag.replace(/[^a-z0-9]/gi, "")[0] || "?").toUpperCase())}</i>`}</span><small>${esc(f.tag)}</small></button>`;
       }).join("")}</div></div>` : "")
     + (rec.length ? `<div class="hsec"><h3>Pesquisas recentes</h3><div class="hrec">${rec.map(t => `<button data-q="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>` : "")
-    + `<div class="hstats"><span class="hstat"><b>${favs.length}</b>favoritos</span>${nNovos ? `<span class="hstat hot"><b>${nNovos}</b>com post novo</span>` : ""}<span class="hstat"><b>${nGrp}</b>grupos</span><span class="hstat"><b>${nGal}</b>na galeria</span></div>`;
+    + `<div class="hstats"><span class="hstat"><b>${favs.length}</b>Favoritos</span>${nNovos ? `<span class="hstat hot"><b>${nNovos}</b>Novos Posts</span>` : ""}<span class="hstat"><b>${nGrp}</b>Grupos</span><span class="hstat"><b>${nGal}</b>Galeria</span></div>`;
 }
 $("homeExtra").addEventListener("click", e => {
   const a = e.target.closest(".hav"); if (a) return abrirFav(a.dataset.tag);
@@ -2210,8 +2553,93 @@ $("homeExtra").addEventListener("click", e => {
 
 try { renderHome(); } catch {}
 
+/* ---------- Player interno: imagem progressiva, vídeo com controles, passagem automática ---------- */
+var pTimer = null, pAuto = 0, pTok = 0;
+const pVol = () => { try { return JSON.parse(LS.get("n34_vol", '{"v":1,"m":false}')); } catch { return { v: 1, m: false }; } };
+const pFmt = t => { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); };
+const pPre = new Set();
+function playerLimpar() { clearTimeout(pTimer); pTok++; }
+function playerPrefetch(ms) {   // adianta as próximas imagens
+  for (const m of ms) {
+    if (!m || m.tipo === "video") continue;
+    const u = m.tipo === "gif" ? m.full : (m.sample || m.full);
+    if (!u || pPre.has(u)) continue;
+    pPre.add(u); if (pPre.size > 60) pPre.delete(pPre.values().next().value);
+    const im = new Image(); im.decoding = "async"; im.referrerPolicy = "no-referrer"; im.src = u;
+  }
+}
+function playerMidia(box, m, ctx = {}) {
+  playerLimpar();
+  const tok = pTok, big = m.tipo === "gif" ? m.full : (m.sample || m.full);
+  if (m.tipo === "video") return playerVideo(box, m, ctx);
+  const agenda = () => { if (ctx.avancar && pAuto) pTimer = setTimeout(ctx.avancar, pAuto * 1000); };
+  const mostrar = m.thumb && m.thumb !== big;
+  box.innerHTML = `<div class="pl"><img class="plimg${mostrar ? " blur" : ""}" src="${esc(mostrar ? m.thumb : big)}" alt="" referrerpolicy="no-referrer" decoding="async"></div>`;
+  const el = box.querySelector("img");
+  if (!mostrar) return agenda();
+  const im = new Image(); im.decoding = "async"; im.referrerPolicy = "no-referrer"; im.src = big;
+  const fim = () => { if (tok !== pTok) return; el.src = big; el.classList.remove("blur"); agenda(); };
+  (im.decode ? im.decode() : new Promise((ok, no) => { im.onload = ok; im.onerror = no; })).then(fim).catch(fim);
+}
+function playerVideo(box, m, ctx) {
+  const vol = pVol(), seguir = ctx.avancar && pAuto;
+  box.innerHTML = `<div class="pl"><video preload="auto" playsinline ${seguir ? "" : "loop"} poster="${esc(m.thumb || "")}" src="${esc(m.full)}"></video><div class="plspin on"></div><div class="plc">
+    <button type="button" class="plb pp" aria-label="Pausar">❚❚</button><span class="t1">0:00</span>
+    <div class="plseek"><div class="tr"><div class="bf"></div><div class="ps"></div></div><input type="range" min="0" max="1000" value="0" aria-label="Posição"></div>
+    <span class="t2">0:00</span><button type="button" class="plb mu" aria-label="Som">♪</button><button type="button" class="plb sp">1x</button><button type="button" class="plb fs" aria-label="Tela cheia">⛶</button></div></div>`;
+  const v = box.querySelector("video"), q = s => box.querySelector(s), sp = q(".plspin"), inp = q("input");
+  let seeking = false, auto = false;
+  v.volume = vol.v; v.muted = vol.m;
+  const upd = () => {
+    const d = v.duration || 0, p = d ? v.currentTime / d : 0;
+    q(".t1").textContent = pFmt(v.currentTime); q(".t2").textContent = pFmt(d); q(".ps").style.width = p * 100 + "%";
+    if (!seeking) inp.value = Math.round(p * 1000);
+    try { const b = v.buffered; q(".bf").style.width = (b.length && d ? b.end(b.length - 1) / d * 100 : 0) + "%"; } catch {}
+  };
+  for (const ev of ["timeupdate", "progress", "loadedmetadata"]) v.addEventListener(ev, upd);
+  for (const ev of ["waiting", "stalled"]) v.addEventListener(ev, () => sp.classList.add("on"));
+  v.addEventListener("canplay", () => sp.classList.remove("on"));
+  v.addEventListener("playing", () => { sp.classList.remove("on"); q(".pp").textContent = "❚❚"; });
+  v.addEventListener("pause", () => { q(".pp").textContent = "▶"; });
+  v.addEventListener("volumechange", () => { if (!auto) LS.set("n34_vol", JSON.stringify({ v: v.volume, m: v.muted })); q(".mu").style.opacity = v.muted || !v.volume ? 0.45 : 1; });
+  v.addEventListener("ended", () => { if (ctx.avancar && pAuto) ctx.avancar(); });
+  v.addEventListener("error", () => { sp.classList.remove("on"); toast("Não consegui reproduzir esse vídeo"); });
+  const alterna = () => (v.paused ? v.play() : v.pause());
+  v.addEventListener("click", alterna); q(".pp").onclick = alterna;
+  q(".mu").onclick = () => { v.muted = !v.muted; };
+  q(".sp").onclick = e => { const ls = [1, 1.25, 1.5, 2, 0.5], i = (ls.indexOf(v.playbackRate) + 1) % ls.length; v.playbackRate = ls[i]; e.target.textContent = ls[i] + "x"; };
+  q(".fs").onclick = () => { if (document.fullscreenElement) document.exitFullscreen(); else if (v.requestFullscreen) v.requestFullscreen(); else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen(); };
+  inp.addEventListener("input", () => { seeking = true; if (v.duration) v.currentTime = v.duration * inp.value / 1000; });
+  inp.addEventListener("change", () => { seeking = false; });
+  q(".plc").addEventListener("pointerdown", e => e.stopPropagation());
+  v.play().catch(() => { auto = true; v.muted = true; v.play().catch(() => { q(".pp").textContent = "▶"; sp.classList.remove("on"); }).finally(() => { auto = false; }); });
+}
+const grpMi = it => it ? { id: it.id, tipo: it.v ? "video" : (/\.gif(\?|$)/i.test(it.f || "") ? "gif" : "imagem"), thumb: it.p, sample: it.s, full: it.f } : null;
+const galMi = it => it ? { id: it.id, tipo: it.tipo, thumb: it.thumb || it.prev, sample: it.sample, full: it.full } : null;
+addEventListener("keydown", e => {   // atalhos do player: espaço, M, F, J/L
+  const v = document.querySelector(".pl video"); if (!v || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName || "")) return;
+  const k = e.key.toLowerCase();
+  if (k === " ") { e.preventDefault(); v.paused ? v.play() : v.pause(); }
+  else if (k === "m") v.muted = !v.muted;
+  else if (k === "f") { document.fullscreenElement ? document.exitFullscreen() : v.requestFullscreen && v.requestFullscreen(); }
+  else if (k === "j") v.currentTime = Math.max(0, v.currentTime - 5);
+  else if (k === "l") v.currentTime += 5;
+});
+const nomeBonito = t => String(t || "").replace(/(^|[_\-\s])([a-z\u00e0-\u00ff])/g, (m, a, b) => a + b.toUpperCase());
+
+/* ---------- Blacklist ao alcance (botão flutuante no Explorar) ---------- */
+const blkHome = { p: $("blackBox").parentNode, n: $("blackBox").nextSibling };
+function abrirBlk() { $("blkSlot").appendChild($("blackBox")); $("blackBox").open = true; $("blkModal").hidden = false; }
+function fecharBlk() { $("blkModal").hidden = true; $("blackBox").open = false; blkHome.p.insertBefore($("blackBox"), blkHome.n && blkHome.n.parentNode === blkHome.p ? blkHome.n : null); }
+$("btnBlk").onclick = abrirBlk; $("blkFechar").onclick = fecharBlk;
+$("blkModal").addEventListener("click", e => { if (e.target === $("blkModal")) fecharBlk(); });
+$("blackSalvar").addEventListener("click", () => { if (!$("blkModal").hidden) setTimeout(fecharBlk, 60); });
+$("vBlk").onclick = abrirBlk;
+$("vCopiar").onclick = () => { const p = gridPosts[vI]; if (p) copiarImg({ v: tipoDe(p) === "video", f: p.file_url, s: p.sample_url, id: p.id }); };
+$("galCopiar").onclick = () => { const it = galItens[galI]; if (it) copiarImg({ v: it.tipo === "video", f: it.full, s: it.sample, id: it.id }); };
+
 /* ---------- Sincronização entre aparelhos (mesmo User ID + API Key) ---------- */
-const SYNC_KEYS = ["r34_favs", "r34_black", "r34_cols", "n34_galeria", "r34_semia"];
+const SYNC_KEYS = ["r34_favs", "r34_black", "r34_cols", "n34_galeria", "r34_semia", "n34_seguindo"];
 let SYNC_URL = "/api/sync";
 const SYNC_FALTA = "a função de sincronização não está publicada neste site (404)";
 let aplicandoRemoto = false, pushT = null, syncBusy = false, syncPend = false, syncUltima = 0;
@@ -2265,7 +2693,8 @@ const vazioDe = k => k === "r34_black" ? "" : k === "r34_semia" ? "0" : "[]";
 const baseLer = () => { try { return JSON.parse(LS.get("n34_sync_base", "{}")) || {}; } catch { return {}; } };
 async function enviarSync(d) {
   const { id } = await chaveSync();
-  const r = await fetch(`${SYNC_URL}?id=${id}`, { method: "PUT", body: await cifrar({ d }) });
+  const c = creds(), proof = toHex(await crypto.subtle.digest("SHA-256", _enc.encode("n34-proof:" + c.uid + ":" + c.key)));
+  const r = await fetch(`${SYNC_URL}?id=${id}`, { method: "PUT", headers: { "x-n34-proof": proof }, body: await cifrar({ d }) });
   if (r.status === 404) throw new Error(SYNC_FALTA);
   if (!r.ok) throw new Error("servidor " + r.status);
 }
@@ -2274,10 +2703,21 @@ function resumoSync(d) {
   let imgs = 0; try { imgs = JSON.parse(d.r34_cols || "[]").reduce((t, g) => t + (g.itens || []).length, 0); } catch {}
   return `${n("r34_favs")} favoritos · ${n("r34_cols")} grupos (${imgs} imagens) · ${n("n34_galeria")} na galeria`;
 }
-async function sincronizar() {
+var syncRetry = null;
+function overlayAberto() { return ["favModal", "grpModal", "viewer", "itemView", "galView", "blkModal"].some(id => { const el = $(id); return el && !el.hidden; }); }
+function aplicarEstadoRemoto() {   // dados novos do outro aparelho entram na tela na hora, sem recarregar
+  try { favs = JSON.parse(LS.get("r34_favs", "[]")); } catch {}
+  try { cols = JSON.parse(LS.get("r34_cols", "[]")); } catch {}
+  try { const g = JSON.parse(LS.get("n34_galeria", "[]")); if (Array.isArray(g)) galItens = g; } catch {}
+  $("black").value = LS.get("r34_black"); renderBlack(); contarFavs();
+  const aba = document.body.dataset.aba;
+  if (aba === "favs") renderFavs(); else if (aba === "grupos") renderGrupos(); else if (aba === "galeria") galCarregar(); else if (aba === "inicio") renderHome();
+}
+async function sincronizar(manual) {
   const { uid, key } = creds();
   if (!uid || !key) return;
   if (syncBusy) { syncPend = true; return; }
+  if (!manual && overlayAberto()) { clearTimeout(syncRetry); syncRetry = setTimeout(() => sincronizar(), 8000); return; }   // não mexe nos dados com algo aberto
   if (!window.crypto || !crypto.subtle) return syncSt("indisponível (precisa de https)");
   syncBusy = true; syncSt("sincronizando...");
   try {
@@ -2311,13 +2751,329 @@ async function sincronizar() {
     if (push) await enviarSync(final);
     _si.call(localStorage, "n34_sync_base", JSON.stringify({ ...base, ...nova }));
     syncUltima = Date.now(); syncSt("ok · " + resumoSync(final));
-    if (mudou) location.reload();
+    if (mudou) aplicarEstadoRemoto();
   } catch (e) { syncSt("erro (" + e.message + ")"); }
   finally { aplicandoRemoto = false; syncBusy = false; if (syncPend) { syncPend = false; setTimeout(sincronizar, 600); } }
 }
-$("syncAgora").onclick = () => { if (!creds().uid || !creds().key) return syncSt("configure o User ID e a API Key"); sincronizar(); };
+$("syncAgora").onclick = () => { if (!creds().uid || !creds().key) return syncSt("configure o User ID e a API Key"); sincronizar(true); };
 document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - syncUltima > 30000) sincronizar(); });
 setTimeout(sincronizar, 900);
+/* ---------- Backup, armazenamento, modo economia ---------- */
+const BK_KEYS = ["r34_favs", "r34_cols", "n34_galeria", "r34_black", "r34_semia", "n34_recentes", "n34_tipoF", "n34_lay"];
+function usoLS() { let b = 0; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); b += (k.length + (localStorage.getItem(k) || "").length) * 2; } } catch {} return b; }
+function pintarUso() {
+  const b = usoLS(), pct = Math.round(b / (5 * 1048576) * 100), el = $("usoLS");
+  el.textContent = `Armazenamento: ${(b / 1048576).toFixed(2)} MB de ~5 MB (${pct}%)`; el.style.color = pct >= 80 ? "#ffb4c4" : "";
+}
+function pintarBackup() { const u = +LS.get("n34_ultimo_backup", "0"); $("bkSt").textContent = u ? "Último backup: " + fmtData(new Date(u)) : "Backup: nunca feito"; }
+function exportarBackup() {
+  const dados = {}; BK_KEYS.forEach(k => { const v = LS.get(k, null); if (v != null) dados[k] = v; });
+  const blob = new Blob([JSON.stringify({ app: "n34", v: 1, quando: new Date().toISOString(), dados })], { type: "application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `n34-backup-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  LS.set("n34_ultimo_backup", String(Date.now())); pintarBackup(); toast("Backup baixado");
+}
+async function importarBackup(file) {   // junta com o que já existe (não apaga nada)
+  let obj; try { obj = JSON.parse(await file.text()); } catch { return toast("Arquivo inválido"); }
+  if (!obj || obj.app !== "n34" || typeof obj.dados !== "object" || !obj.dados) return toast("Esse arquivo não é um backup do N34");
+  const vazio = x => x == null || x === "" || x === "[]"; let n = 0;
+  for (const k of BK_KEYS) {
+    const v = obj.dados[k]; if (typeof v !== "string" || v.length > 4e6) continue;
+    const l = LS.get(k, null); LS.set(k, vazio(l) ? v : uniao(k, l, v)); n++;
+  }
+  aplicarEstadoRemoto(); pintarUso(); toast(`Backup importado e juntado com os dados atuais (${n} listas)`);
+}
+$("bkExp").onclick = exportarBackup;
+$("bkImp").onclick = () => $("bkFile").click();
+$("bkFile").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) importarBackup(f); };
+const ecoAtivo = () => { const v = LS.get("n34_eco", ""); if (v) return v === "1"; try { return !!((navigator.connection && navigator.connection.saveData) || (navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2)); } catch { return false; } };
+function aplicarEco() { document.documentElement.dataset.eco = ecoAtivo() ? "1" : ""; $("optEco").checked = ecoAtivo(); if (!ecoAtivo() && window.n34Particulas) window.n34Particulas(); }
+$("optEco").onchange = e => { LS.set("n34_eco", e.target.checked ? "1" : "0"); aplicarEco(); };
+aplicarEco();
+$("optNoKey").checked = LS.get("n34_nolembrar") === "1";
+$("optNoKey").onchange = e => {
+  const k = credKey(); LS.set("n34_nolembrar", e.target.checked ? "1" : "0"); guardarKey(k);
+  toast(e.target.checked ? "A API key não será mais guardada neste aparelho. Digite de novo ao reabrir." : "A API key voltou a ser lembrada neste aparelho.");
+};
+if (usoLS() > 0.85 * 5 * 1048576) setTimeout(() => toast("Armazenamento do navegador quase cheio. Exporte um backup."), 2500);
+
+/* ---------- Grade: libera imagens longe da tela (poupa memória) ---------- */
+(function () {
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    const im = e.target.querySelector("img"); if (!im) return;
+    if (e.isIntersecting) { if (!im.getAttribute("src") && im.dataset.s) im.src = im.dataset.s; }
+    else if (im.getAttribute("src") && im.complete) { im.dataset.s = im.getAttribute("src"); im.removeAttribute("src"); }
+  }), { rootMargin: "3000px 0px" });
+  const g = $("grid");
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.classList && n.classList.contains("gitem")) io.observe(n); }))).observe(g, { childList: true });
+  g.querySelectorAll(".gitem").forEach(n => io.observe(n));
+})();
+
+
+
+
+/* abrir um post dentro do N34 (visualizador) */
+let viewerTemp = null;
+async function abrirPostInterno(id) {
+  id = String(id);
+  const i = gridPosts.findIndex(x => String(x.id) === id);
+  if (i >= 0) { mostrarViewer(i); return; }
+  if (!creds().uid || !creds().key) { open(linkPost(id), "_blank", "noopener"); return; }
+  toast("Abrindo…");
+  let p = null;
+  try { p = (await buscarLista("id:" + id, 0, 1, true)).posts[0]; } catch {}
+  if (!p || !p.file_url) { toast("Não consegui abrir. Abrindo no Rule 34…"); open(linkPost(id), "_blank", "noopener"); return; }
+  viewerTemp = { posts: gridPosts, mais: temMais, p };
+  gridPosts = [p]; temMais = false; $("viewer").classList.add("solo"); mostrarViewer(0);
+}
+new MutationObserver(() => {
+  if (!viewerTemp || !$("viewer").hidden) return;
+  if (gridPosts.length === 1 && gridPosts[0] === viewerTemp.p) { gridPosts = viewerTemp.posts; temMais = viewerTemp.mais; }
+  viewerTemp = null; $("viewer").classList.remove("solo");
+}).observe($("viewer"), { attributes: true, attributeFilter: ["hidden"] });
+
+document.addEventListener("click", e => {
+  const a = e.target.closest && e.target.closest("[data-n34post]");
+  if (!a || e.button || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+  e.preventDefault(); abrirPostInterno(a.dataset.n34post);
+});
+
+/* ================= TOP 10 (12 h / hoje / semana / mês) ================= */
+const TOP_TXT = { "0.0417": "da última hora", "0.5": "das últimas 12 horas", "1": "de hoje (24 h)", "7": "da semana", "30": "do mês" };
+let topDias = ["0.0417", "0.5", "1", "7", "30"].includes(LS.get("n34_topper", "1")) ? Number(LS.get("n34_topper", "1")) : 1, topSeq = 0, topPosts = [];
+const topCache = {};
+function pintarPer() {
+  document.querySelectorAll("#topPer [data-p]").forEach(b => { const on = Number(b.dataset.p) === topDias; b.classList.toggle("on", on); b.setAttribute("aria-selected", String(on)); });
+  $("topSub").textContent = "Os 10 posts mais bem avaliados " + TOP_TXT[String(topDias)] + ".";
+}
+function pintarTop(l) {
+  topPosts = l; $("topMsg").textContent = l.length ? "" : "Nenhum post encontrado nesse período.";
+  $("topList").innerHTML = l.map((p, i) => `<li class="topit r${i + 1}"><button class="tcard" type="button" data-i="${i}" aria-label="Abrir o número ${i + 1}"><img src="${esc(imgAlta(p))}" ${fbAttr(p)} referrerpolicy="no-referrer" loading="${i < 4 ? "eager" : "lazy"}" decoding="async" alt=""><span class="rk">${i + 1}</span>${tipoDe(p) === "video" ? vidBadge(p.file_url) : ""}<span class="scorebadge">▲ ${esc(p.score ?? 0)}</span></button></li>`).join("");
+  observarDur($("topList"));
+}
+async function carregarTop() {
+  if (!creds().uid || !creds().key) return abrirCfg("Preencha User ID e API key.");
+  pintarPer();
+  const seq = ++topSeq, dias = topDias, c = topCache[dias];
+  if (c && Date.now() - c.t < 300000) { pintarTop(c.l); return; }
+  $("topMsg").textContent = "Buscando os melhores posts…";
+  $("topList").innerHTML = '<li class="topit sk"></li>'.repeat(6);
+  try {
+    const desde = await idDesde(dias);
+    const r = await buscarLista(`sort:score:desc id:>${desde}`, 0, 60);
+    if (seq !== topSeq) return;
+    const l = r.posts.filter(passaFiltros).slice(0, 10);
+    topCache[dias] = { l, t: Date.now() }; pintarTop(l);
+  } catch (e) {
+    if (seq !== topSeq) return;
+    $("topList").innerHTML = ""; $("topMsg").innerHTML = "Erro: " + msgErro(e) + ' <button id="topRetry" class="ghost" type="button">Tentar de novo</button>';
+    $("topRetry").onclick = carregarTop;
+  }
+}
+$("topPer").addEventListener("click", e => {
+  const b = e.target.closest("[data-p]"); if (!b) return;
+  topDias = Number(b.dataset.p); LS.set("n34_topper", b.dataset.p); carregarTop();
+});
+let listaTemp = null;
+function abrirLista(lista, i) {
+  const base = viewerTemp ? { posts: viewerTemp.posts, mais: viewerTemp.mais } : listaTemp ? { posts: listaTemp.posts, mais: listaTemp.mais } : { posts: gridPosts, mais: temMais };
+  viewerTemp = null; listaTemp = { ...base, lista };
+  gridPosts = lista; temMais = false; $("viewer").classList.remove("solo"); mostrarViewer(i);
+}
+new MutationObserver(() => {
+  if (!listaTemp || !$("viewer").hidden) return;
+  if (gridPosts === listaTemp.lista) { gridPosts = listaTemp.posts; temMais = listaTemp.mais; }
+  listaTemp = null;
+}).observe($("viewer"), { attributes: true, attributeFilter: ["hidden"] });
+$("topList").addEventListener("click", e => { const b = e.target.closest(".tcard"); if (b) abrirLista(topPosts, +b.dataset.i); });
+pintarPer();
+
+/* ================= Seguindo: personagens e jogos, posts em ordem aleatória ================= */
+const bonitoTag = t => String(t).replace(/_/g, " ");
+const lerSeg = () => { try { const a = JSON.parse(LS.get("n34_seguindo", "[]")); return Array.isArray(a) ? a.filter(x => x && x.tag) : []; } catch { return []; } };
+let seguindo = lerSeg(), segSel = "", segPosts = [], segSeq = 0;
+const segGravar = () => LS.set("n34_seguindo", JSON.stringify(seguindo));
+function seguindoTem(t) { return seguindo.some(x => x.tag === t); }
+function toggleSeguir(t) {
+  seguindo = lerSeg();
+  if (seguindoTem(t)) { seguindo = seguindo.filter(x => x.tag !== t); toast("Deixou de seguir " + bonitoTag(t)); }
+  else { seguindo.unshift({ tag: t, ts: Date.now(), ico: "" }); toast("Seguindo " + bonitoTag(t)); setTimeout(() => iconeAuto(t), 0); }
+  segGravar(); return seguindoTem(t);
+}
+function segChips() {
+  $("segChips").innerHTML = seguindo.length ? `<span class="schip${segSel ? "" : " on"}"><button type="button" data-t="">Todos (${seguindo.length})</button></span>` + seguindo.map(x => `<span class="schip${segSel === x.tag ? " on" : ""}">${avatarSeg(x, true)}<button type="button" data-t="${esc(x.tag)}">${esc(bonitoTag(x.tag))}</button><button type="button" data-x="${esc(x.tag)}" aria-label="Deixar de seguir">✕</button></span>`).join("") : "";
+}
+function segRender(reset) {
+  seguindo = lerSeg(); if (segSel && !seguindoTem(segSel)) segSel = "";
+  segChips(); semIcone();
+  if (!seguindo.length) { ++segSeq; segPosts = []; $("segGrid").innerHTML = ""; $("segMais").hidden = true; $("segShuf").hidden = true; $("segMsg").textContent = "Você ainda não segue ninguém. Digite o nome de um personagem acima para começar."; return; }
+  $("segShuf").hidden = false;
+  if (reset) segCarregar(true);
+}
+async function segCarregar(reset) {
+  if (!creds().uid || !creds().key) return abrirCfg("Preencha User ID e API key.");
+  const seq = ++segSeq;
+  if (reset) { segPosts = []; $("segGrid").innerHTML = '<span class="segc sk"></span>'.repeat(6); }
+  $("segMais").hidden = true; $("segMsg").textContent = "Sorteando posts…";
+  const tags = segSel ? [segSel] : seguindo.map(x => x.tag).slice(0, 8);
+  const q = (tags.length > 1 ? `( ${tags.join(" ~ ")} )` : tags[0]) + " sort:random";
+  try {
+    const r = await buscarLista(q, 0, 30); if (seq !== segSeq) return;
+    const novos = r.posts.filter(p => passaFiltros(p) && !segPosts.some(x => x.id === p.id));
+    if (reset) $("segGrid").innerHTML = "";
+    const ini = segPosts.length; segPosts.push(...novos);
+    $("segGrid").insertAdjacentHTML("beforeend", novos.map((p, k) => `<button class="segc" type="button" data-i="${ini + k}" aria-label="Abrir"><img src="${esc(imgAlta(p))}" ${fbAttr(p)} referrerpolicy="no-referrer" loading="lazy" decoding="async" alt="">${tipoDe(p) === "video" ? vidBadge(p.file_url) : ""}</button>`).join(""));
+    observarDur($("segGrid"));
+    $("segMsg").textContent = segPosts.length ? `${segPosts.length} posts em ordem aleatória${segSel ? " de " + bonitoTag(segSel) : ""}.` : "Nenhum post encontrado (confira a blacklist e os filtros).";
+    $("segMais").hidden = !segPosts.length;
+  } catch (e) { if (seq === segSeq) { $("segGrid").innerHTML = ""; $("segMsg").innerHTML = "Erro: " + msgErro(e); } }
+}
+$("segGrid").addEventListener("click", e => { const b = e.target.closest(".segc[data-i]"); if (b) abrirLista(segPosts, +b.dataset.i); });
+$("segShuf").onclick = () => segCarregar(true);
+$("segMais").onclick = () => segCarregar(false);
+$("segChips").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.a) { icoAbrir(b.dataset.a); return; }
+  if (b.dataset.x) { toggleSeguir(b.dataset.x); segRender(true); return; }
+  if (b.dataset.t !== undefined) { segSel = b.dataset.t; segChips(); segCarregar(true); }
+});
+$("segAdd").onclick = async () => {
+  const toks = [...new Set($("segIn").value.toLowerCase().split(/[\s,]+/).filter(Boolean).map(t => t.replace(/^-/, "")))];
+  if (!toks.length) return;
+  if (!creds().uid || !creds().key) return abrirCfg("Preencha User ID e API key.");
+  $("segAdd").disabled = true; seguindo = lerSeg(); let add = 0; const novos = [];
+  for (const t of toks) {
+    if (seguindoTem(t)) { toast("Você já segue " + bonitoTag(t)); continue; }
+    try {
+      const r = await buscarLista(t, 0, 1, true);
+      if (!r.posts.length) { toast(`Não achei posts de “${bonitoTag(t)}”. Escolha uma tag da lista.`); continue; }
+      seguindo.unshift({ tag: t, ts: Date.now(), ico: "" }); add++; novos.push(t);
+    } catch (e) { toast("Erro ao buscar: " + (e && e.message ? e.message : "tente de novo")); }
+  }
+  $("segAdd").disabled = false;
+  if (add) { segGravar(); novos.forEach(t => iconeAuto(t)); $("segIn").value = ""; segSel = ""; toast(add === 1 ? "Seguindo " + bonitoTag(seguindo[0].tag) : `Seguindo ${add} tags`); segRender(true); }
+};
+$("segIn").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("segAdd").click(); } });
+ligarAutocomplete($("segIn"), /[\s,]/, " ");
+
+/* ================= Ícones dos personagens seguidos ================= */
+function avatarSeg(x, botao) {
+  const ini = esc((bonitoTag(x.tag).trim()[0] || "?").toUpperCase());
+  const img = x.ico ? `<img src="${esc(x.ico)}" referrerpolicy="no-referrer" loading="lazy" alt="" onerror="this.remove()">` : "";
+  return botao ? `<button type="button" class="sav" data-a="${esc(x.tag)}" aria-label="Trocar o ícone de ${esc(bonitoTag(x.tag))}">${ini}${img}</button>` : `<span class="sav">${ini}${img}</span>`;
+}
+async function iconeServidor(t) {
+  try { const r = await fetch("/.netlify/functions/icone?q=" + encodeURIComponent("perfil " + bonitoTag(t) + " rosto")); if (!r.ok) return ""; return (((await r.json()).urls || [])[0]) || ""; } catch { return ""; }
+}
+const palavras = x => String(x || "").toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 2);
+async function iconeAnilist(base, serie) {
+  try {
+    const q = "query($s:String){Page(perPage:10){characters(search:$s){name{full} image{large} media(perPage:6){nodes{title{romaji english}}}}}}";
+    const r = await fetch("https://graphql.anilist.co", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ query: q, variables: { s: base } }) });
+    if (!r.ok) return "";
+    const ch = (((await r.json()).data || {}).Page || {}).characters || [];
+    const ok = ch.filter(c => c.image && c.image.large && !/default/i.test(c.image.large)), sw = palavras(serie);
+    const casa = c => ((c.media && c.media.nodes) || []).some(n => { const tt = palavras(((n.title || {}).romaji || "") + " " + ((n.title || {}).english || "")); return sw.some(w => tt.includes(w)); });
+    const pick = sw.length ? ok.find(casa) : ok[0];
+    return pick ? pick.image.large : "";
+  } catch { return ""; }
+}
+async function iconeJikan(base) {
+  try {
+    const r = await fetch("https://api.jikan.moe/v4/characters?limit=10&order_by=favorites&sort=desc&q=" + encodeURIComponent(base));
+    if (!r.ok) return "";
+    const bw = palavras(base);
+    const c = ((await r.json()).data || []).find(x => x.images && x.images.jpg && x.images.jpg.image_url && !/questionmark/i.test(x.images.jpg.image_url) && bw.length && bw.every(w => palavras(x.name).includes(w)));
+    return c ? c.images.jpg.image_url : "";
+  } catch { return ""; }
+}
+async function procuraIcone(t) {
+  const m = /^(.*?)_?\(([^)]+)\)$/.exec(t), base = bonitoTag(m ? m[1] : t).trim(), serie = m ? bonitoTag(m[2]) : "";
+  return (await iconeAnilist(base, serie)) || (serie ? "" : await iconeJikan(base)) || (await iconeServidor(t));
+}
+async function iconeAuto(t, forcar) {
+  const u = await procuraIcone(t); if (!u) return false;
+  seguindo = lerSeg(); const it = seguindo.find(x => x.tag === t);
+  if (!it || (it.manual && !forcar)) return false;
+  it.ico = u; it.manual = false; segGravar(); segChips(); if (icoTag === t) icoPintar(); return true;
+}
+const tentouIco = new Set();
+function semIcone() {
+  seguindo.forEach(it => {
+    if (it.manual || tentouIco.has(it.tag) || (it.ico && !/rule34\.xxx/i.test(it.ico))) return;
+    tentouIco.add(it.tag);
+    iconeAuto(it.tag).then(ok => {
+      if (ok) return; seguindo = lerSeg(); const x = seguindo.find(y => y.tag === it.tag);
+      if (x && /rule34\.xxx/i.test(x.ico || "")) { x.ico = ""; segGravar(); segChips(); }
+    });
+  });
+}
+let icoTag = "";
+function icoPintar() { const it = lerSeg().find(x => x.tag === icoTag); if (it) $("icoPrev").outerHTML = avatarSeg(it, false).replace('class="sav"', 'class="sav icoprev" id="icoPrev"'); }
+function icoAbrir(t) { icoTag = t; $("icoT").textContent = "Ícone de " + bonitoTag(t); $("icoUrl").value = ""; $("icoMsg").textContent = ""; $("icoGoogle").textContent = `Buscar “perfil ${bonitoTag(t)}” no Google`; icoPintar(); $("icoModal").hidden = false; }
+function icoSalvar(ico, manual) { seguindo = lerSeg(); const it = seguindo.find(x => x.tag === icoTag); if (!it) return; it.ico = ico; it.manual = manual; segGravar(); segChips(); icoPintar(); }
+$("icoX").onclick = () => { $("icoModal").hidden = true; };
+$("icoModal").addEventListener("click", e => { if (e.target === $("icoModal")) $("icoModal").hidden = true; });
+$("icoGoogle").onclick = () => { open("https://www.google.com/search?tbm=isch&q=" + encodeURIComponent("perfil " + bonitoTag(icoTag)), "_blank", "noopener"); $("icoMsg").textContent = "No Google, abra a imagem, copie o endereço dela e cole acima."; };
+$("icoSalva").onclick = () => {
+  const u = $("icoUrl").value.trim();
+  if (!/^https:\/\/\S+$/i.test(u)) { $("icoMsg").textContent = "Cole um endereço que comece com https://"; return; }
+  icoSalvar(u, true); $("icoUrl").value = ""; $("icoMsg").textContent = "Ícone atualizado.";
+};
+$("icoFoto").onclick = () => $("icoArq").click();
+$("icoArq").onchange = e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    const im = new Image();
+    im.onload = () => {
+      const c = document.createElement("canvas"); c.width = c.height = 128; const sz = Math.min(im.width, im.height);
+      c.getContext("2d").drawImage(im, (im.width - sz) / 2, (im.height - sz) / 2, sz, sz, 0, 0, 128, 128);
+      icoSalvar(c.toDataURL("image/jpeg", .85), true); $("icoMsg").textContent = "Foto salva.";
+    };
+    im.onerror = () => { $("icoMsg").textContent = "Não consegui abrir essa imagem."; };
+    im.src = rd.result;
+  };
+  rd.readAsDataURL(f);
+};
+$("icoAuto").onclick = async () => {
+  $("icoMsg").textContent = "Buscando…";
+  $("icoMsg").textContent = (await iconeAuto(icoTag, true)) ? "Ícone encontrado." : "Não achei uma imagem desse personagem. Use o botão do Google, cole um endereço ou envie uma foto.";
+};
+$("icoDel").onclick = () => { icoSalvar("", false); $("icoMsg").textContent = "Ícone removido."; };
+addEventListener("keydown", e => { if (e.key === "Escape" && !$("icoModal").hidden) $("icoModal").hidden = true; });
+
+/* ---------- TOP 10 de hoje na home ---------- */
+async function topLista(dias) {
+  const c = topCache[dias]; if (c && Date.now() - c.t < 300000) return c.l;
+  const desde = await idDesde(dias);
+  const r = await buscarLista(`sort:score:desc id:>${desde}`, 0, 60);
+  const l = r.posts.filter(passaFiltros).slice(0, 10);
+  topCache[dias] = { l, t: Date.now() }; return l;
+}
+async function topHome() {
+  const box = $("homeTop"), st = $("homeTopStrip");
+  if (!creds().uid || !creds().key) { box.hidden = true; return; }
+  box.hidden = false; const seq = ++homeTopSeq;
+  if (!st.children.length) st.innerHTML = '<span class="htc sk"></span>'.repeat(5);
+  try {
+    const l = await topLista(1); if (seq !== homeTopSeq) return;
+    homeTopL = l; if (!l.length) { box.hidden = true; return; }
+    st.innerHTML = l.map((p, i) => `<button class="htc r${i + 1}" type="button" data-i="${i}" aria-label="Abrir o número ${i + 1}"><img src="${esc(imgAlta(p))}" ${fbAttr(p)} referrerpolicy="no-referrer" loading="lazy" decoding="async" alt=""><span class="rk">${i + 1}</span></button>`).join("");
+  } catch { if (seq === homeTopSeq) box.hidden = true; }
+}
+$("homeTopStrip").addEventListener("click", e => { const b = e.target.closest(".htc"); if (b && homeTopL.length) abrirLista(homeTopL, +b.dataset.i); });
+try { topHome(); } catch {}
+
+$("vTags").addEventListener("click", e => {
+  const b = e.target.closest(".tmais"); if (!b) return;
+  const g = $("vTags").querySelector(".tgeral"); if (!g) return;
+  g.hidden = !g.hidden; b.setAttribute("aria-expanded", String(!g.hidden));
+  b.textContent = (g.hidden ? "Mais tags" : "Menos tags") + ` (${b.dataset.n})`;
+});
+
+/* abre a aba da URL (ex.: /favorites) ao carregar a página — por último, depois de tudo estar declarado */
+showTab(abaDaUrl(), "replace");
 </script>
 </body>
 </html>
