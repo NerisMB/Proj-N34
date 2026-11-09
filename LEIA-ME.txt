@@ -1,0 +1,44 @@
+N34 — versão para GitHub Pages
+==============================
+
+ARQUIVOS (envie TODOS para o repositório, na raiz)
+  index.html            o site
+  404.html              faz funcionar /favorites, /explore, /following, /top, /groups e /gallery
+  .nojekyll             impede o GitHub de ignorar arquivos
+  sw.js                 deixa o app instalável e abrindo mesmo sem internet
+  manifest.webmanifest  dados do app instalável (ícone, nome, atalhos)
+  icons/                ícones do app
+
+PUBLICAR
+1. Crie um repositório no GitHub e envie todos os arquivos acima (Add file > Upload files).
+2. Settings > Pages > "Deploy from a branch" > branch main, pasta / (root) > Save.
+3. Em 1 ou 2 minutos o site abre em https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/
+   (se o repositório se chamar SEU-USUARIO.github.io, abre direto em https://SEU-USUARIO.github.io/).
+Para atualizar depois: envie o index.html novo por cima (e o sw.js, se ele mudar).
+
+CONFIGURAR (⚙ no site)
+- Cole o User ID e a API key do Rule34 (rule34.xxx > Minha conta > Opções) e toque em Testar conexão.
+  Ficam salvos só no navegador.
+
+INSTALAR NO CELULAR
+- Botão "Instalar o N34 no celular" na página inicial.
+  Android/Chrome: instala com um toque. iPhone: Safari > Compartilhar > Adicionar à Tela de Início.
+
+SINCRONIZAR ENTRE APARELHOS (pelo GitHub)
+Seus dados vão cifrados para um gist SECRETO da sua conta GitHub.
+1. Em github.com/settings/tokens crie um token CLÁSSICO e marque só a permissão "gist". Copie o token (ghp_...).
+2. Em cada aparelho: ⚙ > coloque o MESMO User ID e a MESMA API key do Rule34 > cole o token em
+   "Sincronizar pelo GitHub". A sincronização começa sozinha (o ⚙ mostra "Sincronização: ok · N favoritos...").
+3. Favoritos, Seguindo, grupos, galeria e blacklist passam a acompanhar você em todos os aparelhos.
+- O token fica só no aparelho (não é sincronizado nem entra no backup).
+- Os dados são cifrados no aparelho com User ID + API key antes de sair: o GitHub só vê texto embaralhado.
+- Se trocar a API key do Rule34, os aparelhos deixam de achar os dados antigos (cria-se um gist novo).
+
+IMAGENS E VÍDEOS
+- O visualizador abre a imagem na versão reduzida e troca sozinho pela ORIGINAL.
+  Para poupar dados: ⚙ > desmarque "Imagens em qualidade original no visualizador".
+- A duração dos vídeos é lida no máximo 2 por vez e espera quando você abre um vídeo.
+
+O QUE NÃO EXISTE NO GITHUB PAGES (não há servidor)
+- Copiar imagens para Galeria/Grupos "pelo servidor" e a busca automática de ícones. O resto funciona normalmente.
+- Para levar dados sem sincronizar, use Exportar/Importar backup no ⚙.

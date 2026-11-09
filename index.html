@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="N34">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script>
-/* Base do site: "" no Netlify / domínio próprio; "/NOME-DO-REPOSITORIO" em usuario.github.io/NOME/ */
+/* Base do site: "" em usuario.github.io (ou domínio próprio); "/NOME-DO-REPOSITORIO" em usuario.github.io/NOME/ */
 (function () {
   var R = ["explore","explorar","favorites","favoritos","following","seguindo","top","top10","groups","grupos","gallery","galeria","search","buscar","index.html","404.html"], seg = location.pathname.split("/").filter(Boolean), base = "";
   if (/\.github\.io$/i.test(location.hostname) && seg.length && R.indexOf(seg[0].toLowerCase()) < 0) base = "/" + seg[0];
@@ -1089,10 +1089,17 @@
     <div hidden><label for="proxy">Proxy CORS</label>
     <input id="proxy" placeholder="https://seu-proxy.exemplo/?url="></div>
     <div class="sync"><span id="syncSt">Sincronização: aguardando</span><button type="button" id="syncAgora" class="ghost">Sincronizar agora</button></div>
+    <details class="cfgbox" id="ghBox">
+      <summary>Sincronizar pelo GitHub (necessário no github.io)</summary>
+      <label for="ghToken">Token do GitHub</label>
+      <input id="ghToken" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ghp_...">
+      <ol class="passos"><li>Abra <b>github.com/settings/tokens</b> e crie um <b>token clássico</b> marcando só a permissão <b>gist</b>.</li><li>Cole aqui e use o <b>mesmo token</b> e o mesmo User ID/API key nos outros aparelhos.</li><li>Seus dados vão cifrados para um gist secreto da sua conta. O token fica só neste aparelho.</li></ol>
+    </details>
     <div class="cfgbox">
       <div class="sync"><span id="usoLS">Armazenamento: calculando...</span><button type="button" id="bkExp" class="ghost">Exportar backup</button></div>
       <div class="sync"><span id="bkSt">Backup: nunca feito</span><button type="button" id="bkImp" class="ghost">Importar backup</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div>
       <label class="cfgchk"><input type="checkbox" id="optEco"> Modo economia (sem partículas e sem desfoque; poupa bateria)</label>
+      <label class="cfgchk"><input type="checkbox" id="optQual"> Imagens em qualidade original no visualizador (usa mais dados)</label>
       <label class="cfgchk"><input type="checkbox" id="optNoKey"> Não lembrar a API key neste aparelho (peço de novo ao reabrir)</label>
     </div>
     <div class="cfgbtns"><button id="testarCfg" class="ghost" type="button">Testar conexão</button><button id="salvarCfg" class="btn">Salvar</button></div>
@@ -1268,25 +1275,49 @@ const ehVid = u => /\.(mp4|webm|mov)(\?|$)/i.test(u || "");
 const imgAlta = p => extImg(p.sample_url) ? p.sample_url : (p.preview_url || "");
 const fbAttr = p => `data-fb="${esc(p.preview_url || "")}" onerror="if(this.dataset.fb&&this.src!==this.dataset.fb)this.src=this.dataset.fb"`;
 const vidBadge = url => `<span class="vidbadge" data-src="${esc(url)}"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 .4 9.4 5 1 9.6z"/></svg><span class="dur"></span></span>`;
+const preHosts = new Set();
+function preconectar(u) {   // abre a conexão com o servidor das imagens/vídeos antes de precisar (poupa algumas centenas de ms)
+  try {
+    const o = new URL(u).origin;
+    if (!/^https:/.test(o) || preHosts.has(o) || preHosts.size > 10) return;
+    preHosts.add(o);
+    const l = document.createElement("link"); l.rel = "preconnect"; l.href = o; document.head.appendChild(l);
+  } catch { /* url inválida */ }
+}
 const durCache = {};
 function fmtDur(d) {
   if (!isFinite(d) || d <= 0) return "";
   const t = Math.round(d), h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), sec = String(t % 60).padStart(2, "0");
   return h ? `${h}:${String(m).padStart(2, "0")}:${sec}` : `${m}:${sec}`;
 }
-function lerDur(el) {
+function lerDur(el, pronto = () => {}) {
   const url = el.dataset.src, out = el.querySelector(".dur");
-  if (!url) return;
-  if (durCache[url]) { out.textContent = durCache[url]; return; }
+  if (!url) return pronto();
+  if (durCache[url]) { out.textContent = durCache[url]; return pronto(); }
   const v = document.createElement("video");
   v.preload = "metadata"; v.muted = true; v.playsInline = true; v.setAttribute("referrerpolicy", "no-referrer");
-  const fim = () => { v.onloadedmetadata = v.onerror = null; v.removeAttribute("src"); v.load(); };
-  v.onloadedmetadata = () => { const t = fmtDur(v.duration); if (t) { durCache[url] = t; out.textContent = t; } fim(); };
+  let feito = false, t;
+  const fim = () => { if (feito) return; feito = true; clearTimeout(t); v.onloadedmetadata = v.onerror = null; v.removeAttribute("src"); v.load(); pronto(); };
+  t = setTimeout(fim, 8000);   // não prende a fila se o servidor demorar
+  v.onloadedmetadata = () => { const d = fmtDur(v.duration); if (d) { durCache[url] = d; out.textContent = d; } fim(); };
   v.onerror = fim;
   v.src = url;
 }
+/* A duração de cada vídeo da lista era pedida toda de uma vez e disputava a conexão com o vídeo que você abre.
+   Agora vai no máximo 2 por vez e a fila espera enquanto um vídeo está abrindo. */
+const durFila = []; let durAtivos = 0, durEspera = null;
+function durBombear() {
+  while (durAtivos < 2 && durFila.length) {
+    if (document.querySelector(".pl video")) {   // um vídeo está na tela: ele tem prioridade
+      if (!durEspera) durEspera = setTimeout(() => { durEspera = null; durBombear(); }, 2000);
+      return;
+    }
+    const el = durFila.shift(); if (!el.isConnected) continue;
+    durAtivos++; lerDur(el, () => { durAtivos--; durBombear(); });
+  }
+}
 const durObs = new IntersectionObserver(es => es.forEach(en => {
-  if (en.isIntersecting) { durObs.unobserve(en.target); lerDur(en.target); }
+  if (en.isIntersecting) { durObs.unobserve(en.target); durFila.push(en.target); durBombear(); }
 }), { rootMargin: "200px" });
 const observarDur = root => root.querySelectorAll(".vidbadge[data-src]").forEach(el => durObs.observe(el));
 
@@ -1642,6 +1673,7 @@ async function buscarLista(tags, pid, limit = POR_PAGINA, semFiltro = false) {
     const g = n => p.getAttribute(n);
     return { id: g("id"), created_at: g("created_at"), change: g("change"), preview_url: g("preview_url"), tags: g("tags"), score: g("score"), file_url: g("file_url"), sample_url: g("sample_url"), width: Number(g("width")) || 0, height: Number(g("height")) || 0 };
   });
+  for (const x of posts.slice(0, 6)) { preconectar(x.file_url); preconectar(x.sample_url); preconectar(x.preview_url); }
   return { total, posts };
 }
 // Descobre o id do post de "N dias atrás" estimando quantos posts o site recebe por dia.
@@ -1785,6 +1817,12 @@ $("vTags").addEventListener("click", e => {
 
 /* ---------- Visualizador grande ---------- */
 let vI = -1;
+let vAquecido = null;
+function aquecerProximo(p) {   // começa a abrir a conexão/cabeçalho do próximo vídeo enquanto você assiste este
+  if (vAquecido) { vAquecido.removeAttribute("src"); vAquecido.load(); vAquecido = null; }
+  if (!p || tipoDe(p) !== "video" || (navigator.connection && navigator.connection.saveData)) return;
+  const v = document.createElement("video"); v.preload = "metadata"; v.muted = true; v.setAttribute("referrerpolicy", "no-referrer"); v.src = p.file_url; vAquecido = v;
+}
 function mostrarViewer(i) {
   const p = gridPosts[i]; if (!p) return;
   vI = i; $("viewer").hidden = false; document.body.style.overflow = "hidden";
@@ -1795,8 +1833,9 @@ function mostrarViewer(i) {
   $("vSite").href = linkPost(p.id);
   $("vGal").textContent = galTem(p.id) ? "♥ Na galeria" : "♡ Galeria";
   mostrarTags(p);
+  aquecerProximo(gridPosts[i + 1]);
 }
-function fecharViewer() { playerLimpar(); $("viewer").hidden = true; $("vTags").hidden = true; $("vMid").innerHTML = ""; document.body.style.overflow = ""; vI = -1; }
+function fecharViewer() { aquecerProximo(null); playerLimpar(); $("viewer").hidden = true; $("vTags").hidden = true; $("vMid").innerHTML = ""; document.body.style.overflow = ""; vI = -1; }
 async function irViewer(d) {
   const n = vI + d;
   if (n >= gridPosts.length && temMais && !expBusy) await carregarGrid(expPag + 1);
@@ -2237,7 +2276,7 @@ async function copiarImg(it) {
     await navigator.clipboard.write([new ClipboardItem({ "image/png": blobItem(it).then(pngDe) })]);
     toast(/\.gif(\?|$)/i.test(it.f || "") ? "Copiado (GIF vira imagem parada). Cole no Discord." : "Imagem copiada em alta qualidade. Cole no Discord.");
   } catch {
-    try { await navigator.clipboard.writeText(linkPost(it.id)); toast("Não consegui copiar a imagem (atualize o sync.mjs no Netlify). Copiei o link no lugar."); } catch { toast("Não consegui copiar."); }
+    try { await navigator.clipboard.writeText(linkPost(it.id)); toast("Não consegui copiar a imagem. Copiei o link no lugar."); } catch { toast("Não consegui copiar."); }
   }
 }
 async function arquivoDe(it) {
@@ -2568,7 +2607,16 @@ var pTimer = null, pAuto = 0, pTok = 0;
 const pVol = () => { try { return JSON.parse(LS.get("n34_vol", '{"v":1,"m":false}')); } catch { return { v: 1, m: false }; } };
 const pFmt = t => { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); };
 const pPre = new Set();
-function playerLimpar() { clearTimeout(pTimer); pTok++; }
+let pOrig = null;
+const qualAlta = () => LS.get("n34_qual", "1") !== "0" && !(navigator.connection && navigator.connection.saveData);
+function playerLimpar() { clearTimeout(pTimer); pTok++; if (pOrig) { pOrig.onload = pOrig.onerror = null; pOrig.src = ""; pOrig = null; } }
+/* a imagem aparece logo na versão reduzida (rápida) e troca sozinha pela ORIGINAL assim que ela termina de carregar */
+function subirOriginal(el, m, tok) {
+  if (!qualAlta() || m.tipo !== "imagem" || !m.full || !extImg(m.full) || m.full === (m.sample || m.full)) return;
+  const o = pOrig = new Image(); o.decoding = "async"; o.referrerPolicy = "no-referrer"; o.src = m.full;
+  const ok = () => { if (tok === pTok && el.isConnected) el.src = m.full; };
+  (o.decode ? o.decode() : new Promise((r, e) => { o.onload = r; o.onerror = e; })).then(ok).catch(() => {});
+}
 function playerPrefetch(ms) {   // adianta as próximas imagens
   for (const m of ms) {
     if (!m || m.tipo === "video") continue;
@@ -2586,14 +2634,14 @@ function playerMidia(box, m, ctx = {}) {
   const mostrar = m.thumb && m.thumb !== big;
   box.innerHTML = `<div class="pl"><img class="plimg${mostrar ? " blur" : ""}" src="${esc(mostrar ? m.thumb : big)}" alt="" referrerpolicy="no-referrer" decoding="async"></div>`;
   const el = box.querySelector("img");
-  if (!mostrar) return agenda();
+  if (!mostrar) { subirOriginal(el, m, tok); return agenda(); }
   const im = new Image(); im.decoding = "async"; im.referrerPolicy = "no-referrer"; im.src = big;
-  const fim = () => { if (tok !== pTok) return; el.src = big; el.classList.remove("blur"); agenda(); };
+  const fim = () => { if (tok !== pTok) return; el.src = big; el.classList.remove("blur"); agenda(); subirOriginal(el, m, tok); };
   (im.decode ? im.decode() : new Promise((ok, no) => { im.onload = ok; im.onerror = no; })).then(fim).catch(fim);
 }
 function playerVideo(box, m, ctx) {
   const vol = pVol(), seguir = ctx.avancar && pAuto;
-  box.innerHTML = `<div class="pl"><video preload="auto" playsinline ${seguir ? "" : "loop"} poster="${esc(m.thumb || "")}" src="${esc(m.full)}"></video><div class="plspin on"></div><div class="plc">
+  box.innerHTML = `<div class="pl"><video preload="auto" playsinline ${seguir ? "" : "loop"} poster="${esc(extImg(m.sample) ? m.sample : (m.thumb || ""))}" src="${esc(m.full)}"></video><div class="plspin on"></div><div class="plc">
     <button type="button" class="plb pp" aria-label="Pausar">❚❚</button><span class="t1">0:00</span>
     <div class="plseek"><div class="tr"><div class="bf"></div><div class="ps"></div></div><input type="range" min="0" max="1000" value="0" aria-label="Posição"></div>
     <span class="t2">0:00</span><button type="button" class="plb mu" aria-label="Som">♪</button><button type="button" class="plb sp">1x</button><button type="button" class="plb fs" aria-label="Tela cheia">⛶</button></div></div>`;
@@ -2650,14 +2698,13 @@ $("galCopiar").onclick = () => { const it = galItens[galI]; if (it) copiarImg({ 
 
 /* ---------- Sincronização entre aparelhos (mesmo User ID + API Key) ---------- */
 const SYNC_KEYS = ["r34_favs", "r34_black", "r34_cols", "n34_galeria", "r34_semia", "n34_seguindo"];
-/* ---------- Servidor opcional (funções do Netlify): sincronização, cópia de imagens e ícones ----------
-   No Netlify o site já é o próprio servidor. No GitHub Pages não existe servidor: para ter sincronização,
-   coloque aqui o endereço do seu site no Netlify (ex.: "https://n34.netlify.app"). Vazio = desligado. */
+/* ---------- Servidor opcional ----------
+   No GitHub Pages não há servidor: a sincronização é feita pelo token do GitHub (Gist) e a cópia de imagens por servidor fica desligada. */
 const N34_API = "";
 const NO_GITHUB = /\.github\.io$/i.test(location.hostname);
 const API_OK = !NO_GITHUB || !!N34_API;
 const API_BASE = NO_GITHUB ? N34_API.replace(/\/+$/, "") : "";
-const SYNC_OFF = "indisponível no GitHub Pages (precisa do servidor Netlify)";
+const SYNC_OFF = "cole o token do GitHub abaixo para sincronizar entre aparelhos";
 let SYNC_URL = API_BASE + "/api/sync";
 const SYNC_FALTA = "a função de sincronização não está publicada neste site (404)";
 let aplicandoRemoto = false, pushT = null, syncBusy = false, syncPend = false, syncUltima = 0;
@@ -2709,7 +2756,53 @@ const hashV = v => { if (v == null) return "-"; let h = 5381; for (let i = 0; i 
 const vz = v => v == null || v === "" || v === "[]";
 const vazioDe = k => k === "r34_black" ? "" : k === "r34_semia" ? "0" : "[]";
 const baseLer = () => { try { return JSON.parse(LS.get("n34_sync_base", "{}")) || {}; } catch { return {}; } };
+/* ---------- Sincronização pelo GitHub (Gist secreto): funciona no github.io, sem servidor ---------- */
+const ghToken = () => (LS.get("n34_gh_token", "") || "").trim();
+const GH_API = "https://api.github.com", GH_ARQ = "n34-sync.txt";
+const ghCab = () => ({ Authorization: "Bearer " + ghToken(), Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" });
+async function ghChamar(url, init = {}) {
+  const r = await fetch(url, { cache: "no-store", ...init, headers: { ...ghCab(), ...(init.headers || {}) } });
+  if (r.status === 401) throw new Error("token do GitHub inválido ou vencido");
+  if (r.status === 403 || r.status === 429) throw new Error("GitHub recusou (limite de uso ou token sem a permissão gist)");
+  return r;
+}
+async function ghDesc() { const { id } = await chaveSync(); return "n34-sync-" + id.slice(0, 20); }
+async function ghAcharGist() {
+  const guardado = LS.get("n34_gh_gist", ""); if (guardado) return guardado;
+  const desc = await ghDesc();
+  for (let pg = 1; pg <= 5; pg++) {
+    const r = await ghChamar(`${GH_API}/gists?per_page=100&page=${pg}`);
+    if (!r.ok) throw new Error("GitHub " + r.status);
+    const l = await r.json(), g = l.find(x => x.description === desc);
+    if (g) { _si.call(localStorage, "n34_gh_gist", g.id); return g.id; }
+    if (l.length < 100) break;
+  }
+  return "";
+}
+async function ghLer() {   // devolve o texto cifrado salvo, ou null se ainda não existe
+  let id = await ghAcharGist(); if (!id) return null;
+  let r = await ghChamar(`${GH_API}/gists/${id}`);
+  if (r.status === 404) { localStorage.removeItem("n34_gh_gist"); id = await ghAcharGist(); if (!id) return null; r = await ghChamar(`${GH_API}/gists/${id}`); }
+  if (!r.ok) throw new Error("GitHub " + r.status);
+  const f = (await r.json()).files?.[GH_ARQ]; if (!f) return null;
+  if (f.truncated && f.raw_url) { const rr = await fetch(f.raw_url, { cache: "no-store" }); if (!rr.ok) throw new Error("GitHub " + rr.status); return rr.text(); }
+  return f.content || null;
+}
+async function ghGravar(texto) {
+  const files = { [GH_ARQ]: { content: texto } };
+  let id = await ghAcharGist();
+  if (id) {
+    const r = await ghChamar(`${GH_API}/gists/${id}`, { method: "PATCH", body: JSON.stringify({ files }) });
+    if (r.ok) return;
+    if (r.status !== 404) throw new Error("GitHub " + r.status);
+    localStorage.removeItem("n34_gh_gist");
+  }
+  const r = await ghChamar(`${GH_API}/gists`, { method: "POST", body: JSON.stringify({ description: await ghDesc(), public: false, files }) });
+  if (!r.ok) throw new Error("GitHub " + r.status);
+  _si.call(localStorage, "n34_gh_gist", (await r.json()).id);
+}
 async function enviarSync(d) {
+  if (ghToken()) return ghGravar(await cifrar({ d }));
   if (!API_OK) throw new Error(SYNC_OFF);
   const { id } = await chaveSync();
   const c = creds(), proof = toHex(await crypto.subtle.digest("SHA-256", _enc.encode("n34-proof:" + c.uid + ":" + c.key)));
@@ -2732,25 +2825,32 @@ function aplicarEstadoRemoto() {   // dados novos do outro aparelho entram na te
   const aba = document.body.dataset.aba;
   if (aba === "favs") renderFavs(); else if (aba === "grupos") renderGrupos(); else if (aba === "galeria") galCarregar(); else if (aba === "inicio") renderHome();
 }
+async function lerRemoto() {   // devolve os dados do outro aparelho (já decifrados) ou null se ainda não há nada salvo
+  if (ghToken()) {
+    const t = await ghLer(); if (!t) return null;
+    try { return await decifrar(t); } catch { throw new Error("não consegui abrir os dados salvos: confira se o User ID e a API key são os mesmos do outro aparelho"); }
+  }
+  const { id } = await chaveSync();
+  let r = await fetch(`${SYNC_URL}?id=${id}`, { cache: "no-store" });
+  if (r.status === 404 && SYNC_URL !== API_BASE + "/.netlify/functions/sync") {   // tenta o endereço direto da função
+    const r2 = await fetch(`${API_BASE}/.netlify/functions/sync?id=${id}`, { cache: "no-store" });
+    if (r2.status !== 404) { SYNC_URL = API_BASE + "/.netlify/functions/sync"; r = r2; }
+  }
+  if (r.status === 404) throw new Error(SYNC_FALTA);
+  if (r.status === 200) { try { return await decifrar(await r.text()); } catch { throw new Error("função de sincronização não encontrada"); } }
+  if (r.status !== 204) throw new Error("servidor " + r.status);
+  return null;
+}
 async function sincronizar(manual) {
   const { uid, key } = creds();
   if (!uid || !key) return;
-  if (!API_OK) return syncSt(SYNC_OFF);
+  if (!API_OK && !ghToken()) return syncSt(SYNC_OFF);
   if (syncBusy) { syncPend = true; return; }
   if (!manual && overlayAberto()) { clearTimeout(syncRetry); syncRetry = setTimeout(() => sincronizar(), 8000); return; }   // não mexe nos dados com algo aberto
   if (!window.crypto || !crypto.subtle) return syncSt("indisponível (precisa de https)");
   syncBusy = true; syncSt("sincronizando...");
   try {
-    const { id } = await chaveSync();
-    let r = await fetch(`${SYNC_URL}?id=${id}`, { cache: "no-store" });
-    if (r.status === 404 && SYNC_URL !== API_BASE + "/.netlify/functions/sync") {   // tenta o endereço direto da função
-      const r2 = await fetch(`${API_BASE}/.netlify/functions/sync?id=${id}`, { cache: "no-store" });
-      if (r2.status !== 404) { SYNC_URL = API_BASE + "/.netlify/functions/sync"; r = r2; }
-    }
-    if (r.status === 404) throw new Error(SYNC_FALTA);
-    let remoto = null;
-    if (r.status === 200) { try { remoto = await decifrar(await r.text()); } catch { throw new Error("função de sincronização não encontrada"); } }
-    else if (r.status !== 204) throw new Error("servidor " + r.status);
+    const remoto = await lerRemoto();
     const base = baseLer(), final = {}, nova = {};
     let mudou = false, push = !remoto;
     aplicandoRemoto = true;
@@ -2775,6 +2875,15 @@ async function sincronizar(manual) {
   } catch (e) { syncSt("erro (" + e.message + ")"); }
   finally { aplicandoRemoto = false; syncBusy = false; if (syncPend) { syncPend = false; setTimeout(sincronizar, 600); } }
 }
+$("ghToken").value = ghToken();
+if (NO_GITHUB && !ghToken() && !N34_API) $("ghBox").open = true;
+$("ghToken").addEventListener("change", e => {
+  const t = e.target.value.trim();
+  _si.call(localStorage, "n34_gh_token", t); localStorage.removeItem("n34_gh_gist");
+  if (!t) return syncSt(API_OK ? "aguardando" : SYNC_OFF);
+  if (!creds().uid || !creds().key) return syncSt("configure o User ID e a API Key");
+  sincronizar(true);
+});
 $("syncAgora").onclick = () => { if (!creds().uid || !creds().key) return syncSt("configure o User ID e a API Key"); sincronizar(true); };
 document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - syncUltima > 30000) sincronizar(); });
 setTimeout(sincronizar, 900);
@@ -2809,6 +2918,8 @@ $("bkFile").onchange = e => { const f = e.target.files[0]; e.target.value = ""; 
 const ecoAtivo = () => { const v = LS.get("n34_eco", ""); if (v) return v === "1"; try { return !!((navigator.connection && navigator.connection.saveData) || (navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2)); } catch { return false; } };
 function aplicarEco() { document.documentElement.dataset.eco = ecoAtivo() ? "1" : ""; $("optEco").checked = ecoAtivo(); if (!ecoAtivo() && window.n34Particulas) window.n34Particulas(); }
 $("optEco").onchange = e => { LS.set("n34_eco", e.target.checked ? "1" : "0"); aplicarEco(); };
+$("optQual").checked = LS.get("n34_qual", "1") !== "0";
+$("optQual").onchange = e => LS.set("n34_qual", e.target.checked ? "1" : "0");
 aplicarEco();
 $("optNoKey").checked = LS.get("n34_nolembrar") === "1";
 $("optNoKey").onchange = e => {
