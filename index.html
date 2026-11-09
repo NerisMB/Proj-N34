@@ -13,10 +13,20 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="N34">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="/manifest.webmanifest">
+<script>
+/* Base do site: "" no Netlify / domínio próprio; "/NOME-DO-REPOSITORIO" em usuario.github.io/NOME/ */
+(function () {
+  var R = ["explore","explorar","favorites","favoritos","following","seguindo","top","top10","groups","grupos","gallery","galeria","search","buscar","index.html","404.html"], seg = location.pathname.split("/").filter(Boolean), base = "";
+  if (/\.github\.io$/i.test(location.hostname) && seg.length && R.indexOf(seg[0].toLowerCase()) < 0) base = "/" + seg[0];
+  window.N34_BASE = base;
+  var q = new URLSearchParams(location.search).get("p");           /* volta do 404.html (link direto, ex.: /favorites) */
+  if (q !== null) { try { history.replaceState(null, "", base + "/" + q.replace(/^\/+/, "") + location.hash); } catch (e) {} }
+  document.write('<link rel="manifest" href="' + base + '/manifest.webmanifest">' +
+    '<link rel="apple-touch-icon" href="' + base + '/icons/apple-touch-icon.png">' +
+    '<link rel="icon" type="image/png" sizes="192x192" href="' + base + '/icons/icon-192.png">');
+})();
+</script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23a855f7'/><stop offset='1' stop-color='%23220a45'/></linearGradient></defs><rect width='32' height='32' rx='7.2' fill='url(%23g)'/><path d='M10.5 22.5V9.5l11 13v-13' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/></svg>">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 
 <title>N34</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1538,7 +1548,7 @@ function rotaAtualizar(nome, modo) {
   if (modo === "pop") return;
   if (voltasPendentes > 0) { rotaAdiada = { nome, modo }; return; }
   try {
-    const url = ROTAS[nome] || "/";
+    const url = N34_BASE + (ROTAS[nome] || "/");
     if (modo === "replace") history.replaceState({ aba: nome }, "", url);
     else if (location.pathname.replace(/\/+$/, "") !== url.replace(/\/+$/, "")) { history.pushState({ aba: nome }, "", url); window.scrollTo(0, 0); }
   } catch (e) { /* ex.: abrindo como arquivo local; segue sem URL */ }
@@ -2205,7 +2215,7 @@ async function blobItem(it) {   // original primeiro (máxima qualidade); pelo s
   for (const u of [it.f, it.s].filter(Boolean)) {
     let host = ""; try { host = new URL(u).hostname; } catch {}
     if (/(^|\.)rule34\.xxx$/.test(host)) {
-      try { const r = await fetch("/api/sync?img=" + encodeURIComponent(u)); if (r.ok && r.headers.get("x-n34-proxy")) return await r.blob(); } catch (e) { erro = e; }
+      try { if (!API_OK) throw 0; const r = await fetch(API_BASE + "/api/sync?img=" + encodeURIComponent(u)); if (r.ok && r.headers.get("x-n34-proxy")) return await r.blob(); } catch (e) { erro = e; }
     }
     try { const r = await fetch(u, { referrerPolicy: "no-referrer" }); if (r.ok) return await r.blob(); } catch (e) { erro = e; }
   }
@@ -2484,7 +2494,7 @@ FECHAR_OV.instModal = () => { $("instModal").hidden = true; };
 ovObserver.observe($("instModal"), { attributes: true, attributeFilter: ["hidden"] });
 matchMedia("(display-mode: standalone)").addEventListener?.("change", atualizarBotoesInstalar);
 atualizarBotoesInstalar();
-if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) addEventListener("load", () => navigator.serviceWorker.register(N34_BASE + "/sw.js", { scope: N34_BASE + "/" }).catch(() => {}));
 
 /* ================= Rodada 2: novidades, testar conexão, tentar de novo ================= */
 function atualizarNovos() {
@@ -2640,7 +2650,15 @@ $("galCopiar").onclick = () => { const it = galItens[galI]; if (it) copiarImg({ 
 
 /* ---------- Sincronização entre aparelhos (mesmo User ID + API Key) ---------- */
 const SYNC_KEYS = ["r34_favs", "r34_black", "r34_cols", "n34_galeria", "r34_semia", "n34_seguindo"];
-let SYNC_URL = "/api/sync";
+/* ---------- Servidor opcional (funções do Netlify): sincronização, cópia de imagens e ícones ----------
+   No Netlify o site já é o próprio servidor. No GitHub Pages não existe servidor: para ter sincronização,
+   coloque aqui o endereço do seu site no Netlify (ex.: "https://n34.netlify.app"). Vazio = desligado. */
+const N34_API = "";
+const NO_GITHUB = /\.github\.io$/i.test(location.hostname);
+const API_OK = !NO_GITHUB || !!N34_API;
+const API_BASE = NO_GITHUB ? N34_API.replace(/\/+$/, "") : "";
+const SYNC_OFF = "indisponível no GitHub Pages (precisa do servidor Netlify)";
+let SYNC_URL = API_BASE + "/api/sync";
 const SYNC_FALTA = "a função de sincronização não está publicada neste site (404)";
 let aplicandoRemoto = false, pushT = null, syncBusy = false, syncPend = false, syncUltima = 0;
 const syncSt = t => { const el = $("syncSt"); if (el) el.textContent = "Sincronização: " + t; };
@@ -2692,6 +2710,7 @@ const vz = v => v == null || v === "" || v === "[]";
 const vazioDe = k => k === "r34_black" ? "" : k === "r34_semia" ? "0" : "[]";
 const baseLer = () => { try { return JSON.parse(LS.get("n34_sync_base", "{}")) || {}; } catch { return {}; } };
 async function enviarSync(d) {
+  if (!API_OK) throw new Error(SYNC_OFF);
   const { id } = await chaveSync();
   const c = creds(), proof = toHex(await crypto.subtle.digest("SHA-256", _enc.encode("n34-proof:" + c.uid + ":" + c.key)));
   const r = await fetch(`${SYNC_URL}?id=${id}`, { method: "PUT", headers: { "x-n34-proof": proof }, body: await cifrar({ d }) });
@@ -2716,6 +2735,7 @@ function aplicarEstadoRemoto() {   // dados novos do outro aparelho entram na te
 async function sincronizar(manual) {
   const { uid, key } = creds();
   if (!uid || !key) return;
+  if (!API_OK) return syncSt(SYNC_OFF);
   if (syncBusy) { syncPend = true; return; }
   if (!manual && overlayAberto()) { clearTimeout(syncRetry); syncRetry = setTimeout(() => sincronizar(), 8000); return; }   // não mexe nos dados com algo aberto
   if (!window.crypto || !crypto.subtle) return syncSt("indisponível (precisa de https)");
@@ -2723,9 +2743,9 @@ async function sincronizar(manual) {
   try {
     const { id } = await chaveSync();
     let r = await fetch(`${SYNC_URL}?id=${id}`, { cache: "no-store" });
-    if (r.status === 404 && SYNC_URL !== "/.netlify/functions/sync") {   // tenta o endereço direto da função
-      const r2 = await fetch(`/.netlify/functions/sync?id=${id}`, { cache: "no-store" });
-      if (r2.status !== 404) { SYNC_URL = "/.netlify/functions/sync"; r = r2; }
+    if (r.status === 404 && SYNC_URL !== API_BASE + "/.netlify/functions/sync") {   // tenta o endereço direto da função
+      const r2 = await fetch(`${API_BASE}/.netlify/functions/sync?id=${id}`, { cache: "no-store" });
+      if (r2.status !== 404) { SYNC_URL = API_BASE + "/.netlify/functions/sync"; r = r2; }
     }
     if (r.status === 404) throw new Error(SYNC_FALTA);
     let remoto = null;
@@ -2963,7 +2983,8 @@ function avatarSeg(x, botao) {
   return botao ? `<button type="button" class="sav" data-a="${esc(x.tag)}" aria-label="Trocar o ícone de ${esc(bonitoTag(x.tag))}">${ini}${img}</button>` : `<span class="sav">${ini}${img}</span>`;
 }
 async function iconeServidor(t) {
-  try { const r = await fetch("/.netlify/functions/icone?q=" + encodeURIComponent("perfil " + bonitoTag(t) + " rosto")); if (!r.ok) return ""; return (((await r.json()).urls || [])[0]) || ""; } catch { return ""; }
+  if (!API_OK) return "";
+  try { const r = await fetch(API_BASE + "/.netlify/functions/icone?q=" + encodeURIComponent("perfil " + bonitoTag(t) + " rosto")); if (!r.ok) return ""; return (((await r.json()).urls || [])[0]) || ""; } catch { return ""; }
 }
 const palavras = x => String(x || "").toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 2);
 async function iconeAnilist(base, serie) {

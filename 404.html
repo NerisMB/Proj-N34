@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex"><title>N34</title>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#050209;color:#f3ecff;font:16px system-ui,sans-serif;text-align:center}a{color:#c084fc}</style></head>
+<body><p id="m">Abrindo…</p>
+<script>
+/* GitHub Pages não conhece /favorites, /explore etc.: esta página manda o visitante para o index.html
+   guardando o caminho (?p=), e o index.html volta o endereço ao normal. */
+(function () {
+  var R = ["explore","explorar","favorites","favoritos","following","seguindo","top","top10","groups","grupos","gallery","galeria","search","buscar","index.html","404.html"], seg = location.pathname.split("/").filter(Boolean), base = "";
+  if (seg.length && R.indexOf(seg[0].toLowerCase()) < 0) base = "/" + seg[0];
+  if (/[?&]p=/.test(location.search)) {   /* já tentou uma vez: evita ficar em loop */
+    document.getElementById("m").innerHTML = 'Página não encontrada. <a href="' + base + '/">Voltar ao início</a>';
+    return;
+  }
+  var rest = location.pathname.slice(base.length).replace(/^\/+/, "");
+  location.replace(location.origin + base + "/?p=" + encodeURIComponent(rest) + location.hash);
+})();
+</script></body></html>
