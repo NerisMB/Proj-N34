@@ -905,6 +905,35 @@
     #view-favs #attFavs, #view-favs #vistoTodos { flex:1 1 100% !important; }
   }
   #view-favs .favcell:focus-visible { outline:2px solid #e9d5ff; outline-offset:2px; }
+
+  /* pequenos acabamentos */
+  :root { color-scheme:dark; }
+  html { -webkit-tap-highlight-color:transparent; -webkit-font-smoothing:antialiased; }
+  @media (prefers-reduced-motion:no-preference) { html { scroll-behavior:smooth; } }
+  button, a, summary, select { touch-action:manipulation; }
+  .btn:active, .ghost:active { transform:scale(.97); }
+  .favav, .sav img { background:#1a0f2e; }
+  ::placeholder { color:rgba(185,168,220,.55); }
+
+  /* ===== polimento suave (mesmo roxo) ===== */
+  @keyframes entra { from { opacity:0; transform:translateY(10px) scale(.98); } }
+  @keyframes aparece { from { opacity:0; } }
+  #favSheet, #cfg, #icoModal .card, #blkSheet { animation:entra .22s cubic-bezier(.2,.8,.2,1) both; }
+  #vMid img { animation:aparece .25s ease both; }
+  .tchip, .schip, .chip { transition:background .18s, border-color .18s, box-shadow .18s, transform .18s; }
+  .tchip:hover, .schip:hover { box-shadow:0 0 0 1px rgba(192,132,252,.55), 0 6px 18px -8px rgba(168,85,247,.6); transform:translateY(-1px); }
+  a.gitem img { transition:filter .25s; }
+  a.gitem:hover img { filter:saturate(1.12) brightness(1.04); }
+  .hshead b { display:inline-flex; align-items:center; gap:8px; }
+  .hshead b::before { content:""; width:4px; height:1.05em; border-radius:4px; background:linear-gradient(180deg,#c084fc,#7c3aed); }
+  .hcard svg { box-sizing:content-box; padding:7px; border-radius:12px; background:rgba(168,85,247,.14); }
+  #toast { border-radius:14px; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); box-shadow:0 12px 36px rgba(0,0,0,.55); }
+  :root { color-scheme:dark; }
+  html { -webkit-tap-highlight-color:transparent; -webkit-font-smoothing:antialiased; }
+  button, a, summary, select { touch-action:manipulation; }
+  .btn:active, .ghost:active { transform:scale(.97); }
+  .favav, .sav img { background:#1a0f2e; }
+  @media (prefers-reduced-motion:reduce) { #favSheet, #cfg, #icoModal .card, #blkSheet, #vMid img { animation:none; } }
 </style>
 </head>
 <body data-aba="inicio">
@@ -1400,16 +1429,45 @@ async function buscarTwitter(tag) {
   }
   return "";
 }
-async function avatarTwitter(h) {
-  const url = `https://unavatar.io/twitter/${encodeURIComponent(h)}?fallback=false`;
-  try { // guarda uma cópia pequena no navegador para não depender do serviço toda vez
-    const r = await fetch(url); if (!r.ok) return url;
-    const blob = await r.blob(); if (!/^image\//.test(blob.type)) return url;
+const imgCarrega = url => new Promise(ok => { const i = new Image(); i.referrerPolicy = "no-referrer"; i.onload = () => ok(i.naturalWidth > 8 && Math.abs(i.naturalWidth - i.naturalHeight) < i.naturalWidth * .25); i.onerror = () => ok(false); i.src = url; });
+async function copiaPequena(url) {   // guarda uma cópia de 160 px no navegador (precisa de CORS; se não der, devolve "")
+  try {
+    const r = await fetch(url); if (!r.ok) return "";
+    if (/abs\.twimg\.com\/(rweb|sticky)|\/og\/image/i.test(r.url || "")) return "";   // imagem genérica do X
+    const blob = await r.blob(); if (!/^image\//.test(blob.type)) return "";
     const bmp = await createImageBitmap(blob), n = 160, m = Math.min(bmp.width, bmp.height);
+    if (Math.max(bmp.width, bmp.height) > 1.25 * m) return "";   // foto de perfil é quadrada; imagem larga = banner genérico do X
     const c = document.createElement("canvas"); c.width = c.height = n;
     c.getContext("2d").drawImage(bmp, (bmp.width - m) / 2, (bmp.height - m) / 2, m, m, 0, 0, n, n);
     return c.toDataURL("image/jpeg", .85);
-  } catch { return url; }
+  } catch { return ""; }
+}
+const infoCache = new Map();
+async function infoTwitter(h) {   // nome e foto do perfil, para conferir se o @ é mesmo do artista
+  h = String(h).toLowerCase(); if (infoCache.has(h)) return infoCache.get(h);
+  let r = null;
+  for (const api of [`https://api.fxtwitter.com/${encodeURIComponent(h)}`, `https://api.vxtwitter.com/${encodeURIComponent(h)}`]) {
+    try {
+      const x = await fetch(api); if (!x.ok) continue;
+      const j = await x.json(), u = j.user || j, av = u.avatar_url || u.profile_image_url || "";
+      if (av || u.name) { r = { sn: u.screen_name || h, nome: u.name || "", av: String(av).replace("_normal.", "_400x400.") }; break; }
+    } catch {}
+  }
+  infoCache.set(h, r); return r;
+}
+async function fontesAvatar(h) {
+  const l = [], i = await infoTwitter(h);
+  if (i && i.av) l.push(i.av);
+  l.push(`https://unavatar.io/x/${h}?fallback=false`, `https://unavatar.io/twitter/${h}?fallback=false`);
+  return l;
+}
+async function avatarTwitter(h) {
+  h = encodeURIComponent(h);
+  for (const u of await fontesAvatar(h)) {
+    const d = await copiaPequena(u); if (d) return d;
+    if (await imgCarrega(u)) return u;   // só aceita imagem quadrada (o banner genérico do X é largo e é recusado)
+  }
+  return "";
 }
 // 2ª fonte do @: o campo "source" dos posts do artista no rule34 (links twitter.com/@/status/...)
 async function twitterPelosPosts(tag) {
@@ -1424,10 +1482,40 @@ async function twitterPelosPosts(tag) {
     return n >= 2 ? h : "";
   } catch { return ""; }
 }
-async function resolverTwitter(f) {
-  let h = await buscarTwitter(f.tag);
-  if (!h && creds().uid && creds().key) h = await twitterPelosPosts(f.tag);
-  f.twTent = 1; f.twitter = h; f.twAvatar = h ? await avatarTwitter(h) : "";
+const HANDLE_RUIM = /^(i|intent|home|search|hashtag|share|messages|settings|explore)$/i;
+async function handlesDanbooru(tag) {   // todos os @ do artista no Danbooru, ativos primeiro
+  const u = new URL("https://danbooru.donmai.us/artists.json");
+  u.searchParams.set("search[any_name_matches]", tag); u.searchParams.set("only", "name,other_names,is_banned,urls"); u.searchParams.set("limit", "5");
+  const lista = await getJSON(u.toString()), alvo = normNome(tag);
+  const art = (Array.isArray(lista) ? lista : []).find(a => normNome(a.name) === alvo || (a.other_names || []).some(n => normNome(n) === alvo));
+  if (!art) return [];
+  const urls = (art.urls || []).map(x => typeof x === "string" ? { url: x, is_active: true } : x);
+  urls.sort((x, y) => (y.is_active ? 1 : 0) - (x.is_active ? 1 : 0));
+  const out = [];
+  for (const x of urls) {
+    const m = /^https?:\/\/(?:www\.|mobile\.)?(?:twitter|x)\.com\/([A-Za-z0-9_]{1,15})(?:[\/?#]|$)/i.exec(x.url || x.normalized_url || "");
+    if (m && !HANDLE_RUIM.test(m[1]) && !out.some(h => h.toLowerCase() === m[1].toLowerCase())) out.push(m[1]);
+  }
+  return out;
+}
+async function handlesPosts(tag) {   // @ mais usados nos links dos posts do artista no Rule 34
+  try {
+    const doc = new DOMParser().parseFromString(await r34Texto({ s: "post", tags: tag, limit: "50" }), "text/xml"), cont = {};
+    doc.querySelectorAll("post").forEach(p => {
+      const m = /(?:twitter|x)\.com\/([A-Za-z0-9_]{1,15})\/status/i.exec(p.getAttribute("source") || "");
+      if (m && !HANDLE_RUIM.test(m[1])) { const h = m[1].toLowerCase(); cont[h] = (cont[h] || 0) + 1; }
+    });
+    return Object.entries(cont).sort((a, b) => b[1] - a[1]).slice(0, 3).map(e => e[0]);
+  } catch { return []; }
+}
+async function resolverTwitter(f) {   // tenta cada @ possível, na ordem, e fica com o primeiro que tiver foto de verdade
+  let cand = []; try { cand = await handlesDanbooru(f.tag); } catch {}
+  if (creds().uid && creds().key) for (const h of await handlesPosts(f.tag)) if (!cand.some(x => x.toLowerCase() === h.toLowerCase())) cand.push(h);
+  f.twTent = 1; f.twitter = cand[0] || ""; f.twAvatar = "";
+  for (const h of cand.slice(0, 5)) {
+    const a = await avatarTwitter(h);
+    if (a) { f.twitter = h; f.twAvatar = a; return; }
+  }
 }
 async function completarAvatares() {
   if (avRodando) return;
@@ -1435,7 +1523,7 @@ async function completarAvatares() {
   avRodando = true;
   try {
     for (const f of favs.slice()) {
-      if (f.twV !== 2) { f.twV = 2; if (!f.twitter && !f.fotoProp) f.twTent = 0; } // tenta de novo com a nova busca
+                              if (f.twV !== 8) { f.twV = 8; if (!f.fotoProp && !f.twAvatar) f.twTent = 0; } // tenta de novo só quem ficou sem foto
       if (avTentado.has(f.tag) || f.fotoProp || (f.twTent && (f.avatar || !api()))) continue;
       avTentado.add(f.tag);
       let mudou = false;

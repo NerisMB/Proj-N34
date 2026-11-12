@@ -1,6 +1,6 @@
 /* N34 — service worker: deixa o app instalável e abre mesmo sem internet.
    Só cuida de arquivos do próprio site; chamadas à API (rule34 etc.) passam direto. */
-const V = "n34-shell-v15";
+const V = "n34-shell-v21";
 /* base do site: "/" ou "/NOME-DO-REPOSITORIO/" no GitHub Pages (vem do escopo em que o worker foi registrado) */
 const BASE = new URL(self.registration.scope).pathname;
 const SHELL = [BASE, BASE + "manifest.webmanifest", BASE + "icons/icon-192.png", BASE + "icons/icon-512.png"];
