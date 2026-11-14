@@ -934,6 +934,83 @@
   .btn:active, .ghost:active { transform:scale(.97); }
   .favav, .sav img { background:#1a0f2e; }
   @media (prefers-reduced-motion:reduce) { #favSheet, #cfg, #icoModal .card, #blkSheet, #vMid img { animation:none; } }
+
+  /* ===== caixa de texto do site e rolagem infinita ===== */
+  #txtModal { position:fixed; inset:0; z-index:130; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(5,2,10,.8); }
+  #txtModal[hidden] { display:none; }
+  #txtModal .card { width:100%; max-width:380px; animation:entra .2s cubic-bezier(.2,.8,.2,1) both; }
+  #txtModal .top { margin-bottom:10px; font-size:1.05rem; }
+  #txtIn { width:100%; }
+  .txtbtns { display:flex; gap:8px; margin-top:12px; }
+  .txtbtns .ghost, .txtbtns .btn { flex:1; min-height:44px; }
+  .segacoes { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+  .segchk { margin:0; font-size:.85rem; white-space:nowrap; }
+  #segSent { height:1px; }
+
+  /* ===== confirmação do site (no lugar do confirm do navegador) ===== */
+  #cfmModal { position:fixed; inset:0; z-index:150; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(5,2,10,.82); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); }
+  #cfmModal[hidden] { display:none; }
+  #cfmModal .card { width:100%; max-width:400px; padding:20px 20px 18px; animation:entra .2s cubic-bezier(.2,.8,.2,1) both; }
+  #cfmModal .top b { font-size:1.1rem; word-break:normal; overflow-wrap:anywhere; }
+  #cfmM { margin:8px 0 0; color:var(--muted); font-size:.93rem; line-height:1.5; overflow-wrap:anywhere; }
+  #cfmModal .btn.perigo { background:linear-gradient(135deg,#f43f5e,#be123c); }
+  #cfmModal button:focus-visible { outline:2px solid #fff; outline-offset:2px; }
+
+  /* ===== galeria ===== */
+  #view-galeria .galtop { align-items:flex-end; margin-bottom:10px; }
+  .galacts { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+  .galacts .ghost, #galSelBar .ghost { min-height:38px; padding:0 14px; font-size:.84rem; }
+  .galtools { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .galchips { display:flex; gap:6px; flex-wrap:wrap; }
+  .galchips button { min-height:36px; padding:0 14px; border:1px solid var(--line); border-radius:999px; background:var(--card); color:var(--muted); font-size:.84rem; font-weight:600; }
+  .galchips button b { margin-left:6px; font-weight:600; opacity:.7; font-variant-numeric:tabular-nums; }
+  .galchips button.on { color:#fff; border-color:var(--accent); background:linear-gradient(135deg,rgba(168,85,247,.55),rgba(124,58,237,.35)); }
+  .galchips button:hover { border-color:var(--accent); }
+  #galOrdem { width:auto; min-height:36px; padding:0 12px; font-size:.84rem; }
+  #galSelBar { position:sticky; top:calc(64px + env(safe-area-inset-top,0px)); z-index:20; display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px; padding:8px 10px; border:1px solid var(--accent); border-radius:14px; background:rgba(26,10,48,.92); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); }
+  #galSelBar[hidden] { display:none; }
+  #galSelN { flex:1 1 auto; font-size:.88rem; font-weight:600; }
+  #galSelDel { color:var(--err); }
+  #galSelDel:disabled { opacity:.45; }
+  #galGrid { grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:12px; }
+  @media (max-width:640px) { #galGrid { grid-template-columns:repeat(2,1fr); gap:8px; } }
+  @media (min-width:1100px) { #galGrid { grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); } }
+  .gcell { position:relative; border-radius:var(--r-card,14px); content-visibility:auto; contain-intrinsic-size:auto 190px; }
+  .gcell .gth { width:100%; text-align:left; cursor:pointer; }
+  .gcell .gth::after { content:""; position:absolute; inset:auto 0 0 0; height:48%; background:linear-gradient(transparent,rgba(8,2,20,.82)); pointer-events:none; }
+  .gmeta { position:absolute; left:9px; right:9px; bottom:7px; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:.72rem; font-weight:600; color:#f3ecff; text-shadow:0 1px 4px rgba(0,0,0,.8); font-variant-numeric:tabular-nums; pointer-events:none; }
+  .gbadge { position:absolute; top:6px; left:6px; z-index:1; padding:2px 8px; border-radius:8px; background:rgba(168,85,247,.85); color:#fff; font-size:.7rem; font-weight:700; letter-spacing:.02em; pointer-events:none; }
+  .gx { position:absolute; top:6px; right:6px; z-index:3; display:grid; place-items:center; width:32px; height:32px; padding:0; border:1px solid rgba(255,255,255,.25); border-radius:50%; background:rgba(20,8,36,.65); color:#fff; font-size:.85rem; line-height:1; opacity:0; transition:opacity .18s, background .18s; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
+  .gx:hover, .gx:focus-visible { background:rgba(190,18,60,.85); opacity:1; }
+  .gcell:hover .gx, .gcell:focus-within .gx { opacity:1; }
+  @media (hover:none) { .gx { opacity:.9; } }
+  .gcell .vidbadge { right:auto; left:6px; top:6px; }
+  .gchk { position:absolute; top:7px; right:7px; z-index:3; display:grid; place-items:center; width:26px; height:26px; border:2px solid rgba(255,255,255,.85); border-radius:50%; background:rgba(20,8,36,.55); color:#fff; font-size:.9rem; font-weight:800; pointer-events:none; }
+  .gcell.sel .gchk { background:var(--accent); border-color:var(--accent); }
+  .gcell.sel .gth { outline:3px solid var(--accent); outline-offset:-3px; }
+  .gcell.sel img { transform:scale(.94); border-radius:10px; }
+  #galGrid.selmode .gth { cursor:copy; }
+  .galmais { display:flex; justify-content:center; margin:18px 0 6px; }
+  .galmais .ghost { min-height:42px; padding:0 22px; }
+  .galvazio { display:flex; flex-direction:column; align-items:center; gap:6px; padding:56px 16px; border:1px dashed var(--line); border-radius:18px; background:rgba(16,8,28,.4); }
+  .galvazio b { font:700 1.05rem var(--fd,inherit); color:var(--fg); }
+  .galvazio p { margin:0; max-width:34ch; }
+  @media (prefers-reduced-motion:reduce) { .gx { transition:none; } }
+
+  /* ===== menu suspenso do site (a lista nativa do navegador aparece azul) ===== */
+  .dd { position:relative; display:inline-block; }
+  .dd-btn { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:38px; padding:0 14px; border:1px solid var(--line); border-radius:14px; background:#0c0516; color:var(--fg); font:inherit; font-size:.86rem; cursor:pointer; transition:border-color .18s, box-shadow .18s; }
+  .dd-btn:hover, .dd.open .dd-btn { border-color:var(--accent); }
+  .dd.open .dd-btn, .dd-btn:focus-visible { outline:none; box-shadow:0 0 0 2px rgba(168,85,247,.55); }
+  .dd-btn svg { width:14px; height:14px; flex:none; fill:none; stroke:#c084fc; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; transition:transform .18s; }
+  .dd.open .dd-btn svg { transform:rotate(180deg); }
+  .dd-list { position:absolute; z-index:60; top:calc(100% + 6px); right:0; min-width:100%; width:max-content; max-width:80vw; margin:0; padding:6px; list-style:none; border:1px solid rgba(192,132,252,.35); border-radius:14px; background:rgba(16,8,28,.97); box-shadow:0 18px 40px -10px rgba(0,0,0,.7), 0 0 0 1px rgba(168,85,247,.12); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); animation:entra .16s cubic-bezier(.2,.8,.2,1) both; }
+  .dd-list[hidden] { display:none; }
+  .dd-list li { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:10px 12px; border-radius:10px; color:var(--muted); font-size:.88rem; cursor:pointer; white-space:nowrap; }
+  .dd-list li:hover, .dd-list li.foco { background:rgba(168,85,247,.22); color:#fff; }
+  .dd-list li[aria-selected="true"] { color:#fff; font-weight:600; background:linear-gradient(90deg,rgba(168,85,247,.42),rgba(124,58,237,.2)); }
+  .dd-list li[aria-selected="true"]::after { content:"✓"; color:#e9d5ff; }
+  @media (prefers-reduced-motion:reduce) { .dd-list { animation:none; } }
 </style>
 </head>
 <body data-aba="inicio">
@@ -1077,18 +1154,38 @@
     <div class="phead"><h2>Seguindo</h2><p>Personagens que você segue, com posts em ordem aleatória.</p></div>
     <div class="segadd"><input id="segIn" placeholder="Nome do personagem" autocomplete="off" autocapitalize="off" spellcheck="false"><button id="segAdd" class="btn" type="button">Seguir</button></div>
     <div id="segChips" class="segchips"></div>
-    <div class="segtop"><p id="segMsg" class="muted" role="status"></p><button id="segShuf" class="ghost" type="button">Embaralhar</button></div>
+    <div class="segtop"><p id="segMsg" class="muted" role="status"></p><span class="segacoes"><label class="chk segchk"><input type="checkbox" id="segInf"> Rolagem infinita</label><button id="segShuf" class="ghost" type="button">Embaralhar</button></span></div>
     <div id="segGrid"></div>
     <div class="segmais"><button id="segMais" class="ghost" type="button" hidden>Mais posts</button></div>
+    <div id="segSent" aria-hidden="true"></div>
   </section>
 
   <section id="view-galeria" hidden>
     <div class="phead"><h2>Galeria</h2><p>As imagens que você salvou.</p></div>
     <div class="galtop">
-      <p id="galMsg" class="muted"></p>
-      <button id="galLimpar" class="ghost" type="button" hidden>Limpar tudo</button>
+      <p id="galMsg" class="muted" role="status"></p>
+      <span class="galacts">
+        <button id="galSelBtn" class="ghost" type="button" hidden>Selecionar</button>
+        <button id="galLimpar" class="ghost" type="button" hidden>Limpar tudo</button>
+      </span>
+    </div>
+    <div class="galtools" id="galTools" hidden>
+      <div id="galFiltro" class="galchips" role="group" aria-label="Filtrar por tipo"></div>
+      <select id="galOrdem" aria-label="Ordenar">
+        <option value="salvo">Salvos recentemente</option>
+        <option value="antigo">Salvos há mais tempo</option>
+        <option value="nota">Maior nota</option>
+        <option value="data">Mais novos no site</option>
+      </select>
+    </div>
+    <div id="galSelBar" hidden>
+      <span id="galSelN" role="status"></span>
+      <button id="galSelTodos" class="ghost" type="button">Selecionar tudo</button>
+      <button id="galSelDel" class="ghost" type="button" disabled>Remover</button>
+      <button id="galSelFim" class="ghost" type="button">Concluir</button>
     </div>
     <div id="galGrid"></div>
+    <div class="galmais"><button id="galMais" class="ghost" type="button" hidden>Mostrar mais</button></div>
   </section>
 
   <section id="view-favs" hidden>
@@ -1106,6 +1203,20 @@
   </section>
 </main>
 
+<div id="txtModal" hidden>
+  <section class="card" role="dialog" aria-modal="true" aria-labelledby="txtT">
+    <div class="top"><b id="txtT">Nome</b></div>
+    <input id="txtIn" autocomplete="off" maxlength="40">
+    <div class="txtbtns"><button class="ghost" id="txtNao" type="button">Cancelar</button><button class="btn" id="txtSim" type="button">Salvar</button></div>
+  </section>
+</div>
+<div id="cfmModal" hidden>
+  <section class="card" role="alertdialog" aria-modal="true" aria-labelledby="cfmT" aria-describedby="cfmM">
+    <div class="top"><b id="cfmT">Confirmar</b></div>
+    <p id="cfmM"></p>
+    <div class="txtbtns"><button class="ghost" id="cfmNao" type="button">Cancelar</button><button class="btn" id="cfmSim" type="button">Confirmar</button></div>
+  </section>
+</div>
 <div id="cfgModal" hidden>
   <section id="cfg" class="card" role="dialog" aria-label="Configurações">
     <div class="top"><b>Configurações</b><button class="ghost" id="cfgFechar" type="button">Fechar</button></div>
@@ -1572,7 +1683,7 @@ function abrirFav(tag) {
       const c = document.createElement("canvas"); c.width = c.height = n;
       c.getContext("2d").drawImage(bmp, (bmp.width - m) / 2, (bmp.height - m) / 2, m, m, 0, 0, n, n);
       f.fotoProp = c.toDataURL("image/jpeg", .88); saveFavs(); abrirFav(f.tag);
-    } catch { alert("Não consegui abrir essa imagem. Tente outra (JPG ou PNG)."); }
+    } catch { toast("Não consegui abrir essa imagem. Tente outra (JPG ou PNG)."); }
   };
   if ($("fotoDel")) $("fotoDel").onclick = () => { delete f.fotoProp; saveFavs(); abrirFav(f.tag); };
   $("twSalvar").onclick = async () => {
@@ -1641,11 +1752,11 @@ function showTab(nome, modo) {
     $("view-" + n).hidden = n !== nome;
     $("tab-" + n).classList.toggle("active", n === nome);
   }
-  document.querySelector("main").classList.toggle("wide", nome === "explorar");
+  document.querySelector("main").classList.toggle("wide", nome === "explorar" || nome === "galeria");
   if (nome === "inicio") { contarPosts(); try { renderHome(); } catch {} try { topHome(); } catch {} }
   if (nome === "top") carregarTop();
   if (nome === "seg") segRender(true);
-  if (nome === "favs") renderFavs();
+  if (nome === "favs") { renderFavs(); }
   if (nome === "grupos") renderGrupos();
   if (nome === "galeria") galCarregar();
   if (nome === "explorar" && !$("grid").children.length) carregarGrid(0);
@@ -1900,7 +2011,13 @@ async function mostrarTags(p) {
 }
 $("vTags").addEventListener("click", e => {
   const c = e.target.closest(".tchip"); if (!c) return;
-  fecharViewer(); $("expTags").value = c.dataset.tag; carregarGrid(0); scrollTo(0, 0);
+  const tag = c.dataset.tag;
+  fecharViewer();
+  $("expTags").value = tag;
+  $("grid").innerHTML = "";      // grade vazia: o showTab carrega a pesquisa da tag
+  showTab("explorar");           // vai para a página do Explorar (/explore), onde a pesquisa aparece
+  if (!$("grid").children.length && !expBusy) carregarGrid(0);
+  scrollTo(0, 0);
 });
 
 /* ---------- Visualizador grande ---------- */
@@ -2072,47 +2189,177 @@ function galToggle(p) {
   if (!galGravar()) { galItens.shift(); return false; }
   toast("Salvo na galeria"); return true;
 }
-function galCarregar() {
+let galFiltro = LS.get("n34_galFiltro", "todos"), galOrdem = LS.get("n34_galOrdem", "salvo"), galSel = null, galVista = [], galQtd = 0, galRend = 0;
+const GAL_LOTE = 80, GAL_TIPOS = [["todos", "Todos"], ["imagem", "Imagens"], ["gif", "GIFs"], ["video", "Vídeos"]];
+$("galOrdem").value = ["salvo", "antigo", "nota", "data"].includes(galOrdem) ? galOrdem : "salvo";
+/* menu suspenso do site: troca a lista azul do navegador por uma no tema roxo (o <select> continua guardando o valor) */
+function menuSuspenso(sel) {
+  const w = document.createElement("div"); w.className = "dd";
+  const b = document.createElement("button"); b.type = "button"; b.className = "dd-btn"; b.setAttribute("aria-haspopup", "listbox"); b.setAttribute("aria-expanded", "false");
+  if (sel.getAttribute("aria-label")) b.setAttribute("aria-label", sel.getAttribute("aria-label"));
+  const ul = document.createElement("ul"); ul.className = "dd-list"; ul.setAttribute("role", "listbox"); ul.hidden = true; ul.tabIndex = -1;
+  ul.innerHTML = [...sel.options].map(o => `<li role="option" data-v="${esc(o.value)}">${esc(o.textContent)}</li>`).join("");
+  w.append(b, ul); sel.after(w); sel.hidden = true;
+  const lis = () => [...ul.children];
+  let foco = -1;
+  const pintar = () => {
+    const o = sel.options[sel.selectedIndex];
+    b.innerHTML = `<span>${esc(o ? o.textContent : "")}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>`;
+    lis().forEach(li => li.setAttribute("aria-selected", String(li.dataset.v === sel.value)));
+  };
+  const marcar = i => { foco = (i + lis().length) % lis().length; lis().forEach((li, k) => li.classList.toggle("foco", k === foco)); lis()[foco].scrollIntoView({ block: "nearest" }); };
+  const abrir = on => { w.classList.toggle("open", on); ul.hidden = !on; b.setAttribute("aria-expanded", String(on)); if (on) marcar(Math.max(0, sel.selectedIndex)); };
+  const escolher = v => { abrir(false); if (sel.value !== v) { sel.value = v; sel.dispatchEvent(new Event("change")); } pintar(); b.focus(); };
+  b.onclick = () => abrir(ul.hidden);
+  ul.onclick = e => { const li = e.target.closest("li"); if (li) escolher(li.dataset.v); };
+  w.addEventListener("keydown", e => {
+    if (ul.hidden) { if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); abrir(true); } return; }
+    if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); abrir(false); b.focus(); }
+    else if (e.key === "ArrowDown") { e.preventDefault(); marcar(foco + 1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); marcar(foco - 1); }
+    else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); escolher(lis()[foco].dataset.v); }
+    else if (e.key === "Tab") abrir(false);
+  });
+  document.addEventListener("pointerdown", e => { if (!ul.hidden && !w.contains(e.target)) abrir(false); });
+  pintar(); return pintar;
+}
+menuSuspenso($("galOrdem"));
+function galCalcVista() {
+  let ix = galItens.map((_, i) => i);
+  if (galFiltro !== "todos") ix = ix.filter(i => galItens[i].tipo === galFiltro);
+  const nota = i => Number(galItens[i].score) || 0, dt = i => galItens[i].data || 0;
+  if (galOrdem === "antigo") ix.reverse();
+  else if (galOrdem === "nota") ix.sort((x, y) => nota(y) - nota(x) || x - y);
+  else if (galOrdem === "data") ix.sort((x, y) => dt(y) - dt(x) || x - y);
+  return ix;
+}
+function galCelula(i) {
+  const it = galItens[i], marcado = !!(galSel && galSel.has(it.id));
+  const nota = it.score != null && it.score !== "" ? "▲ " + esc(it.score) : "", dia = it.data ? fmtData(new Date(it.data)) : "";
+  return `<div class="gcell${marcado ? " sel" : ""}" data-id="${esc(it.id)}"><button class="gth" data-i="${i}" type="button" aria-label="${galSel ? (marcado ? "Desmarcar" : "Marcar") : "Abrir"} item ${esc(it.id)}"${galSel ? ` aria-pressed="${marcado}"` : ""}><img src="${esc(it.thumb || it.prev)}" data-fb="${esc(it.prev)}" onerror="if(this.dataset.fb&&this.src!==this.dataset.fb)this.src=this.dataset.fb" referrerpolicy="no-referrer" loading="lazy" decoding="async" alt="">${it.tipo === "video" ? vidBadge(it.full) : ""}${it.tipo === "gif" ? '<span class="gbadge">GIF</span>' : ""}${nota || dia ? `<span class="gmeta"><span>${nota}</span><span>${dia}</span></span>` : ""}</button>${galSel ? `<span class="gchk" aria-hidden="true">${marcado ? "✓" : ""}</span>` : `<button class="gx" data-i="${i}" type="button" aria-label="Remover da galeria">✕</button>`}</div>`;
+}
+function galPintar(anexar) {
+  const g = $("galGrid"), fim = Math.min(galQtd, galVista.length);
+  if (!anexar) { g.innerHTML = ""; galRend = 0; }
+  g.insertAdjacentHTML("beforeend", galVista.slice(galRend, fim).map(galCelula).join(""));
+  galRend = fim;
+  g.classList.toggle("selmode", !!galSel);
+  const resta = galVista.length - galRend;
+  $("galMais").hidden = resta <= 0; $("galMais").textContent = `Mostrar mais (${resta})`;
+  observarDur(g);
+}
+function galAtualizarSel() {
+  const n = galSel ? galSel.size : 0;
+  $("galSelBar").hidden = !galSel; $("galSelBtn").textContent = galSel ? "Concluir" : "Selecionar";
+  $("galSelN").textContent = n ? `${n} ${n === 1 ? "selecionado" : "selecionados"}` : "Toque nas imagens para selecionar";
+  $("galSelDel").disabled = !n; $("galSelDel").textContent = n ? `Remover (${n})` : "Remover";
+  $("galSelTodos").textContent = galVista.length && n >= galVista.length ? "Limpar seleção" : "Selecionar tudo";
+}
+function galCarregar(reset = true) {
   const n = galItens.length;
-  $("galLimpar").hidden = !n;
+  if (galSel) { const ids = new Set(galItens.map(x => x.id)); galSel = new Set([...galSel].filter(id => ids.has(id))); }
+  $("galLimpar").hidden = !n; $("galSelBtn").hidden = !n; $("galTools").hidden = !n;
   if (!n) {
-    $("galMsg").textContent = "";
-    $("galGrid").innerHTML = '<div class="galvazio muted" style="grid-column:1/-1">Sua galeria está vazia.<br>No Explorar, toque no ♡ de uma imagem para guardá-la aqui.<br><button class="btn" type="button" id="galIr">Ir para o Explorar</button></div>';
+    galSel = null; galVista = []; galAtualizarSel(); $("galMais").hidden = true; $("galMsg").textContent = "";
+    $("galGrid").innerHTML = '<div class="galvazio muted" style="grid-column:1/-1"><b>Sua galeria está vazia</b><p>No Explorar, toque no ♡ de uma imagem para guardá-la aqui.</p><button class="btn" type="button" id="galIr">Ir para o Explorar</button></div>';
     $("galIr").onclick = () => showTab("explorar");
     return;
   }
-  $("galMsg").textContent = `${n} ${n === 1 ? "item salvo" : "itens salvos"} neste navegador.`;
-  $("galGrid").innerHTML = galItens.map((it, i) => `<button class="gth" data-i="${i}" type="button"><img src="${esc(it.thumb || it.prev)}" data-fb="${esc(it.prev)}" onerror="if(this.dataset.fb&&this.src!==this.dataset.fb)this.src=this.dataset.fb" referrerpolicy="no-referrer" loading="lazy" decoding="async" alt="">${it.tipo === "video" ? vidBadge(it.full) : ""}</button>`).join("");
-  observarDur($("galGrid"));
+  const cont = { todos: n }; for (const it of galItens) cont[it.tipo] = (cont[it.tipo] || 0) + 1;
+  if (galFiltro !== "todos" && !cont[galFiltro]) galFiltro = "todos";
+  $("galFiltro").innerHTML = GAL_TIPOS.filter(([k]) => k === "todos" || cont[k]).map(([k, nome]) => `<button type="button" data-f="${k}" class="${k === galFiltro ? "on" : ""}" aria-pressed="${k === galFiltro}">${nome}<b>${cont[k] || 0}</b></button>`).join("");
+  galVista = galCalcVista();
+  if (reset || !galQtd) galQtd = GAL_LOTE;
+  galQtd = Math.max(galQtd, GAL_LOTE);
+  $("galMsg").textContent = galFiltro === "todos" ? `${n} ${n === 1 ? "item salvo" : "itens salvos"} neste navegador.` : `${galVista.length} de ${n} itens.`;
+  galPintar(false); galAtualizarSel();
 }
 function galAbrir(i) {
   const it = galItens[i]; if (!it) return;
+  let pos = galVista.indexOf(i); if (pos < 0) { galVista = galItens.map((_, k) => k); pos = i; }
   galI = i; $("galView").hidden = false; document.body.style.overflow = "hidden";
-  playerMidia($("galMid"), galMi(it)); playerPrefetch([galMi(galItens[i + 1]), galMi(galItens[i - 1])]);
-  $("galInfo").textContent = `${i + 1}/${galItens.length}${it.data ? " · " + fmtData(new Date(it.data)) : ""}${it.score != null && it.score !== "" ? " · ▲ " + it.score : ""}`;
+  const viz = d => galItens[galVista[(pos + d + galVista.length) % galVista.length]];
+  playerMidia($("galMid"), galMi(it)); playerPrefetch([galMi(viz(1)), galMi(viz(-1))]);
+  $("galInfo").textContent = `${pos + 1}/${galVista.length}${it.data ? " · " + fmtData(new Date(it.data)) : ""}${it.score != null && it.score !== "" ? " · ▲ " + it.score : ""}`;
   $("galSite").href = linkPost(it.id);
 }
 function galFechar() { $("galView").hidden = true; $("galMid").innerHTML = ""; document.body.style.overflow = ""; galI = -1; }
-$("galGrid").addEventListener("click", e => { const b = e.target.closest(".gth"); if (b) galAbrir(+b.dataset.i); });
+function galMover(d) {
+  if (!galVista.length) return;
+  const pos = galVista.indexOf(galI);
+  galAbrir(galVista[pos < 0 ? 0 : (pos + d + galVista.length) % galVista.length]);
+}
+function galMarcar(id) {
+  if (!galSel) return;
+  galSel.has(id) ? galSel.delete(id) : galSel.add(id);
+  const c = [...$("galGrid").children].find(x => x.dataset.id === id);
+  if (c) { const on = galSel.has(id); c.classList.toggle("sel", on); const k = c.querySelector(".gchk"); if (k) k.textContent = on ? "✓" : ""; const t = c.querySelector(".gth"); if (t) t.setAttribute("aria-pressed", String(on)); }
+  galAtualizarSel();
+}
+function galModoSel(on) { galSel = on ? new Set() : null; galPintar(false); galAtualizarSel(); }
+async function galRemover(ids, titulo, msg, ok) {
+  if (!(await confirmar(titulo, msg, ok, true))) return false;
+  const set = new Set(ids); galItens = galItens.filter(x => !set.has(x.id)); galGravar();
+  return true;
+}
+$("galGrid").addEventListener("click", async e => {
+  const cel = e.target.closest(".gcell"); if (!cel) return;
+  if (galSel) { galMarcar(cel.dataset.id); return; }
+  const x = e.target.closest(".gx");
+  if (x) {
+    const it = galItens[+x.dataset.i]; if (!it) return;
+    if (await galRemover([it.id], "Remover da galeria", "Este item será removido da sua galeria.", "Remover")) { galCarregar(false); toast("Removido da galeria"); }
+    return;
+  }
+  const b = e.target.closest(".gth"); if (b) galAbrir(+b.dataset.i);
+});
+$("galFiltro").addEventListener("click", e => {
+  const b = e.target.closest("[data-f]"); if (!b) return;
+  galFiltro = b.dataset.f; LS.set("n34_galFiltro", galFiltro); galCarregar(true);
+});
+$("galOrdem").onchange = e => { galOrdem = e.target.value; LS.set("n34_galOrdem", galOrdem); galCarregar(true); };
+$("galMais").onclick = () => { galQtd += GAL_LOTE; galPintar(true); galAtualizarSel(); };
+new IntersectionObserver(es => { if (es[0].isIntersecting && !$("galMais").hidden && !$("view-galeria").hidden) $("galMais").click(); }, { rootMargin: "600px" }).observe($("galMais"));
+$("galSelBtn").onclick = () => galModoSel(!galSel);
+$("galSelFim").onclick = () => galModoSel(false);
+$("galSelTodos").onclick = () => {
+  if (!galSel) return;
+  const todos = galVista.length && galVista.every(i => galSel.has(galItens[i].id));
+  galSel = todos ? new Set() : new Set(galVista.map(i => galItens[i].id));
+  galPintar(false); galAtualizarSel();
+};
+$("galSelDel").onclick = async () => {
+  if (!galSel || !galSel.size) return;
+  const n = galSel.size;
+  if (await galRemover([...galSel], `Remover ${n} ${n === 1 ? "item" : "itens"}`, `${n === 1 ? "O item selecionado será removido" : "Os " + n + " itens selecionados serão removidos"} da sua galeria. Isso não pode ser desfeito.`, "Remover")) {
+    galSel = null; galCarregar(false); toast(`${n} ${n === 1 ? "item removido" : "itens removidos"}`);
+  }
+};
 $("galFechar").onclick = galFechar;
-$("galPrev").onclick = () => galItens.length && galAbrir((galI - 1 + galItens.length) % galItens.length);
-$("galNext").onclick = () => galItens.length && galAbrir((galI + 1) % galItens.length);
+$("galPrev").onclick = () => galMover(-1);
+$("galNext").onclick = () => galMover(1);
 $("galView").addEventListener("click", e => { if (e.target === $("galView")) galFechar(); });
 $("galBaixar").onclick = async () => {
   const it = galItens[galI]; if (!it) return;
   const nome = it.id + "." + ((it.full || "").split("?")[0].split(".").pop() || "jpg");
   try {
-    const b = await (await fetch(it.full)).blob();
+    const b = await blobItem({ f: it.full, s: it.sample });
     const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = nome; a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   } catch { open(it.full, "_blank"); }
 };
-$("galDel").onclick = () => {
-  const it = galItens[galI]; if (!it || !confirm("Remover da galeria?")) return;
-  galItens.splice(galI, 1); galGravar(); galCarregar();
-  if (galItens.length) galAbrir(Math.min(galI, galItens.length - 1)); else galFechar();
+$("galDel").onclick = async () => {
+  const it = galItens[galI]; if (!it) return;
+  const pos = galVista.indexOf(galI);
+  if (!(await galRemover([it.id], "Remover da galeria", "Este item será removido da sua galeria.", "Remover"))) return;
+  galCarregar(false); toast("Removido da galeria");
+  if (galVista.length) galAbrir(galVista[Math.min(Math.max(pos, 0), galVista.length - 1)]); else galFechar();
 };
-$("galLimpar").onclick = () => { if (galItens.length && confirm("Remover tudo da galeria?")) { galItens = []; galGravar(); galCarregar(); } };
+$("galLimpar").onclick = async () => {
+  if (!galItens.length) return;
+  const n = galItens.length;
+  if (await confirmar("Limpar a galeria", `Remover ${n === 1 ? "o único item" : "todos os " + n + " itens"} da galeria? Isso não pode ser desfeito.`, "Limpar tudo", true)) { galItens = []; galSel = null; galGravar(); galCarregar(); toast("Galeria limpa"); }
+};
 addEventListener("keydown", e => {
   if ($("galView").hidden) return;
   if (e.key === "Escape") galFechar(); else if (e.key === "ArrowRight") $("galNext").click(); else if (e.key === "ArrowLeft") $("galPrev").click();
@@ -2284,10 +2531,10 @@ function abrirPicker(item, deGrupo) {
     <button class="pkitem" data-novo="1"><span class="dot">＋</span><span>Novo grupo...</span></button>`;
   $("grpModal").hidden = false; travarScroll();
   $("pkFechar").onclick = fecharPicker;
-  sh.onclick = e => {
+  sh.onclick = async e => {
     const b = e.target.closest(".pkitem"); if (!b) return;
     let gid = b.dataset.g;
-    if (b.dataset.novo) { const n = (prompt("Nome do grupo:") || "").trim(); if (!n) return; gid = criarGrupo(n).id; }
+    if (b.dataset.novo) { const n = ((await pedirTexto("Novo grupo", "", "Criar")) || "").trim(); if (!n) return; gid = criarGrupo(n).id; }
     if (addAoGrupo(gid, item) && deGrupo) { const o = grupoPorId(deGrupo); if (o) o.itens = o.itens.filter(x => x.id !== item.id); saveCols(); if (!$("itemView").hidden) fecharItem(); }
     fecharPicker();
     if (!$("view-grupos").hidden) renderGrupos();
@@ -2314,14 +2561,14 @@ $("grupoLista").addEventListener("click", e => {
   else if (b.dataset.act === "menu") menuGrupo(g);
   else if (b.dataset.act === "item") abrirItem(gid, +b.dataset.i);
 });
-$("novoGrupo").onclick = () => { const n = (prompt("Nome do grupo:") || "").trim(); if (n) { criarGrupo(n); renderGrupos(); } };
+$("novoGrupo").onclick = async () => { const n = ((await pedirTexto("Novo grupo", "", "Criar")) || "").trim(); if (n) { criarGrupo(n); renderGrupos(); } };
 
 function menuGrupo(g) {
   const sh = $("grpSheet");
   sh.innerHTML = `<div class="top"><b>${esc(g.nome)}</b><button class="ghost" id="mnFechar">Fechar</button></div>
     <div class="swatches">${CORES.map(c => `<button class="sw${c === g.cor ? " on" : ""}" data-cor="${c}" style="background:${c}" aria-label="Cor"></button>`).join("")}</div>
     <button class="ghost menubtn" data-m="ren">Renomear</button>
-    <button class="ghost menubtn" data-m="share" ${g.itens.length ? "" : "disabled"}>Compartilhar imagens (até 10)</button>
+    <button class="ghost menubtn" data-m="share" ${g.itens.length ? "" : "disabled"}>Compartilhar imagens (até 15)</button>
     <button class="ghost menubtn" data-m="links" ${g.itens.length ? "" : "disabled"}>Copiar links do grupo</button>
     <button class="ghost menubtn perigo" data-m="del">Excluir grupo</button>`;
   $("grpModal").hidden = false; travarScroll();
@@ -2329,22 +2576,41 @@ function menuGrupo(g) {
   sh.onclick = async e => {
     const sw = e.target.closest(".sw"); if (sw) { g.cor = sw.dataset.cor; saveCols(); renderGrupos(); return menuGrupo(g); }
     const m = e.target.closest("[data-m]"); if (!m) return;
-    if (m.dataset.m === "ren") { const n = (prompt("Novo nome:", g.nome) || "").trim(); if (n) { g.nome = n; saveCols(); renderGrupos(); } fecharPicker(); }
-    else if (m.dataset.m === "del") { if (confirm(`Excluir “${g.nome}” e as ${g.itens.length} imagem(ns) dele?`)) { cols = cols.filter(x => x !== g); saveCols(); renderGrupos(); } fecharPicker(); }
+    if (m.dataset.m === "ren") { const n = ((await pedirTexto("Renomear grupo", g.nome)) || "").trim(); if (n) { g.nome = n; saveCols(); renderGrupos(); } fecharPicker(); }
+    else if (m.dataset.m === "del") {
+      const n = g.itens.length;
+      const ok = await confirmar("Excluir grupo", n ? `Excluir “${g.nome}” e ${n === 1 ? "a 1 imagem" : "as " + n + " imagens"} dele? Isso não pode ser desfeito.` : `Excluir o grupo vazio “${g.nome}”?`, "Excluir", true);
+      if (ok) { cols = cols.filter(x => x !== g); saveCols(); renderGrupos(); toast("Grupo excluído"); }
+      fecharPicker();
+    }
     else if (m.dataset.m === "links") { fecharPicker(); try { await navigator.clipboard.writeText(g.itens.map(i => linkPost(i.id)).join("\n")); toast(`${g.itens.length} link(s) copiado(s)`); } catch { toast("Não consegui copiar os links"); } }
-    else if (m.dataset.m === "share") { fecharPicker(); compartilharVarios(g.itens.slice(0, 10)); }
+    else if (m.dataset.m === "share") { fecharPicker(); compartilharVarios(g.itens.slice(0, 15)); }
   };
 }
 
 /* copiar / compartilhar */
-async function blobItem(it) {   // original primeiro (máxima qualidade); pelo servidor do site, que evita o bloqueio do navegador
+async function blobItem(it) {   // original primeiro (máxima qualidade); se o navegador bloquear (CORS), tenta pelo servidor do site e por proxies de imagem
   let erro;
+  const buscar = async (url, ms = 9000) => {
+    const ac = new AbortController(), t = setTimeout(() => ac.abort(), ms);
+    try {
+      const r = await fetch(url, { referrerPolicy: "no-referrer", signal: ac.signal });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const b = await r.blob();
+      if (!b.size || (b.type && !/^(image|video)\//.test(b.type))) throw new Error("resposta não é imagem");
+      return b;
+    } finally { clearTimeout(t); }
+  };
   for (const u of [it.f, it.s].filter(Boolean)) {
     let host = ""; try { host = new URL(u).hostname; } catch {}
     if (/(^|\.)rule34\.xxx$/.test(host)) {
       try { if (!API_OK) throw 0; const r = await fetch(API_BASE + "/api/sync?img=" + encodeURIComponent(u)); if (r.ok && r.headers.get("x-n34-proxy")) return await r.blob(); } catch (e) { erro = e; }
     }
-    try { const r = await fetch(u, { referrerPolicy: "no-referrer" }); if (r.ok) return await r.blob(); } catch (e) { erro = e; }
+    const rotas = [u];
+    const px = (creds().proxy || "").trim(); if (px) rotas.push(px + encodeURIComponent(u));
+    rotas.push("https://wsrv.nl/?url=" + encodeURIComponent(u));   // proxies públicos de imagens, que liberam o acesso ao arquivo
+    rotas.push("https://corsproxy.io/?url=" + encodeURIComponent(u));
+    for (const r of rotas) { try { return await buscar(r); } catch (e) { erro = e; } }
   }
   throw erro || new Error("falha ao baixar");
 }
@@ -2357,15 +2623,34 @@ async function pngDe(blob) {
 async function copiarLink(it) {
   try { await navigator.clipboard.writeText(linkPost(it.id)); toast("Link copiado"); } catch { toast("Não consegui copiar o link"); }
 }
+function copiarPorSelecao(url) {   // reserva sem CORS: o navegador copia a própria imagem exibida
+  return new Promise((ok, no) => {
+    const img = new Image(); img.referrerPolicy = "no-referrer";
+    img.style.cssText = "position:fixed;left:0;top:0;max-width:80px;opacity:.02;pointer-events:none;z-index:-1";
+    const fim = (f, v) => { img.remove(); f(v); };
+    img.onload = () => {
+      try {
+        const sel = getSelection(), r = document.createRange(); r.selectNode(img); sel.removeAllRanges(); sel.addRange(r);
+        const c = document.execCommand("copy"); sel.removeAllRanges();
+        c ? fim(ok) : fim(no, new Error("o navegador recusou a cópia"));
+      } catch (e) { fim(no, e); }
+    };
+    img.onerror = () => fim(no, new Error("não carregou a imagem"));
+    document.body.appendChild(img); img.src = url;
+  });
+}
 async function copiarImg(it) {
   if (it.v) return copiarLink(it);
   toast("Preparando a imagem em alta qualidade...");
+  let motivo = "";
   try {
+    if (!navigator.clipboard || !window.ClipboardItem) throw new Error("sem acesso à área de transferência" + (location.protocol === "file:" ? " (abrindo o arquivo direto)" : ""));
     await navigator.clipboard.write([new ClipboardItem({ "image/png": blobItem(it).then(pngDe) })]);
     toast(/\.gif(\?|$)/i.test(it.f || "") ? "Copiado (GIF vira imagem parada). Cole no Discord." : "Imagem copiada em alta qualidade. Cole no Discord.");
-  } catch {
-    try { await navigator.clipboard.writeText(linkPost(it.id)); toast("Não consegui copiar a imagem. Copiei o link no lugar."); } catch { toast("Não consegui copiar."); }
-  }
+    return;
+  } catch (e) { motivo = (e && (e.message || e.name)) || "erro"; }
+  try { await copiarPorSelecao(it.s || it.f); toast("Imagem copiada. Cole no Discord."); return; } catch (e) { motivo += " / " + ((e && (e.message || e.name)) || "erro"); }
+  try { await navigator.clipboard.writeText(linkPost(it.id)); toast("Não consegui copiar a imagem (" + motivo.slice(0, 90) + "). Copiei o link no lugar."); } catch { toast("Não consegui copiar (" + motivo.slice(0, 90) + ")."); }
 }
 async function arquivoDe(it) {
   const b = await blobItem(it), ext = ((it.f || "").split("?")[0].split(".").pop() || "jpg").toLowerCase();
@@ -2889,9 +3174,36 @@ async function ghGravar(texto) {
   if (!r.ok) throw new Error("GitHub " + r.status);
   _si.call(localStorage, "n34_gh_gist", (await r.json()).id);
 }
+
+/* ---------- Sincronização pela conta do Rule 34 (User ID + API key): cifrada no aparelho e guardada no textdb.online ---------- */
+const TD_LER = "https://textdb.online/", TD_ESC = "https://api.textdb.online/update/";
+const tdChave = async i => `n34-${(await chaveSync()).id.slice(0, 44)}-${i}`;
+async function tdTexto(k) {
+  let r; try { r = await fetch(TD_LER + k + "?t=" + Date.now(), { cache: "no-store" }); } catch { throw new Error("sem conexão com o serviço de sincronização"); }
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error("serviço de sincronização " + r.status);
+  const t = (await r.text()).trim(); return !t || /^<(!doctype|html)/i.test(t) ? null : t;
+}
+async function tdLer() {   // devolve os dados já decifrados, ou null se ainda não há nada salvo
+  const c0 = await tdTexto(await tdChave(0)); if (!c0) return null;
+  const m = /^n34c:(\d+):/.exec(c0); if (!m) throw new Error("dados salvos em formato desconhecido");
+  let txt = c0.slice(m[0].length);
+  for (let i = 1; i < +m[1]; i++) { const c = await tdTexto(await tdChave(i)); if (c == null) throw new Error("dados incompletos no serviço; tente de novo"); txt += c; }
+  try { return await decifrar(txt); } catch { throw new Error("não consegui abrir os dados salvos: confira se o User ID e a API key são os mesmos do outro aparelho"); }
+}
+async function tdEnviar(k, v) {
+  let r; try { r = await fetch(TD_ESC, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ key: k, value: v }) }); }
+  catch { throw new Error("não consegui falar com o serviço de sincronização (textdb.online)"); }
+  if (!r.ok) throw new Error("serviço de sincronização " + r.status);
+  const j = await r.json().catch(() => null); if (j && j.status === 0) throw new Error("o serviço recusou o envio (limite diário?)");
+}
+async function tdGravar(txt) {
+  const T = 150000, partes = []; for (let i = 0; i < txt.length; i += T) partes.push(txt.slice(i, i + T));
+  for (let i = partes.length - 1; i >= 0; i--) await tdEnviar(await tdChave(i), i === 0 ? `n34c:${partes.length}:${partes[0]}` : partes[i]);   // o cabeçalho (parte 0) é gravado por último
+}
 async function enviarSync(d) {
   if (ghToken()) return ghGravar(await cifrar({ d }));
-  if (!API_OK) throw new Error(SYNC_OFF);
+  if (!API_OK) return tdGravar(await cifrar({ d }));
   const { id } = await chaveSync();
   const c = creds(), proof = toHex(await crypto.subtle.digest("SHA-256", _enc.encode("n34-proof:" + c.uid + ":" + c.key)));
   const r = await fetch(`${SYNC_URL}?id=${id}`, { method: "PUT", headers: { "x-n34-proof": proof }, body: await cifrar({ d }) });
@@ -2901,7 +3213,7 @@ async function enviarSync(d) {
 function resumoSync(d) {
   const n = k => { try { return JSON.parse(d[k] || "[]").length; } catch { return 0; } };
   let imgs = 0; try { imgs = JSON.parse(d.r34_cols || "[]").reduce((t, g) => t + (g.itens || []).length, 0); } catch {}
-  return `${n("r34_favs")} favoritos · ${n("r34_cols")} grupos (${imgs} imagens) · ${n("n34_galeria")} na galeria`;
+  return `${n("r34_favs")} favoritos · ${n("r34_cols")} grupos (${imgs} imagens) · ${n("n34_galeria")} na galeria · ${n("n34_seguindo")} seguindo · ${String(d.r34_black || "").split(/\s+/).filter(Boolean).length} na blacklist`;
 }
 var syncRetry = null;
 function overlayAberto() { return ["favModal", "grpModal", "viewer", "itemView", "galView", "blkModal"].some(id => { const el = $(id); return el && !el.hidden; }); }
@@ -2911,13 +3223,14 @@ function aplicarEstadoRemoto() {   // dados novos do outro aparelho entram na te
   try { const g = JSON.parse(LS.get("n34_galeria", "[]")); if (Array.isArray(g)) galItens = g; } catch {}
   $("black").value = LS.get("r34_black"); renderBlack(); contarFavs();
   const aba = document.body.dataset.aba;
-  if (aba === "favs") renderFavs(); else if (aba === "grupos") renderGrupos(); else if (aba === "galeria") galCarregar(); else if (aba === "inicio") renderHome();
+  if (aba === "favs") renderFavs(); else if (aba === "grupos") renderGrupos(); else if (aba === "galeria") galCarregar(); else if (aba === "inicio") renderHome(); else if (aba === "seg") segRender(false);
 }
 async function lerRemoto() {   // devolve os dados do outro aparelho (já decifrados) ou null se ainda não há nada salvo
   if (ghToken()) {
     const t = await ghLer(); if (!t) return null;
     try { return await decifrar(t); } catch { throw new Error("não consegui abrir os dados salvos: confira se o User ID e a API key são os mesmos do outro aparelho"); }
   }
+  if (!API_OK) return tdLer();
   const { id } = await chaveSync();
   let r = await fetch(`${SYNC_URL}?id=${id}`, { cache: "no-store" });
   if (r.status === 404 && SYNC_URL !== API_BASE + "/.netlify/functions/sync") {   // tenta o endereço direto da função
@@ -2932,7 +3245,6 @@ async function lerRemoto() {   // devolve os dados do outro aparelho (já decifr
 async function sincronizar(manual) {
   const { uid, key } = creds();
   if (!uid || !key) return;
-  if (!API_OK && !ghToken()) return syncSt(SYNC_OFF);
   if (syncBusy) { syncPend = true; return; }
   if (!manual && overlayAberto()) { clearTimeout(syncRetry); syncRetry = setTimeout(() => sincronizar(), 8000); return; }   // não mexe nos dados com algo aberto
   if (!window.crypto || !crypto.subtle) return syncSt("indisponível (precisa de https)");
@@ -2964,11 +3276,10 @@ async function sincronizar(manual) {
   finally { aplicandoRemoto = false; syncBusy = false; if (syncPend) { syncPend = false; setTimeout(sincronizar, 600); } }
 }
 $("ghToken").value = ghToken();
-if (NO_GITHUB && !ghToken() && !N34_API) $("ghBox").open = true;
 $("ghToken").addEventListener("change", e => {
   const t = e.target.value.trim();
   _si.call(localStorage, "n34_gh_token", t); localStorage.removeItem("n34_gh_gist");
-  if (!t) return syncSt(API_OK ? "aguardando" : SYNC_OFF);
+  if (!t) { if (creds().uid && creds().key) sincronizar(true); return; }
   if (!creds().uid || !creds().key) return syncSt("configure o User ID e a API Key");
   sincronizar(true);
 });
@@ -3294,6 +3605,67 @@ $("vTags").addEventListener("click", e => {
 
 /* abre a aba da URL (ex.: /favorites) ao carregar a página — por último, depois de tudo estar declarado */
 showTab(abaDaUrl(), "replace");
+
+/* ================= Caixa de texto do site (no lugar do prompt do navegador) ================= */
+function pedirTexto(titulo, valor = "", ok = "Salvar") {
+  return new Promise(res => {
+    const m = $("txtModal"), inp = $("txtIn");
+    $("txtT").textContent = titulo; $("txtSim").textContent = ok; inp.value = valor; m.hidden = false;
+    setTimeout(() => { inp.focus(); inp.select(); }, 40);
+    const fim = v => { m.hidden = true; $("txtSim").onclick = $("txtNao").onclick = inp.onkeydown = m.onclick = null; res(v); };
+    $("txtSim").onclick = () => fim(inp.value.trim()); $("txtNao").onclick = () => fim(null);
+    inp.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); fim(inp.value.trim()); } else if (e.key === "Escape") { e.stopPropagation(); fim(null); } };
+    m.onclick = e => { if (e.target === m) fim(null); };
+  });
+}
+
+/* ================= Confirmação do site (no lugar do confirm do navegador) ================= */
+function confirmar(titulo, msg, ok = "Confirmar", perigo = false) {
+  return new Promise(res => {
+    const m = $("cfmModal"), sim = $("cfmSim"), nao = $("cfmNao"), antes = document.activeElement;
+    $("cfmT").textContent = titulo; $("cfmM").textContent = msg; sim.textContent = ok;
+    sim.classList.toggle("perigo", !!perigo); m.hidden = false;
+    setTimeout(() => (perigo ? nao : sim).focus(), 40);
+    const fim = v => {
+      m.hidden = true; sim.onclick = nao.onclick = m.onclick = null;
+      removeEventListener("keydown", tecla, true);
+      try { if (antes && antes.focus) antes.focus(); } catch {}
+      res(v);
+    };
+    const tecla = e => {
+      if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); fim(false); }
+      else if (e.key === "Tab") {
+        const bs = [nao, sim], i = bs.indexOf(document.activeElement);
+        e.preventDefault(); bs[(i + (e.shiftKey ? -1 : 1) + 2) % 2].focus();
+      } else if (e.key === "Enter" && document.activeElement !== nao && document.activeElement !== sim) { e.preventDefault(); fim(true); }
+    };
+    addEventListener("keydown", tecla, true);
+    sim.onclick = () => fim(true); nao.onclick = () => fim(false);
+    m.onclick = e => { if (e.target === m) fim(false); };
+  });
+}
+
+/* ================= Seguindo: rolagem infinita ================= */
+let segInf = LS.get("n34_segInf", "1") !== "0", segBusy = false, segVazios = 0;
+$("segInf").checked = segInf;
+{ const c0 = segCarregar; segCarregar = async function (reset) {
+  if (segBusy && !reset) return;
+  segBusy = true; const antes = segPosts.length;
+  try { await c0(reset); } finally { segBusy = false; }
+  segVazios = reset ? 0 : (segPosts.length === antes ? segVazios + 1 : 0);
+  if (segInf) $("segMais").hidden = true;
+  if (segVazios >= 2) $("segMsg").textContent = `${segPosts.length} posts em ordem aleatória. Sem posts novos por agora.`;
+  segIO.unobserve($("segSent")); segIO.observe($("segSent"));   // se o fim ainda estiver à vista, carrega mais
+}; }
+const segIO = new IntersectionObserver(es => {
+  if (es[0].isIntersecting && segInf && !$("view-seg").hidden && segPosts.length && !segBusy && segVazios < 2) segCarregar(false);
+}, { rootMargin: "700px" });
+segIO.observe($("segSent"));
+$("segInf").onchange = e => {
+  segInf = e.target.checked; LS.set("n34_segInf", segInf ? "1" : "0"); segVazios = 0;
+  $("segMais").hidden = segInf || !segPosts.length;
+  if (segInf) { segIO.unobserve($("segSent")); segIO.observe($("segSent")); }
+};
 </script>
 </body>
 </html>
