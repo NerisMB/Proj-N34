@@ -42,3 +42,9 @@ IMAGENS E VÍDEOS
 O QUE NÃO EXISTE NO GITHUB PAGES (não há servidor)
 - Copiar imagens para Galeria/Grupos "pelo servidor" e a busca automática de ícones. O resto funciona normalmente.
 - Para levar dados sem sincronizar, use Exportar/Importar backup no ⚙.
+
+
+--- SINCRONIZAÇÃO (GitHub Pages) ---
+A sincronização usa o seu User ID + API key do Rule 34: os dados (favoritos, grupos, galeria, seguindo, blacklist) são cifrados no aparelho
+e guardados no serviço gratuito textdb.online. Em outro aparelho, entre com o mesmo User ID e API key. Quem não souber os dois não consegue abrir os dados.
+O token do GitHub (Gist) continua existindo como opção, mas não é mais necessário.
