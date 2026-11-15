@@ -1011,6 +1011,18 @@
   .dd-list li[aria-selected="true"] { color:#fff; font-weight:600; background:linear-gradient(90deg,rgba(168,85,247,.42),rgba(124,58,237,.2)); }
   .dd-list li[aria-selected="true"]::after { content:"✓"; color:#e9d5ff; }
   @media (prefers-reduced-motion:reduce) { .dd-list { animation:none; } }
+
+  /* ===== arrastar, capa e ordem manual ===== */
+  .grphandle { flex:none; width:34px; min-height:34px; padding:0; border:0; background:transparent; color:var(--muted); font-size:1.15rem; cursor:grab; touch-action:none; }
+  .grpcapa { flex:none; width:40px; height:40px; border-radius:12px; object-fit:cover; border:2px solid var(--c, var(--accent)); background:#0c0516; }
+  .grpcapa.vazio { display:inline-block; background:rgba(255,255,255,.05); }
+  .arrastando { opacity:.3; }
+  .ghostdrag { position:fixed; z-index:2500; pointer-events:none; margin:0; opacity:.92; transform:scale(1.04); box-shadow:0 18px 40px rgba(0,0,0,.6); border-radius:14px; }
+  body.arrastando-corpo { user-select:none; -webkit-user-select:none; cursor:grabbing; }
+  #galGrid.manual .gcell { cursor:grab; }
+  .gth img { -webkit-user-drag:none; }
+  .menulbl { margin:12px 0 6px; color:var(--muted); font-size:.8rem; }
+  .menugrid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
 </style>
 </head>
 <body data-aba="inicio">
@@ -1173,6 +1185,7 @@
       <div id="galFiltro" class="galchips" role="group" aria-label="Filtrar por tipo"></div>
       <select id="galOrdem" aria-label="Ordenar">
         <option value="salvo">Salvos recentemente</option>
+        <option value="manual">Minha ordem (arraste)</option>
         <option value="antigo">Salvos há mais tempo</option>
         <option value="nota">Maior nota</option>
         <option value="data">Mais novos no site</option>
@@ -1228,7 +1241,7 @@
     <ol class="passos"><li>Entre em <b>rule34.xxx</b> e abra <b>Minha conta → Opções</b>.</li><li>Copie o <b>User ID</b> e gere/copie a <b>API key</b>.</li><li>Cole aqui e toque em <b>Testar conexão</b>. Fica salvo só neste navegador.</li></ol>
     <div hidden><label for="proxy">Proxy CORS</label>
     <input id="proxy" placeholder="https://seu-proxy.exemplo/?url="></div>
-    <div class="sync"><span id="syncSt">Sincronização: aguardando</span><button type="button" id="syncAgora" class="ghost">Sincronizar agora</button></div>
+    <div class="sync"><span id="syncSt">Sincronização: aguardando</span><button type="button" id="syncAgora" class="ghost">Sincronizar agora</button><button id="syncTeste" class="ghost" type="button">Testar</button></div>
     <details class="cfgbox" id="ghBox">
       <summary>Sincronizar pelo GitHub (necessário no github.io)</summary>
       <label for="ghToken">Token do GitHub</label>
@@ -1288,6 +1301,7 @@
     <button class="ghost" id="ivShare">Compartilhar</button>
     <button class="ghost" id="ivLink">Copiar link</button>
     <button class="ghost" id="ivMover">Mover</button>
+    <button class="ghost" id="ivCapa">Capa do grupo</button>
     <button class="ghost" id="ivDel">Remover</button>
   </div>
 </div>
@@ -2191,7 +2205,7 @@ function galToggle(p) {
 }
 let galFiltro = LS.get("n34_galFiltro", "todos"), galOrdem = LS.get("n34_galOrdem", "salvo"), galSel = null, galVista = [], galQtd = 0, galRend = 0;
 const GAL_LOTE = 80, GAL_TIPOS = [["todos", "Todos"], ["imagem", "Imagens"], ["gif", "GIFs"], ["video", "Vídeos"]];
-$("galOrdem").value = ["salvo", "antigo", "nota", "data"].includes(galOrdem) ? galOrdem : "salvo";
+$("galOrdem").value = ["salvo", "manual", "antigo", "nota", "data"].includes(galOrdem) ? galOrdem : "salvo";
 /* menu suspenso do site: troca a lista azul do navegador por uma no tema roxo (o <select> continua guardando o valor) */
 function menuSuspenso(sel) {
   const w = document.createElement("div"); w.className = "dd";
@@ -2223,7 +2237,7 @@ function menuSuspenso(sel) {
   document.addEventListener("pointerdown", e => { if (!ul.hidden && !w.contains(e.target)) abrir(false); });
   pintar(); return pintar;
 }
-menuSuspenso($("galOrdem"));
+const galOrdemPintar = menuSuspenso($("galOrdem"));
 function galCalcVista() {
   let ix = galItens.map((_, i) => i);
   if (galFiltro !== "todos") ix = ix.filter(i => galItens[i].tipo === galFiltro);
@@ -2514,7 +2528,7 @@ const thumbItem = it => extImg(it.s) ? it.s : (it.p || it.f);
 function addAoGrupo(gid, item) {
   const g = grupoPorId(gid); if (!g) return false;
   if (g.itens.some(x => x.id === item.id)) { toast(`Já está em “${g.nome}”`); return false; }
-  g.itens.push(item); saveCols(); toast(`Adicionado a “${g.nome}”`);
+  g.itens.push({ ts: Date.now(), ...item }); saveCols(); toast(`Adicionado a “${g.nome}”`);
   if (!$("view-grupos").hidden) renderGrupos();
   return true;
 }
@@ -2547,7 +2561,7 @@ function renderGrupos() {
   box.innerHTML = cols.map(g => `
     <section class="grp" data-g="${g.id}" style="--c:${g.cor}">
       <div class="grphead">
-        <button class="grptag" data-act="tog" aria-expanded="${!g.fechado}"><span>${g.fechado ? "▸" : "▾"}</span><span class="grpnome">${esc(g.nome)}</span><span class="grpn">${g.itens.length}</span></button>
+        <button class="grphandle" data-act="arrastar" type="button" aria-label="Arrastar para reordenar o grupo" title="Arraste para reordenar">⠿</button>${capaHtml(g)}<button class="grptag" data-act="tog" aria-expanded="${!g.fechado}"><span>${g.fechado ? "▸" : "▾"}</span><span class="grpnome">${esc(g.nome)}</span><span class="grpn">${g.itens.length}</span></button>
         <button class="ghost grpmenu" data-act="menu" aria-label="Opções do grupo">⋯</button>
       </div>
       ${g.fechado ? "" : `<div class="grpgrid">${g.itens.length ? g.itens.map((it, i) => `<button class="gth" data-act="item" data-i="${i}"><img src="${esc(thumbItem(it))}" ${fbAttr({ preview_url: it.p })} referrerpolicy="no-referrer" loading="lazy" decoding="async" alt="">${it.v ? vidBadge(it.f) : ""}</button>`).join("") : '<span class="muted" style="grid-column:1/-1;padding:6px">Vazio</span>'}</div>`}
@@ -2570,12 +2584,17 @@ function menuGrupo(g) {
     <button class="ghost menubtn" data-m="ren">Renomear</button>
     <button class="ghost menubtn" data-m="share" ${g.itens.length ? "" : "disabled"}>Compartilhar imagens (até 15)</button>
     <button class="ghost menubtn" data-m="links" ${g.itens.length ? "" : "disabled"}>Copiar links do grupo</button>
+    <div class="menulbl">Organizar itens</div>
+    <div class="menugrid"><button class="ghost menubtn" data-m="o-novos">Mais recentes primeiro</button><button class="ghost menubtn" data-m="o-velhos">Mais antigos primeiro</button><button class="ghost menubtn" data-m="o-video">Vídeos primeiro</button><button class="ghost menubtn" data-m="o-img">Imagens primeiro</button></div>
+    ${g.capa ? '<button class="ghost menubtn" data-m="capa-auto">Voltar para a capa automática</button>' : ""}
     <button class="ghost menubtn perigo" data-m="del">Excluir grupo</button>`;
   $("grpModal").hidden = false; travarScroll();
   $("mnFechar").onclick = fecharPicker;
   sh.onclick = async e => {
     const sw = e.target.closest(".sw"); if (sw) { g.cor = sw.dataset.cor; saveCols(); renderGrupos(); return menuGrupo(g); }
     const m = e.target.closest("[data-m]"); if (!m) return;
+    if (m.dataset.m.startsWith("o-")) { organizarGrupo(g, m.dataset.m); fecharPicker(); return; }
+    if (m.dataset.m === "capa-auto") { delete g.capa; saveCols(); renderGrupos(); fecharPicker(); return; }
     if (m.dataset.m === "ren") { const n = ((await pedirTexto("Renomear grupo", g.nome)) || "").trim(); if (n) { g.nome = n; saveCols(); renderGrupos(); } fecharPicker(); }
     else if (m.dataset.m === "del") {
       const n = g.itens.length;
@@ -3177,12 +3196,21 @@ async function ghGravar(texto) {
 
 /* ---------- Sincronização pela conta do Rule 34 (User ID + API key): cifrada no aparelho e guardada no textdb.online ---------- */
 const TD_LER = "https://textdb.online/", TD_ESC = "https://api.textdb.online/update/";
+const dormir = ms => new Promise(r => setTimeout(r, ms));
 const tdChave = async i => `n34-${(await chaveSync()).id.slice(0, 44)}-${i}`;
+function tdFetch(url, init = {}, ms = 15000) {   // com tempo limite, para não ficar "sincronizando…" para sempre
+  const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
+  return fetch(url, { ...init, signal: c.signal }).finally(() => clearTimeout(t));
+}
 async function tdTexto(k) {
-  let r; try { r = await fetch(TD_LER + k + "?t=" + Date.now(), { cache: "no-store" }); } catch { throw new Error("sem conexão com o serviço de sincronização"); }
-  if (r.status === 404) return null;
-  if (!r.ok) throw new Error("serviço de sincronização " + r.status);
-  const t = (await r.text()).trim(); return !t || /^<(!doctype|html)/i.test(t) ? null : t;
+  const ler = async url => {
+    const r = await tdFetch(url, { cache: "no-store" });
+    if (r.status === 404) return null;
+    if (!r.ok) throw new Error("serviço de sincronização " + r.status);
+    const t = (await r.text()).trim(); return !t || /^<(!doctype|html)/i.test(t) ? null : t;
+  };
+  try { let t = await ler(TD_LER + k + "?t=" + Date.now()); if (t == null) t = await ler(TD_LER + k); return t; }
+  catch (e) { throw new Error(e.name === "AbortError" ? "o serviço de sincronização demorou demais" : e.message.startsWith("serviço") ? e.message : "sem conexão com o serviço de sincronização"); }
 }
 async function tdLer() {   // devolve os dados já decifrados, ou null se ainda não há nada salvo
   const c0 = await tdTexto(await tdChave(0)); if (!c0) return null;
@@ -3192,21 +3220,45 @@ async function tdLer() {   // devolve os dados já decifrados, ou null se ainda 
   try { return await decifrar(txt); } catch { throw new Error("não consegui abrir os dados salvos: confira se o User ID e a API key são os mesmos do outro aparelho"); }
 }
 async function tdEnviar(k, v) {
-  let r; try { r = await fetch(TD_ESC, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ key: k, value: v }) }); }
+  const init = () => ({ method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ key: k, value: v }) });
+  try {
+    const r = await tdFetch(TD_ESC, init());
+    if (!r.ok) throw new Error("serviço de sincronização " + r.status);
+    const j = await r.json().catch(() => null); if (j && j.status === 0) throw new Error("o serviço recusou o envio (limite diário?)");
+    return;
+  } catch (e) {
+    if (e.name === "AbortError") throw new Error("o serviço de sincronização demorou demais");
+    if (!(e instanceof TypeError)) throw e;   // TypeError = o navegador bloqueou a resposta (CORS): o envio pode ter ido, então tenta sem ler a resposta
+  }
+  try { await tdFetch(TD_ESC, { ...init(), mode: "no-cors" }); }
   catch { throw new Error("não consegui falar com o serviço de sincronização (textdb.online)"); }
-  if (!r.ok) throw new Error("serviço de sincronização " + r.status);
-  const j = await r.json().catch(() => null); if (j && j.status === 0) throw new Error("o serviço recusou o envio (limite diário?)");
 }
 async function tdGravar(txt) {
   const T = 150000, partes = []; for (let i = 0; i < txt.length; i += T) partes.push(txt.slice(i, i + T));
-  for (let i = partes.length - 1; i >= 0; i--) await tdEnviar(await tdChave(i), i === 0 ? `n34c:${partes.length}:${partes[0]}` : partes[i]);   // o cabeçalho (parte 0) é gravado por último
+  const cab = `n34c:${partes.length}:${partes[0]}`;
+  for (let i = partes.length - 1; i >= 0; i--) await tdEnviar(await tdChave(i), i === 0 ? cab : partes[i]);   // o cabeçalho (parte 0) é gravado por último
+  const k0 = await tdChave(0);
+  for (let t = 0; t < 4; t++) {   // confere se o serviço realmente guardou
+    await dormir(t ? 2000 : 900);
+    let lido = null; try { lido = await tdTexto(k0); } catch {}
+    if (lido === cab) return;
+  }
+  throw new Error("o serviço não confirmou a gravação; tente de novo em instantes");
 }
-async function enviarSync(d) {
-  if (ghToken()) return ghGravar(await cifrar({ d }));
-  if (!API_OK) return tdGravar(await cifrar({ d }));
+async function testarSync() {   // diagnóstico: mostra em qual etapa a sincronização falha
+  const k = "n34-teste-" + Date.now().toString(36), r = [];
+  syncSt("testando…");
+  try { await tdEnviar(k, "ok"); r.push("envio ✓"); } catch (e) { r.push("envio ✗ (" + e.message + ")"); }
+  try { await dormir(1200); const t = await tdTexto(k); r.push(t === "ok" ? "leitura ✓" : "leitura ✗ (o valor não voltou)"); } catch (e) { r.push("leitura ✗ (" + e.message + ")"); }
+  try { await tdEnviar(k, ""); } catch {}
+  syncSt("teste · " + r.join(" · "));
+}
+async function enviarSync(d, v) {
+  if (ghToken()) return ghGravar(await cifrar({ d, v }));
+  if (!API_OK) return tdGravar(await cifrar({ d, v }));
   const { id } = await chaveSync();
   const c = creds(), proof = toHex(await crypto.subtle.digest("SHA-256", _enc.encode("n34-proof:" + c.uid + ":" + c.key)));
-  const r = await fetch(`${SYNC_URL}?id=${id}`, { method: "PUT", headers: { "x-n34-proof": proof }, body: await cifrar({ d }) });
+  const r = await fetch(`${SYNC_URL}?id=${id}`, { method: "PUT", headers: { "x-n34-proof": proof }, body: await cifrar({ d, v }) });
   if (r.status === 404) throw new Error(SYNC_FALTA);
   if (!r.ok) throw new Error("servidor " + r.status);
 }
@@ -3215,7 +3267,7 @@ function resumoSync(d) {
   let imgs = 0; try { imgs = JSON.parse(d.r34_cols || "[]").reduce((t, g) => t + (g.itens || []).length, 0); } catch {}
   return `${n("r34_favs")} favoritos · ${n("r34_cols")} grupos (${imgs} imagens) · ${n("n34_galeria")} na galeria · ${n("n34_seguindo")} seguindo · ${String(d.r34_black || "").split(/\s+/).filter(Boolean).length} na blacklist`;
 }
-var syncRetry = null;
+var syncRetry = null; let syncErros = 0;
 function overlayAberto() { return ["favModal", "grpModal", "viewer", "itemView", "galView", "blkModal"].some(id => { const el = $(id); return el && !el.hidden; }); }
 function aplicarEstadoRemoto() {   // dados novos do outro aparelho entram na tela na hora, sem recarregar
   try { favs = JSON.parse(LS.get("r34_favs", "[]")); } catch {}
@@ -3250,7 +3302,11 @@ async function sincronizar(manual) {
   if (!window.crypto || !crypto.subtle) return syncSt("indisponível (precisa de https)");
   syncBusy = true; syncSt("sincronizando...");
   try {
-    const remoto = await lerRemoto();
+    let remoto = await lerRemoto();
+    const vSalvo = () => +LS.get("n34_sync_v", "0");
+    for (let t = 0; remoto && remoto.v && remoto.v < vSalvo() && t < 3; t++) { await dormir(2500); remoto = await lerRemoto(); }   // o serviço pode devolver uma cópia antiga (cache)
+    if (remoto && remoto.v && remoto.v < vSalvo()) throw new Error("o serviço ainda mostra dados antigos (cache); tente de novo em instantes");
+    if (remoto && remoto.v) _si.call(localStorage, "n34_sync_v", String(Math.max(vSalvo(), remoto.v)));
     const base = baseLer(), final = {}, nova = {};
     let mudou = false, push = !remoto;
     aplicandoRemoto = true;
@@ -3268,11 +3324,14 @@ async function sincronizar(manual) {
       final[k] = v ?? vazioDe(k); nova[k] = hashV(v);
     }
     aplicandoRemoto = false;
-    if (push) await enviarSync(final);
+    if (push) { const vNovo = Date.now(); await enviarSync(final, vNovo); _si.call(localStorage, "n34_sync_v", String(vNovo)); }
     _si.call(localStorage, "n34_sync_base", JSON.stringify({ ...base, ...nova }));
-    syncUltima = Date.now(); syncSt("ok · " + resumoSync(final));
+    syncUltima = Date.now(); syncErros = 0; syncSt("ok · " + resumoSync(final));
     if (mudou) aplicarEstadoRemoto();
-  } catch (e) { syncSt("erro (" + e.message + ")"); }
+  } catch (e) {
+    syncSt("erro (" + e.message + ")"); syncErros++;
+    if (syncErros <= 3) { clearTimeout(syncRetry); syncRetry = setTimeout(() => sincronizar(), 30000 * syncErros); }   // tenta de novo sozinho
+  }
   finally { aplicandoRemoto = false; syncBusy = false; if (syncPend) { syncPend = false; setTimeout(sincronizar, 600); } }
 }
 $("ghToken").value = ghToken();
@@ -3283,6 +3342,7 @@ $("ghToken").addEventListener("change", e => {
   if (!creds().uid || !creds().key) return syncSt("configure o User ID e a API Key");
   sincronizar(true);
 });
+$("syncTeste").onclick = testarSync;
 $("syncAgora").onclick = () => { if (!creds().uid || !creds().key) return syncSt("configure o User ID e a API Key"); sincronizar(true); };
 document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - syncUltima > 30000) sincronizar(); });
 setTimeout(sincronizar, 900);
@@ -3666,6 +3726,100 @@ $("segInf").onchange = e => {
   $("segMais").hidden = segInf || !segPosts.length;
   if (segInf) { segIO.unobserve($("segSent")); segIO.observe($("segSent")); }
 };
+
+/* ================= Arrastar para reordenar (mouse e toque) ================= */
+function ordenavel(box, sel, o) {
+  let drag = null, soltouEm = 0;
+  const pos = (x, y) => { drag.ghost.style.left = (x - drag.dx) + "px"; drag.ghost.style.top = (y - drag.dy) + "px"; };
+  function limpar() {
+    if (!drag) return; clearTimeout(drag.t); cancelAnimationFrame(drag.raf);
+    if (drag.ghost) drag.ghost.remove(); drag.el.classList.remove("arrastando"); document.body.classList.remove("arrastando-corpo");
+    document.removeEventListener("pointermove", mover); document.removeEventListener("pointerup", soltar); document.removeEventListener("pointercancel", limpar); drag = null;
+  }
+  function iniciar() {
+    const d = drag; d.ativo = true; try { navigator.vibrate && navigator.vibrate(12); } catch {}
+    const src = (o.ghost && d.el.querySelector(o.ghost)) || d.el, r = src.getBoundingClientRect();
+    d.ghost = src.cloneNode(true); d.ghost.classList.add("ghostdrag"); d.ghost.style.width = r.width + "px"; d.ghost.style.height = r.height + "px";
+    d.dx = d.x0 - r.left; d.dy = d.y0 - r.top; document.body.appendChild(d.ghost); d.el.classList.add("arrastando"); document.body.classList.add("arrastando-corpo");
+    pos(d.x, d.y); laco();
+  }
+  function alvo() {
+    const d = drag, t = document.elementFromPoint(d.x, d.y), el = t && t.closest(sel);
+    if (!el || el === d.el || el.parentElement !== d.el.parentElement) return;
+    const r = el.getBoundingClientRect(), depois = d.y > r.top + r.height * .66 || (d.y > r.top + r.height * .33 && d.x > r.left + r.width / 2);
+    const ref = depois ? el.nextElementSibling : el;
+    if (ref === d.el || (!depois && el.previousElementSibling === d.el)) return;
+    d.el.parentElement.insertBefore(d.el, ref);
+  }
+  function laco() { const d = drag; if (!d || !d.ativo) return; if (d.y < 80) scrollBy(0, -14); else if (d.y > innerHeight - 80) scrollBy(0, 14); alvo(); d.raf = requestAnimationFrame(laco); }
+  function mover(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    drag.x = e.clientX; drag.y = e.clientY;
+    if (!drag.ativo) { const dist = Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0); if (drag.toque) { if (dist > 8) limpar(); } else if (dist > 6) iniciar(); return; }
+    pos(e.clientX, e.clientY);
+  }
+  function soltar() { if (!drag) return; const d = drag, mexeu = d.ativo; limpar(); if (mexeu) { soltouEm = Date.now(); o.aoSoltar(d.el); } }
+  box.addEventListener("pointerdown", e => {
+    if (e.button || drag) return;
+    const el = e.target.closest(sel); if (!el || !box.contains(el)) return;
+    if (o.handle && !e.target.closest(o.handle)) return;
+    if (o.pode && !o.pode(el)) return;
+    drag = { el, id: e.pointerId, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, toque: e.pointerType !== "mouse", ativo: false };
+    if (drag.toque) drag.t = setTimeout(() => { if (drag) iniciar(); }, o.handle ? 150 : 380);
+    document.addEventListener("pointermove", mover); document.addEventListener("pointerup", soltar); document.addEventListener("pointercancel", limpar);
+  });
+  box.addEventListener("click", e => { if (Date.now() - soltouEm < 500) { e.stopPropagation(); e.preventDefault(); } }, true);
+  box.addEventListener("dragstart", e => e.preventDefault());
+  box.addEventListener("contextmenu", e => { if (drag && drag.ativo) e.preventDefault(); });
+  document.addEventListener("touchmove", e => { if (drag && drag.ativo) e.preventDefault(); }, { passive: false });
+}
+
+/* ---------- Grupos: capa automática, arrastar e organizar ---------- */
+function capaDe(g) {
+  const manual = g.capa && g.itens.find(x => x.id === g.capa); if (manual) return manual;
+  let melhor = null; g.itens.forEach(x => { if (!melhor || (x.ts || 0) >= (melhor.ts || 0)) melhor = x; }); return melhor;   // o adicionado mais recentemente
+}
+function capaHtml(g) {
+  const c = capaDe(g);
+  return c ? `<img class="grpcapa" src="${esc(thumbItem(c))}" ${fbAttr({ preview_url: c.p })} referrerpolicy="no-referrer" loading="lazy" decoding="async" alt="">` : '<span class="grpcapa vazio"></span>';
+}
+function organizarGrupo(g, modo) {
+  const ix = g.itens.map((x, i) => [x, i]), ts = x => x.ts || 0;
+  if (modo === "o-novos") ix.sort((a, b) => ts(b[0]) - ts(a[0]) || b[1] - a[1]);
+  else if (modo === "o-velhos") ix.sort((a, b) => ts(a[0]) - ts(b[0]) || a[1] - b[1]);
+  else if (modo === "o-video") ix.sort((a, b) => (b[0].v ? 1 : 0) - (a[0].v ? 1 : 0) || a[1] - b[1]);
+  else ix.sort((a, b) => (a[0].v ? 1 : 0) - (b[0].v ? 1 : 0) || a[1] - b[1]);
+  g.itens = ix.map(p => p[0]); saveCols(); renderGrupos(); toast("Itens organizados");
+}
+ordenavel($("grupoLista"), ".grp", { handle: ".grphandle", ghost: ".grphead", aoSoltar: () => {
+  cols = [...$("grupoLista").querySelectorAll(".grp")].map(x => grupoPorId(x.dataset.g)).filter(Boolean); saveCols(); renderGrupos(); toast("Ordem dos grupos salva");
+} });
+ordenavel($("grupoLista"), ".grpgrid .gth", { aoSoltar: el => {
+  const g = grupoPorId(el.closest(".grp").dataset.g); if (!g) return;
+  const ordem = [...el.parentElement.querySelectorAll(".gth")].map(b => +b.dataset.i);
+  if (ordem.length === g.itens.length) { g.itens = ordem.map(i => g.itens[i]); saveCols(); }
+  renderGrupos();
+} });
+$("ivCapa").onclick = () => {
+  const it = itemAtual(), g = iv.gid && grupoPorId(iv.gid); if (!it || !g) return;
+  g.capa = it.id; saveCols(); renderGrupos(); toast("Capa do grupo atualizada");
+};
+
+/* ---------- Galeria: ordem manual (arraste) ---------- */
+function galSoltou() {
+  const ids = [...$("galGrid").querySelectorAll(".gcell")].map(c => c.dataset.id);
+  const mapa = new Map(galItens.map(x => [x.id, x])), resto = galVista.slice(galRend).map(i => galItens[i].id);   // o que ainda não foi desenhado mantém a ordem
+  const nova = [...ids, ...resto].map(id => mapa.get(id)).filter(Boolean);
+  if (nova.length !== galItens.length) { galCarregar(false); return; }
+  galItens = nova; galGravar();
+  if (galOrdem !== "manual") { galOrdem = "manual"; LS.set("n34_galOrdem", "manual"); $("galOrdem").value = "manual"; galOrdemPintar(); }
+  galCarregar(false); toast("Ordem salva");
+}
+ordenavel($("galGrid"), ".gcell", { pode: () => !galSel && galFiltro === "todos", aoSoltar: galSoltou });
+{ const c0 = galCarregar; galCarregar = function (r) {
+  c0(r); $("galGrid").classList.toggle("manual", galOrdem === "manual");
+  if (galOrdem === "manual" && galItens.length && galFiltro === "todos") $("galMsg").textContent += " Segure e arraste para reordenar.";
+}; }
 </script>
 </body>
 </html>
