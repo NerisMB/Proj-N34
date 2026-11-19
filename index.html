@@ -1683,6 +1683,8 @@ function abrirFav(tag) {
     <small>${f.fotoProp ? "Sua foto está sendo usada no lugar das outras." : f.twitter ? "Opcional: use uma foto sua no lugar da foto do X." : "Esse artista não tem X: escolha uma foto da sua galeria."}</small></details>`;
   $("favModal").hidden = false; document.body.style.overflow = "hidden";
   observarDur(sheet);
+  /* abriu o favorito com post novo: já conta como lido (a etiqueta NOVO fica só nesta abertura) */
+  if (novo) { f.visto = f.id; saveFavs(); contarFavs(); renderFavs(); if (typeof renderHome === "function") renderHome(); }
   $("favFechar").onclick = fecharFav;
   $("favPosts").onclick = () => { fecharFav(); $("expTags").value = f.tag; $("grid").innerHTML = ""; showTab("explorar"); };
   sheet.querySelector(".star").onclick = () => { toggleFav(f.tag); fecharFav(); };

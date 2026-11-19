@@ -52,3 +52,6 @@ O token do GitHub (Gist) continua existindo como opção, mas não é mais neces
 
 --- DICA SOBRE A SINCRONIZAÇÃO ---
 Em Configurações, o botão "Testar" (ao lado de "Sincronizar agora") mostra em qual etapa a sincronização falha: envio ou leitura no textdb.online.
+
+
+NOVIDADE: ao tocar em um favorito que postou algo novo, ele é marcado como lido automaticamente (some o destaque da lista e da página inicial e o contador diminui). "Marcar tudo como visto" continua existindo.
