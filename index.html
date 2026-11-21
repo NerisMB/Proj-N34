@@ -3305,7 +3305,6 @@ async function linkAcao(ac, id) {
   if (ac === "add") {
     const t = await pedirTexto("Endereço do site (ex.: exemplo.com)", "", "Continuar"); if (t == null) return;
     const u = urlLimpa(t); if (!u) return toast("Endereço inválido");
-    if (l.some(x => x.url === u)) return toast("Esse link já está na lista");
     const n = await pedirTexto("Nome do link", hostDe(u), "Salvar"); if (n == null) return;
     l.push({ id: novoId(), nome: n || hostDe(u), url: u }); gravarLinks(l); return toast("Link adicionado");
   }
