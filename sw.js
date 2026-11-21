@@ -1,6 +1,6 @@
 /* N34 — service worker: deixa o app instalável e abre mesmo sem internet.
    Só cuida de arquivos do próprio site; chamadas à API (rule34 etc.) passam direto. */
-const V = "n34-shell-v29";
+const V = "n34-shell-v33";
 /* base do site: "/" ou "/NOME-DO-REPOSITORIO/" no GitHub Pages (vem do escopo em que o worker foi registrado) */
 const BASE = new URL(self.registration.scope).pathname;
 const SHELL = [BASE, BASE + "manifest.webmanifest", BASE + "icons/icon-192.png", BASE + "icons/icon-512.png"];
@@ -21,6 +21,14 @@ self.addEventListener("fetch", e => {
   const r = e.request;
   if (r.method !== "GET") return;
   const u = new URL(r.url);
+  /* fontes do Google: do cache primeiro, para o visual não mudar sem internet */
+  if (u.hostname === "fonts.googleapis.com" || u.hostname === "fonts.gstatic.com") {
+    e.respondWith(caches.match(r).then(hit => hit || fetch(r).then(res => {
+      if (res.ok || res.type === "opaque") { const c = res.clone(); caches.open(V).then(x => x.put(r, c)); }
+      return res;
+    })));
+    return;
+  }
   if (u.origin !== location.origin) return;
   if (u.pathname.startsWith(BASE + "api/") || u.pathname.startsWith("/api/") || u.pathname.startsWith("/.netlify/")) return;   /* sincronização: nunca do cache */
 

@@ -55,3 +55,58 @@ Em Configurações, o botão "Testar" (ao lado de "Sincronizar agora") mostra em
 
 
 NOVIDADE: ao tocar em um favorito que postou algo novo, ele é marcado como lido automaticamente (some o destaque da lista e da página inicial e o contador diminui). "Marcar tudo como visto" continua existindo.
+
+
+NOVIDADES (esta versão)
+- No visualizador, ao lado de cada personagem aparece ☆/★ para seguir ou deixar de seguir na hora.
+- Atalho G no visualizador: liga/desliga a imagem na galeria (no PC).
+- As fontes do Google ficam em cache: sem internet o visual não muda.
+- Atualize também o sw.js (agora v30) para a mudança do cache de fontes valer.
+
+- Buscas salvas: no Explorar, "☆ Salvar esta busca" fixa a pesquisa (★) no topo da lista; ✕ remove. Elas sincronizam entre aparelhos e entram no backup.
+- No visualizador, o ☆/★ de seguir agora aparece também nos artistas.
+
+MINIATURAS
+- Selos de data nas miniaturas menores e mais discretos; as imagens aparecem com um fade suave.
+
+MAIS MELHORIAS
+- Se a busca falhar (internet fraca), aparece o botão "Tentar de novo". Quando a internet volta, ele tenta sozinho.
+- O Explorar lembra a ordem (Recentes, Populares, Trending) e o período escolhidos.
+- Atalho D no visualizador (PC): baixa a imagem.
+- A busca no Explorar tenta de novo sozinha quando a internet volta (sem aviso duplicado).
+
+CORREÇÃO DA SINCRONIZAÇÃO
+- Fora do github.io (por exemplo, no Netlify), o site tentava usar uma função /api/sync que não existe nesta versão e mostrava
+  "a função de sincronização não está publicada neste site (404)". Agora ele detecta isso sozinho e usa o textdb.online.
+- Em ⚙ > Sincronização, depois de "ok" aparece "via textdb.online". O botão "Testar" mostra qual caminho está sendo usado.
+- Se o textdb.online confirmar o envio mas demorar a mostrar o dado (cache), a sincronização não dá mais erro à toa.
+
+MAIS NOVIDADES
+- ⚙ > Sincronização > "Desfazer última": aparece depois que a sincronização trouxe mudanças do outro aparelho e deixa voltar ao que este aparelho tinha antes
+  (a versão restaurada também é enviada aos outros aparelhos). Não aparece na primeira sincronização de um aparelho vazio.
+- Página inicial: as buscas salvas (★) aparecem logo acima das pesquisas recentes, com um toque para repetir.
+
+SINCRONIZAÇÃO (atualização)
+- Erro "Failed to fetch": acontecia quando o servidor do site não respondia (ou o site era aberto como arquivo). Agora o site passa sozinho
+  para o textdb.online. Se a rede bloquear tudo, a mensagem explica (internet, VPN ou bloqueador de anúncios).
+- Bolinha no cartão Sincronização (verde / amarela piscando / vermelha), com a hora da última sincronização e o resumo na linha de baixo.
+- A sincronização roda sozinha a cada 2 minutos com o site aberto e quando a internet volta.
+
+REFINOS VISUAIS (celular)
+- Galeria e Seguindo: o texto de status ficou menor e os botões (Selecionar / Limpar tudo, Rolagem infinita / Embaralhar) ficam organizados em linhas.
+- Favoritos vazio: aviso dentro de uma caixa tracejada, em vez de texto solto.
+(Esses ajustes estão no bloco "Refinos de telas (celular)" do CSS, fácil de remover.)
+- Grupos: o quadro de cada grupo ganhou um tom suave e um brilho na cor do grupo.
+- Títulos das telas: uma linha curta colorida embaixo (Grupos, Galeria, Favoritos etc.).
+
+LINK NO DISCORD (og-image.jpg + meta tags)
+- O link https://nerismb.github.io/Proj-N34/ agora aparece no Discord com título, descrição, imagem grande (og-image.jpg), faixa roxa e aviso +18.
+- Envie TAMBÉM o arquivo og-image.jpg para a mesma pasta do index.html (raiz do repositório).
+- O Discord guarda o cartão antigo por um tempo. Para ver o novo já: poste o link com algo no fim (ex.: .../Proj-N34/?v=2) ou espere algumas horas.
+- Se mudar o endereço do site, troque "nerismb.github.io/Proj-N34" nas meta tags do começo do index.html.
+
+MEUS LINKS (menu ☰)
+- No menu dos três traços (☰), toque em "Links": abre a folha "Meus links" com "＋ Adicionar", "Copiar todos" e "Editar" (↑ subir, ✎ renomear, ✕ remover).
+- "Copiar todos" copia uma linha por link neste formato:
+  * || https://linkteste.com || - ** Título do Link **
+- Só aceita endereços http/https. Os links entram na sincronização e no backup (iguais no PC e no celular).

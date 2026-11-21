@@ -6,9 +6,25 @@
 <meta name="rating" content="RTA-5042-1996-1400-1577-RTA">
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://api.rule34.xxx" crossorigin>
-<meta name="theme-color" content="#050209">
+<meta name="theme-color" content="#a855f7">
 <meta name="color-scheme" content="dark">
 <meta name="description" content="N34 — explore, pesquise e acompanhe seus artistas favoritos.">
+<link rel="canonical" href="https://nerismb.github.io/Proj-N34/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="N34">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://nerismb.github.io/Proj-N34/">
+<meta property="og:title" content="N34 — seus artistas favoritos em um só lugar">
+<meta property="og:description" content="Explore, pesquise e acompanhe seus artistas favoritos. Favoritos, grupos e galeria sincronizados entre PC e celular. Conteúdo adulto (+18).">
+<meta property="og:image" content="https://nerismb.github.io/Proj-N34/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="N34 — explore, pesquise e acompanhe seus artistas favoritos">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="N34 — seus artistas favoritos em um só lugar">
+<meta name="twitter:description" content="Explore, pesquise e acompanhe seus artistas favoritos. Conteúdo adulto (+18).">
+<meta name="twitter:image" content="https://nerismb.github.io/Proj-N34/og-image.jpg">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="N34">
@@ -217,6 +233,11 @@
   #vTags { position:absolute; left:0; right:0; bottom:calc(84px + env(safe-area-inset-bottom,0px)); display:flex; flex-direction:column; align-items:center; gap:7px; max-height:112px; overflow-y:auto; padding:0 12px; }
   .trow { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:5px; max-width:100%; }
   .tlab { margin-right:2px; font-size:.66rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+  .rec-wrap { flex:none; display:inline-flex; gap:3px; align-items:center; }
+  .fixas .rec.pin { color:#fde68a; border-color:rgba(253,230,138,.5); }
+  .fixas .rec.pin.del { opacity:.7; padding-left:6px; padding-right:8px; }
+  .tfol { min-width:30px; min-height:30px; padding:0 8px; border:1px solid currentColor; border-radius:999px; background:rgba(20,8,36,.72); color:inherit; font-size:.9rem; line-height:1; cursor:pointer; }
+  .tfol[aria-pressed="true"] { background:rgba(168,85,247,.35); color:#fde68a; }
   .tchip { min-height:30px; max-width:100%; padding:3px 11px; border:1px solid currentColor; border-radius:999px; background:rgba(20,8,36,.72); font-size:.78rem; word-break:break-word; }
   .artista { color:#ff9db0; } .copyright { color:#d9a8ff; } .personagem { color:#7ee2a0; }
   #vTags .vazio { color:var(--muted); font-size:.8rem; }
@@ -617,7 +638,7 @@
     filter:drop-shadow(0 0 28px rgba(168,85,247,.55)) drop-shadow(0 6px 18px rgba(80,20,150,.55)); }
   @keyframes brilho { from { background-position:130% 0, 0 0; } to { background-position:-30% 0, 0 0; } }
   @media (prefers-reduced-motion:no-preference) { .home .hword .hlogo { animation:subir .6s cubic-bezier(.2,.7,.2,1) .06s backwards, brilho 1.5s ease-in-out .8s 1 both; } }
-  @media (max-width:640px) { .hmenu .hcard:last-child { grid-column:1 / -1; } }
+  
 
   /* ---------- instalar o app ---------- */
   .hinst { position:relative; z-index:2; display:flex; align-items:center; gap:12px; width:100%; max-width:560px; min-height:60px; margin:10px auto 0; padding:11px 14px; border-radius:16px;
@@ -1076,6 +1097,85 @@
   @media (hover:none) { .hcard::before, .reccard::before { display:none; } }
   @media (prefers-reduced-motion:reduce) { section[id^="view-"]:not([hidden]) { animation:none; } #barra { display:none; } a.gitem img, .gth img, .segc img, .htc img, .topit img, .reccard .rimg { transition:none; } }
   .hshead button { min-height:32px; padding:0 12px; font-size:.8rem; }
+
+  .syncl { display:inline-flex; align-items:center; min-width:0; }
+  .sdot { flex:none; width:11px; height:11px; margin-right:9px; border-radius:50%; background:#7d6aa3; box-shadow:0 0 0 3px rgba(125,106,163,.18); }
+  .sdot[data-s="ok"] { background:#4ade80; box-shadow:0 0 0 3px rgba(74,222,128,.2); }
+  .sdot[data-s="busy"] { background:#fbbf24; box-shadow:0 0 0 3px rgba(251,191,36,.2); animation:n34pulso 1s ease-in-out infinite; }
+  .sdot[data-s="erro"] { background:#f87171; box-shadow:0 0 0 3px rgba(248,113,113,.22); }
+  @keyframes n34pulso { 50% { opacity:.35; } }
+  @media (prefers-reduced-motion:reduce) { .sdot[data-s="busy"] { animation:none; } }
+  .lkacts { display:flex; flex-wrap:wrap; gap:8px; margin:4px 0 12px; }
+  .lkacts .ghost { min-height:40px; padding:0 14px; font-size:.88rem; }
+  #grpSheet .hlinks { grid-template-columns:1fr; }
+  .hlinks { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px; }
+  .hlinks.edit { grid-template-columns:1fr; }
+  .hlink { display:flex; align-items:stretch; gap:6px; min-width:0; }
+  .hlink a { flex:1; min-width:0; display:flex; align-items:center; gap:11px; padding:10px 12px; border:1px solid var(--line); border-radius:14px; background:linear-gradient(135deg,rgba(168,85,247,.16),rgba(16,8,28,.72)); color:#f3ecff; text-decoration:none; transition:border-color .15s, transform .15s; }
+  .hlink a:hover { border-color:var(--accent); transform:translateY(-1px); }
+  .hlinks.edit .hlink a { opacity:.7; cursor:default; }
+  .hli img { position:absolute; inset:0; margin:auto; width:24px; height:24px; border-radius:5px; object-fit:contain; opacity:0; }
+  .hli.ok img { opacity:1; }
+  .hli.ok { color:transparent; background:rgba(255,255,255,.10); }
+  .hli { position:relative; flex:none; width:36px; height:36px; display:grid; place-items:center; border-radius:11px; background:linear-gradient(135deg,var(--accent),var(--accent2)); font:700 1rem var(--fd); color:#fff; }
+  .hlt { min-width:0; display:flex; flex-direction:column; text-align:left; }
+  .hlt b { font-size:.92rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .hlt small { color:var(--muted); font-size:.74rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .hle { display:flex; gap:6px; }
+  .hle button { width:40px; border:1px solid var(--line); border-radius:12px; background:#1f0d3a; color:#e5d4ff; font:inherit; font-size:1rem; cursor:pointer; }
+  .hle button:hover { border-color:var(--accent); }
+  .hle button[data-lk="del"] { color:#ff8fa3; }
+  .hvazio { margin:0; padding:16px; text-align:center; border:1px dashed rgba(192,132,252,.32); border-radius:14px; background:rgba(168,85,247,.05); color:var(--muted); font-size:.9rem; }
+  /* ---- Refinos de telas (celular) ---- */
+  .galtop p, .segtop p, #topMsg { font-size:.88rem; line-height:1.35; }
+  .galtop, .segtop { flex-wrap:wrap; }
+  .galacts { flex-wrap:nowrap; }
+  .galacts .ghost, .segacoes .ghost { white-space:nowrap; }
+  @media (max-width:560px) {
+    .segtop p { flex:1 1 100%; }
+    .segacoes { display:flex; align-items:center; justify-content:space-between; gap:10px; flex:1 1 100%; }
+    .galtop p { flex:1 1 100%; }
+    #view-galeria .galtop { align-items:center; }
+    .galacts { width:100%; justify-content:flex-start; }
+  }
+  .grpgrid { background:linear-gradient(180deg,color-mix(in srgb,var(--c) 14%,rgba(16,8,28,.6)),rgba(16,8,28,.55) 70%); box-shadow:0 8px 26px color-mix(in srgb,var(--c) 18%,transparent); }
+  .phead h2::after { content:""; display:block; width:38px; height:3px; margin-top:9px; border-radius:3px; background:linear-gradient(90deg,var(--accent),#ec4899); }
+  #favlist > p.muted { padding:26px 16px; text-align:center; border:1px dashed rgba(192,132,252,.32); border-radius:16px; background:rgba(168,85,247,.05); font-size:.92rem; }
+  /* ---- Miniaturas ---- */
+  .datebadge.sm { font-size:.62rem; font-weight:600; padding:1px 6px; background:rgba(5,2,9,.55); border-color:transparent; letter-spacing:.01em; }
+  .scorebadge { font-size:.68rem; }
+  @media (prefers-reduced-motion:no-preference) { a.gitem img { animation:n34fade .35s ease both; } @keyframes n34fade { from { opacity:0; } to { opacity:1; } } }
+  /* ===== Menu lateral (três linhas) melhorado ===== */
+  .tabs { gap:4px; padding:calc(76px + env(safe-area-inset-top,0px)) 14px calc(16px + env(safe-area-inset-bottom,0px)); background:linear-gradient(180deg,rgba(24,9,46,.96),rgba(9,3,18,.98)); box-shadow:-24px 0 60px -20px rgba(0,0,0,.8), inset 1px 0 0 rgba(192,132,252,.18); }
+  .mhead { display:flex; align-items:center; justify-content:space-between; padding:2px 4px 14px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,.08); }
+  .mhead b { font:700 .72rem var(--fd); letter-spacing:.22em; text-transform:uppercase; color:#c9b6ee; }
+  .mclose { width:38px; height:38px; display:grid; place-items:center; border-radius:12px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.05); color:#e9d5ff; cursor:pointer; padding:0; }
+  .mclose::before { content:""; width:18px; height:18px; background:currentColor; -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center/contain no-repeat; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center/contain no-repeat; }
+  .mclose:hover { background:rgba(168,85,247,.22); }
+  .tabs .tab { display:flex; align-items:center; gap:14px; width:100%; min-height:52px; padding:8px 12px 8px 8px; border:1px solid transparent; border-left-width:1px; border-radius:16px; font-size:.8rem; letter-spacing:.1em; color:#cdbbef; text-shadow:none; transition:background .2s, border-color .2s, color .2s, transform .15s; }
+  .tabs .tab[hidden] { display:none; }
+  .tabs .tab { position:relative; }
+  .tabs .tab::before { content:""; flex:none; width:38px; height:38px; border-radius:12px; background:rgba(168,85,247,.16); transition:background .2s; }
+  .tabs .tab::after { content:""; position:absolute; left:8px; top:50%; width:38px; height:38px; margin-top:-19px; background:currentColor; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; -webkit-mask-position:center; mask-position:center; -webkit-mask-size:20px 20px; mask-size:20px 20px; pointer-events:none; }
+  #tab-inicio::after { -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 11l8-7 8 7'/%3E%3Cpath d='M6 10v9h12v-9'/%3E%3C/svg%3E"); mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 11l8-7 8 7'/%3E%3Cpath d='M6 10v9h12v-9'/%3E%3C/svg%3E"); }
+  #tab-explorar::after { -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M15.5 8.5l-2 5-5 2 2-5z'/%3E%3C/svg%3E"); mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M15.5 8.5l-2 5-5 2 2-5z'/%3E%3C/svg%3E"); }
+  #tab-top::after { -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 4h8v5a4 4 0 0 1-8 0z'/%3E%3Cpath d='M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3'/%3E%3Cpath d='M12 13v4M9 20h6'/%3E%3C/svg%3E"); mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 4h8v5a4 4 0 0 1-8 0z'/%3E%3Cpath d='M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3'/%3E%3Cpath d='M12 13v4M9 20h6'/%3E%3C/svg%3E"); }
+  #tab-seg::after { -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z'/%3E%3C/svg%3E"); mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z'/%3E%3C/svg%3E"); }
+  #tab-favs::after { -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 4h12v17l-6-4.2L6 21z'/%3E%3C/svg%3E"); mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 4h12v17l-6-4.2L6 21z'/%3E%3C/svg%3E"); }
+  #tab-grupos::after { -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l9 4.5-9 4.5-9-4.5z'/%3E%3Cpath d='M3 12l9 4.5 9-4.5'/%3E%3Cpath d='M3 16.5L12 21l9-4.5'/%3E%3C/svg%3E"); mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l9 4.5-9 4.5-9-4.5z'/%3E%3Cpath d='M3 12l9 4.5 9-4.5'/%3E%3Cpath d='M3 16.5L12 21l9-4.5'/%3E%3C/svg%3E"); }
+  #tab-galeria::after { -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='4.5' width='17' height='15' rx='3'/%3E%3Ccircle cx='9' cy='10' r='1.6'/%3E%3Cpath d='M4 17l5-4.5 3.5 3L15.5 13 20 17'/%3E%3C/svg%3E"); mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='4.5' width='17' height='15' rx='3'/%3E%3Ccircle cx='9' cy='10' r='1.6'/%3E%3Cpath d='M4 17l5-4.5 3.5 3L15.5 13 20 17'/%3E%3C/svg%3E"); }
+  #tab-links::after { -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1'/%3E%3Cpath d='M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1'/%3E%3C/svg%3E"); mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1'/%3E%3Cpath d='M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1'/%3E%3C/svg%3E"); }
+  #tab-cfg::after { -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z'/%3E%3C/svg%3E"); mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z'/%3E%3C/svg%3E"); }
+  .tabs .tab .pill { margin-left:auto; }
+  .tabs .tab:hover { background:rgba(168,85,247,.12); color:#fff; letter-spacing:.1em; }
+  .tabs .tab:hover::before { background:rgba(168,85,247,.3); }
+  .tabs .tab:active { transform:scale(.98); }
+  .tabs .tab.active { color:#fff; border-color:rgba(192,132,252,.35); border-left-color:rgba(192,132,252,.35); background:linear-gradient(90deg,rgba(168,85,247,.30),rgba(168,85,247,.06)); text-shadow:none; box-shadow:0 8px 24px -14px rgba(168,85,247,.8); }
+  .tabs .tab.active::before { background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 0 16px rgba(168,85,247,.55); }
+  .msep { height:1px; margin:10px 4px 6px; background:rgba(255,255,255,.08); }
+  .tabs .tab.cfgitem { margin-top:auto; color:#b39ddb; }
+  @media (prefers-reduced-motion:no-preference) { .tabs.open .tab, .tabs.open .mhead { animation:mItem .32s cubic-bezier(.2,.7,.2,1) backwards; } .tabs.open .tab:nth-child(2) { animation-delay:.04s; } .tabs.open .tab:nth-child(3) { animation-delay:.08s; } .tabs.open .tab:nth-child(4) { animation-delay:.12s; } .tabs.open .tab:nth-child(5) { animation-delay:.16s; } .tabs.open .tab:nth-child(6) { animation-delay:.20s; } .tabs.open .tab:nth-child(7) { animation-delay:.24s; } .tabs.open .tab:nth-child(8) { animation-delay:.28s; } .tabs.open .tab:nth-child(9) { animation-delay:.32s; } }
+  @keyframes mItem { from { opacity:0; transform:translateX(18px); } to { opacity:1; transform:none; } }
 </style>
 <script>
 /* Tema: troca a cor do site todo mexendo na matiz (hue) de tudo que é roxo/rosa/violeta; o resto (branco, cinza, vermelho de erro…) não muda */
@@ -1151,13 +1251,16 @@
   </div>
   <div id="menuBg" hidden></div>
   <nav class="tabs" id="menu" aria-label="Menu">
+    <div class="mhead"><b>Navegação</b></div>
     <button class="tab active" id="tab-inicio">Início</button>
     <button class="tab" id="tab-explorar">Explorar</button>
     <button class="tab" id="tab-top" hidden>TOP 10</button>
     <button class="tab" id="tab-seg" hidden>Seguindo</button>
-    <button class="tab" id="tab-favs">★ Favoritos (0)</button>
+    <button class="tab" id="tab-favs">Favoritos (0)</button>
     <button class="tab" id="tab-grupos">Grupos</button>
     <button class="tab" id="tab-galeria">Galeria</button>
+    <button class="tab" id="tab-links" type="button">Links</button>
+    <button class="tab cfgitem" id="tab-cfg" type="button">Configurações</button>
   </nav>
   <nav class="bnav" aria-label="Navegação">
     <a href="#" data-go="inicio" class="active"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/></svg><span>Início</span></a>
@@ -1181,6 +1284,7 @@
         <a href="#" class="hcard" data-go="galeria"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 3.5 3L15.5 13 20 17"/></svg><span class="htxt"><b>Galeria</b><small>Salvas no site</small></span></a>
         <a href="#" class="hcard" data-go="top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3"/><path d="M12 13v4M9 20h6"/></svg><span class="htxt"><b>TOP 10</b><small>Os mais votados</small></span></a>
         <a href="#" class="hcard" data-go="seg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z"/></svg><span class="htxt"><b>Seguindo</b><small>Seus personagens</small></span></a>
+        <a href="#" class="hcard" id="hcLinks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg><span class="htxt"><b>Links</b><small>Seus outros sites</small></span></a>
       </nav>
       <section id="homeTop" class="hsec" hidden>
         <div class="hshead"><b>TOP 10</b><a href="#" data-go="top">Ver tudo</a></div>
@@ -1200,7 +1304,7 @@
   </section>
 
   <section id="view-explorar" hidden>
-    <div class="phead"><h2>Explorar</h2><p>Navegue pelos posts mais recentes, populares ou em alta.</p></div>
+    <div class="phead"><h2>Explorar</h2></div>
     <div class="explorar">
       <aside class="painel">
         <h3>Pesquisar</h3>
@@ -1250,6 +1354,7 @@
             <button type="button" data-cols="4">4</button>
           </div>
         </div>
+        <div class="recentes fixas" id="fixas" aria-label="Buscas salvas" hidden></div>
         <div class="recentes" id="recentes" aria-label="Buscas recentes"></div>
         <div id="grid"></div>
         <p id="expMsg" class="muted"></p>
@@ -1274,7 +1379,7 @@
   </section>
 
   <section id="view-seg" hidden>
-    <div class="phead"><h2>Seguindo</h2><p>Personagens que você segue, com posts em ordem aleatória.</p></div>
+    <div class="phead"><h2>Seguindo</h2></div>
     <div class="segadd"><input id="segIn" placeholder="Nome do personagem" autocomplete="off" autocapitalize="off" spellcheck="false"><button id="segAdd" class="btn" type="button">Seguir</button></div>
     <div id="segChips" class="segchips"></div>
     <div class="segtop"><p id="segMsg" class="muted" role="status"></p><span class="segacoes"><label class="chk segchk"><input type="checkbox" id="segInf"> Rolagem infinita</label><button id="segShuf" class="ghost" type="button">Embaralhar</button></span></div>
@@ -1284,9 +1389,9 @@
   </section>
 
   <section id="view-galeria" hidden>
-    <div class="phead"><h2>Galeria</h2><p>As imagens que você salvou.</p></div>
+    <div class="phead"><h2>Galeria</h2></div>
     <div class="galtop">
-      <p id="galMsg" class="muted" role="status"></p>
+      <p id="galMsg" class="muted" role="status" hidden style="display:none"></p>
       <span class="galacts">
         <button id="galSelBtn" class="ghost" type="button" hidden>Selecionar</button>
         <button id="galLimpar" class="ghost" type="button" hidden>Limpar tudo</button>
@@ -1313,7 +1418,7 @@
   </section>
 
   <section id="view-favs" hidden>
-    <div class="phead"><h2>Favoritos</h2><p>Veja quando seus artistas postam algo novo.</p></div>
+    <div class="phead"><h2>Favoritos</h2></div>
     <div class="bar favadd">
       <input id="novoFav" aria-label="Tag do artista" autocomplete="off" autocapitalize="off" spellcheck="false">
       <button id="addFav" class="ghost" type="button">Adicionar</button>
@@ -1359,7 +1464,8 @@
       </section>
       <section class="cfgsec">
         <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></svg>Sincronização</h4>
-        <div class="sync"><span id="syncSt">Sincronização: aguardando</span><span class="syncbtns"><button type="button" id="syncAgora" class="ghost">Sincronizar agora</button><button id="syncTeste" class="ghost" type="button">Testar</button></span></div>
+        <div class="sync"><span class="syncl"><i id="syncDot" class="sdot" aria-hidden="true"></i><span id="syncSt">Sincronização: aguardando</span></span><span class="syncbtns"><button type="button" id="syncAgora" class="ghost">Sincronizar agora</button><button id="syncTeste" class="ghost" type="button">Testar</button><button id="syncDesfaz" class="ghost" type="button" hidden>Desfazer última</button></span></div>
+        <small id="syncResumo" class="cfgdica" role="status"></small>
         <small class="cfgdica">Seus favoritos, grupos, galeria, seguindo e blacklist ficam iguais em todos os aparelhos onde você entrar com o mesmo User ID e API key.</small>
         <details class="cfgbox" id="ghBox">
       <summary>Avançado: sincronizar pelo GitHub (opcional)</summary>
@@ -1616,7 +1722,7 @@ const saveFavs = () => LS.set("r34_favs", JSON.stringify(favs));
 const isFav = t => favs.some(f => f.tag === t);
 function contarFavs() {
   const n = favs.filter(f => f.id && f.id !== f.visto).length;
-  $("tab-favs").innerHTML = `★ Favoritos (${favs.length})${n ? ` <span class="pill">${n}</span>` : ""}`;
+  $("tab-favs").innerHTML = `Favoritos (${favs.length})${n ? ` <span class="pill">${n}</span>` : ""}`;
 }
 function toggleFav(tag, info) {
   const i = favs.findIndex(f => f.tag === tag);
@@ -1887,6 +1993,7 @@ function menuAbrir(o) {
 }
 $("menuBtn").onclick = () => { if (!$("cfgModal").hidden) fecharCfg(); menuAbrir(!$("menu").classList.contains("open")); };
 $("menuBg").onclick = () => menuAbrir(false);
+$("tab-cfg").onclick = () => abrirCfg();
 addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
   if (!$("cfgModal").hidden) fecharCfg(); else if ($("menu").classList.contains("open")) menuAbrir(false);
@@ -1973,6 +2080,8 @@ addEventListener("popstate", () => {
   addEventListener("scroll", () => { const v = scrollY > 700; if (v !== on) { on = v; b.classList.toggle("show", v); } }, { passive: true });
   b.onclick = () => scrollTo({ top: 0, behavior: "smooth" });
 })();
+$("tab-links").onclick = () => { menuAbrir(false); abrirLinks(); };
+$("hcLinks").onclick = e => { e.preventDefault(); abrirLinks(); };
 $("tab-inicio").onclick = () => showTab("inicio");
 $("tab-explorar").onclick = () => showTab("explorar");
 $("tab-top").onclick = () => showTab("top");
@@ -1999,7 +2108,7 @@ showTab("inicio", "pop");
 
 /* ---------- Explorar (todos os posts) ---------- */
 const POR_PAGINA = 42, GRID_MAX = 900;
-let expModo = "recentes", expSeq = 0;
+let expModo = "recentes", expSeq = 0, expRetryPag = 0;
 const cacheTrend = {};
 async function buscarLista(tags, pid, limit = POR_PAGINA, semFiltro = false) {
   const { uid, key, proxy } = creds();
@@ -2082,9 +2191,11 @@ async function carregarGrid(pag = 0) {
     observarDur($("grid"));
     $("expMsg").textContent = gridPosts.length ? (temMais ? "" : (gridPosts.length >= GRID_MAX ? "Limite de " + GRID_MAX + " itens na tela, para economizar memória. Toque em Pesquisar para recomeçar." : "Fim dos resultados.")) : `Nenhum post encontrado${oculto ? ` (${oculto} ocultado(s) pelos filtros)` : ""}.`;
     setTimeout(checarSentinela, 100);
-  } catch (e) { $("expMsg").innerHTML = "Erro: " + msgErro(e); }
+  } catch (e) { expRetryPag = pag; $("expMsg").innerHTML = "Erro: " + msgErro(e) + ' <button type="button" class="ghost" id="expRetry">Tentar de novo</button>'; }
   finally { if (seq === expSeq) { expBusy = false; limparSkel(); } }
 }
+$("expMsg").addEventListener("click", e => { if (e.target.closest("#expRetry")) carregarGrid(expRetryPag); });
+addEventListener("online", () => { const r = $("expRetry"); if (r && !expBusy) r.click(); });   // tenta de novo sozinho quando a internet volta
 function checarSentinela() {
   if (temMais && !expBusy && !$("view-explorar").hidden && $("sentinela").getBoundingClientRect().top < innerHeight + 600) carregarGrid(expPag + 1);
 }
@@ -2150,13 +2261,20 @@ async function mostrarTags(p) {
   if (seq !== vTagSeq || $("viewer").hidden) return;
   const nomes = { artista: "Artista", copyright: "Copyright", personagem: "Personagem" };
   const linhas = Object.keys(nomes).filter(k => cat && cat[k].length).map(k =>
-    `<div class="trow"><span class="tlab ${k}">${nomes[k]}</span>${cat[k].map(t => `<button class="tchip ${k}" data-tag="${esc(t)}">${esc(t.replace(/_/g, " "))}</button>`).join("")}</div>`);
+    `<div class="trow"><span class="tlab ${k}">${nomes[k]}</span>${cat[k].map(t => `<button class="tchip ${k}" data-tag="${esc(t)}">${esc(t.replace(/_/g, " "))}</button>` + (k !== "copyright" ? (() => { const on = seguindoTem(t); return `<button type="button" class="tfol" data-tag="${esc(t)}" aria-pressed="${on}" aria-label="${on ? "Deixar de seguir" : "Seguir"} ${esc(t.replace(/_/g, " "))}" title="${on ? "Deixar de seguir" : "Seguir"}">${on ? "★" : "☆"}</button>`; })() : "")).join("")}</div>`);
   const usadas = new Set(cat ? [...cat.artista, ...cat.copyright, ...cat.personagem] : []);
   const gerais = String(p.tags || "").trim().split(/\s+/).filter(t => t && !usadas.has(t));
   const mais = gerais.length ? `<div class="tmaisw"><button type="button" class="tmais" data-n="${gerais.length}" aria-expanded="false">Mais tags (${gerais.length})</button></div><div class="tgeral" hidden>${gerais.slice(0, 80).map(t => `<button class="tchip geral" data-tag="${esc(t)}">${esc(t.replace(/_/g, " "))}</button>`).join("")}</div>` : "";
   box.innerHTML = (linhas.join("") || `<span class="vazio">${cat ? "Esse post não tem artista, copyright ou personagem marcados." : "Não consegui carregar as categorias das tags."}</span>`) + mais;
 }
 $("vTags").addEventListener("click", e => {
+  const f = e.target.closest(".tfol");
+  if (f) {
+    const on = toggleSeguir(f.dataset.tag), nome = f.dataset.tag.replace(/_/g, " ");
+    f.setAttribute("aria-pressed", on); f.textContent = on ? "★" : "☆";
+    f.title = on ? "Deixar de seguir" : "Seguir"; f.setAttribute("aria-label", (on ? "Deixar de seguir " : "Seguir ") + nome);
+    return;
+  }
   const c = e.target.closest(".tchip"); if (!c) return;
   const tag = c.dataset.tag;
   fecharViewer();
@@ -2214,6 +2332,8 @@ addEventListener("keydown", e => {
   if (e.key === "Escape") fecharViewer();
   else if (e.key === "ArrowRight") irViewer(1);
   else if (e.key === "ArrowLeft") irViewer(-1);
+  else if ((e.key === "g" || e.key === "G") && !e.ctrlKey && !e.metaKey && !e.altKey && !/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName || "")) $("vGal").click();   // G: liga/desliga na galeria
+  else if ((e.key === "d" || e.key === "D") && !e.ctrlKey && !e.metaKey && !e.altKey && !/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName || "")) $("vBaixar").click();   // D: baixa
 });
 $("vGal").onclick = () => {
   const p = gridPosts[vI]; if (!p) return;
@@ -2261,6 +2381,18 @@ document.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () =>
   carregarGrid(0);
 }));
 $("periodo").addEventListener("change", () => carregarGrid(0));
+/* lembra a ordem (Recentes/Populares/Trending) e o período entre visitas */
+const salvarModo = () => { try { localStorage.setItem("n34_modo", JSON.stringify({ m: expModo, p: $("periodo").value })); } catch {} };
+document.querySelectorAll(".seg").forEach(b => b.addEventListener("click", salvarModo));
+$("periodo").addEventListener("change", salvarModo);
+try {
+  const m = JSON.parse(localStorage.getItem("n34_modo") || "null"), btn = m && document.querySelector('.seg[data-modo="' + m.m + '"]');
+  if (btn) {
+    expModo = m.m; document.querySelectorAll(".seg").forEach(x => x.classList.toggle("active", x === btn));
+    if ([...$("periodo").options].some(o => o.value === String(m.p))) $("periodo").value = String(m.p);
+    $("periodo").hidden = expModo !== "trending";
+  }
+} catch {}
 function tiposAtivos() {
   const todos = ["imagem", "video", "gif"];
   try { const a = JSON.parse(LS.get("n34_tipoF", "null")); const v = Array.isArray(a) ? a.filter(t => todos.includes(t)) : todos; return new Set(v.length ? v : todos); }
@@ -2669,10 +2801,10 @@ function criarGrupo(nome) {
   const g = { id: novoId(), nome: nome.trim(), cor: CORES[cols.length % CORES.length], fechado: false, itens: [] };
   cols.push(g); saveCols(); return g;
 }
-function fecharPicker() { $("grpModal").hidden = true; travarScroll(); }
+function fecharPicker() { $("grpModal").hidden = true; delete $("grpSheet").dataset.v; travarScroll(); }
 
 function abrirPicker(item, deGrupo) {
-  const sh = $("grpSheet");
+  const sh = $("grpSheet"); delete sh.dataset.v;
   sh.innerHTML = `<div class="top"><b>${deGrupo ? "Mover para" : "Adicionar ao grupo"}</b><button class="ghost" id="pkFechar">Fechar</button></div>
     ${cols.filter(g => g.id !== deGrupo).map(g => `<button class="pkitem" data-g="${g.id}"><span class="dot" style="background:${g.cor}"></span><span>${esc(g.nome)}</span><span class="muted">${g.itens.length}</span></button>`).join("")}
     <button class="pkitem" data-novo="1"><span class="dot">＋</span><span>Novo grupo...</span></button>`;
@@ -2711,7 +2843,7 @@ $("grupoLista").addEventListener("click", e => {
 $("novoGrupo").onclick = async () => { const n = ((await pedirTexto("Novo grupo", "", "Criar")) || "").trim(); if (n) { criarGrupo(n); renderGrupos(); } };
 
 function menuGrupo(g) {
-  const sh = $("grpSheet");
+  const sh = $("grpSheet"); delete sh.dataset.v;
   sh.innerHTML = `<div class="top"><b>${esc(g.nome)}</b><button class="ghost" id="mnFechar">Fechar</button></div>
     <div class="swatches">${CORES.map(c => `<button class="sw${c === g.cor ? " on" : ""}" data-cor="${c}" style="background:${c}" aria-label="Cor"></button>`).join("")}</div>
     <button class="ghost menubtn" data-m="ren">Renomear</button>
@@ -2934,6 +3066,35 @@ setTimeout(() => autoAtualizar(false), 800);
   render();
 })();
 
+/* Buscas salvas (ficam iguais em todos os aparelhos pela sincronização) */
+(function () {
+  const box = $("fixas"), btn = $("expFixar");
+  const ler = () => { try { const a = JSON.parse(LS.get("n34_buscas", "[]")); return Array.isArray(a) ? a.filter(x => typeof x === "string") : []; } catch { return []; } };
+  const norm = txt => String(txt || "").trim().toLowerCase().split(/\s+/).filter(Boolean).join(" ");
+  const render = () => {
+    const l = ler(), atual = norm($("expTags").value);
+    box.hidden = !l.length;
+    box.innerHTML = l.map(t => `<span class="rec-wrap"><button type="button" class="rec pin" data-t="${esc(t)}" title="Repetir busca">★ ${esc(t)}</button><button type="button" class="rec pin del" data-d="${esc(t)}" aria-label="Remover busca salva ${esc(t)}">✕</button></span>`).join("");
+    const on = !!atual && l.includes(atual);
+    if (btn) { btn.setAttribute("aria-pressed", on); btn.textContent = on ? "★ Busca salva (tocar remove)" : "☆ Salvar esta busca"; }
+  };
+  if (btn) btn.onclick = () => {
+    const t = norm($("expTags").value); if (!t) return toast("Digite uma pesquisa primeiro");
+    const l = ler(), i = l.indexOf(t);
+    if (i >= 0) { l.splice(i, 1); toast("Busca removida"); } else { l.unshift(t); toast("Busca salva"); }
+    LS.set("n34_buscas", JSON.stringify(l.slice(0, 30))); render();
+  };
+  box.addEventListener("click", e => {
+    const d = e.target.closest("[data-d]");
+    if (d) { LS.set("n34_buscas", JSON.stringify(ler().filter(x => x !== d.dataset.d))); render(); return; }
+    const b = e.target.closest("[data-t]"); if (!b) return;
+    $("expTags").value = b.dataset.t; render(); carregarGrid(0); scrollTo({ top: 0, behavior: "smooth" });
+  });
+  $("expTags").addEventListener("input", render);
+  const _ar = aplicarEstadoRemoto; aplicarEstadoRemoto = function () { _ar(); render(); try { renderLinks(); } catch {} };
+  window.n34Fixas = render; render();
+})();
+
 /* Visualizador: arrastar para os lados troca, para baixo fecha; toque duplo e pinça dão zoom; pré-carrega vizinhas */
 (function () {
   const mid = $("vMid");
@@ -3066,7 +3227,7 @@ function atualizarNovos() {
   document.querySelectorAll('.bnav a[data-go="favs"] .bdg').forEach(b => { b.textContent = n > 99 ? "99+" : String(n); b.hidden = !n; });
   const sm = document.querySelector('.hcard[data-go="favs"] small');
   if (sm) { sm.textContent = n ? `${n} ${n === 1 ? "novidade" : "novidades"}` : "Seus artistas"; sm.classList.toggle("tem", !!n); }
-  const p = document.querySelector("#view-favs .phead p");
+  const p = null;
   if (p) p.textContent = !favs.length ? "Adicione artistas para ver quando postarem algo novo." : n ? `${n} de ${favs.length} com novidades.` : `${favs.length} ${favs.length === 1 ? "artista" : "artistas"} · nenhuma novidade.`;
 }
 try { const _rf = renderFavs; renderFavs = function () { const r = _rf.apply(this, arguments); atualizarNovos(); return r; }; } catch (e) { /* segue sem o gancho */ }
@@ -3100,6 +3261,59 @@ $("testarCfg").onclick = async () => {
 })();
 
 /* ---------- Página inicial: seus artistas, pesquisas recentes e resumo ---------- */
+/* ---------- Meus links (outros sites) ---------- */
+let homeEditLinks = false;
+const lerLinks = () => { try { const a = JSON.parse(LS.get("n34_links", "[]")); return Array.isArray(a) ? a.filter(l => l && typeof l.url === "string" && /^https?:\/\//i.test(l.url)) : []; } catch { return []; } };
+const gravarLinks = a => { LS.set("n34_links", JSON.stringify(a)); renderLinks(); };
+const hostDe = u => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return u; } };
+function urlLimpa(t) {
+  t = String(t || "").trim(); if (!t) return null;
+  if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(t)) t = "https://" + t;
+  try { const u = new URL(t); if (!/^https?:$/.test(u.protocol) || !u.hostname.includes(".")) return null; return u.pathname === "/" && !u.search && !u.hash ? u.href.replace(/\/$/, "") : u.href; } catch { return null; }
+}
+const linhaLink = x => `* || ${x.url} || - ** ${x.nome || hostDe(x.url)} **`;   // formato de "Copiar todos"
+async function copiarTexto(t) {
+  try { await navigator.clipboard.writeText(t); return true; } catch {}
+  try { const a = document.createElement("textarea"); a.value = t; a.setAttribute("readonly", ""); a.style.cssText = "position:fixed;top:-100px;opacity:0"; document.body.appendChild(a); a.select(); const ok = document.execCommand("copy"); a.remove(); return ok; } catch { return false; }
+}
+function renderLinks() {
+  const sh = $("grpSheet"); if ($("grpModal").hidden || sh.dataset.v !== "links") return;
+  const l = lerLinks(), ed = homeEditLinks && l.length;
+  const cards = l.map(x => {
+    const nome = x.nome || hostDe(x.url), id = esc(x.id);
+    return `<div class="hlink"><a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer"><span class="hli">${esc(nome.trim().charAt(0).toUpperCase() || "•")}<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(hostDe(x.url))}&sz=64" alt="" loading="lazy" referrerpolicy="no-referrer" onload="if(this.naturalWidth>1)this.parentNode.classList.add('ok');else this.remove()" onerror="this.remove()"></span><span class="hlt"><b>${esc(nome)}</b><small>${esc(hostDe(x.url))}</small></span></a>`
+      + (ed ? `<span class="hle"><button type="button" data-lk="up" data-lid="${id}" aria-label="Subir ${esc(nome)}">↑</button><button type="button" data-lk="ren" data-lid="${id}" aria-label="Renomear ${esc(nome)}">✎</button><button type="button" data-lk="del" data-lid="${id}" aria-label="Remover ${esc(nome)}">✕</button></span>` : "") + `</div>`;
+  }).join("");
+  sh.innerHTML = `<div class="top"><b>Meus links</b><button class="ghost" id="lkFechar" type="button">Fechar</button></div>
+    <div class="lkacts"><button class="ghost" type="button" data-lk="add">＋ Adicionar</button><button class="ghost" type="button" data-lk="copy" ${l.length ? "" : "disabled"}>Copiar todos</button>${l.length ? `<button class="ghost" type="button" data-lk="edit">${ed ? "Concluir" : "Editar"}</button>` : ""}</div>`
+    + (l.length ? `<div class="hlinks${ed ? " edit" : ""}">${cards}</div>` : `<p class="hvazio">Guarde aqui os links dos seus outros sites. Toque em “＋ Adicionar”.</p>`);
+  $("lkFechar").onclick = fecharPicker;
+}
+function abrirLinks() {
+  const sh = $("grpSheet"); sh.dataset.v = "links"; homeEditLinks = false;
+  $("grpModal").hidden = false; travarScroll();
+  sh.onclick = e => {
+    if (e.target.closest(".hlinks.edit a")) e.preventDefault();   // no modo Editar o cartão não abre o site
+    const lk = e.target.closest("[data-lk]"); if (lk) linkAcao(lk.dataset.lk, lk.dataset.lid);
+  };
+  renderLinks();
+}
+async function linkAcao(ac, id) {
+  const l = lerLinks();
+  if (ac === "edit") { homeEditLinks = !homeEditLinks; return renderLinks(); }
+  if (ac === "copy") { if (!l.length) return; return toast(await copiarTexto(l.map(linhaLink).join("\n")) ? `${l.length} link(s) copiado(s)` : "Não consegui copiar os links"); }
+  if (ac === "add") {
+    const t = await pedirTexto("Endereço do site (ex.: exemplo.com)", "", "Continuar"); if (t == null) return;
+    const u = urlLimpa(t); if (!u) return toast("Endereço inválido");
+    if (l.some(x => x.url === u)) return toast("Esse link já está na lista");
+    const n = await pedirTexto("Nome do link", hostDe(u), "Salvar"); if (n == null) return;
+    l.push({ id: novoId(), nome: n || hostDe(u), url: u }); gravarLinks(l); return toast("Link adicionado");
+  }
+  const i = l.findIndex(x => x.id === id); if (i < 0) return;
+  if (ac === "del") { if (!await confirmar("Remover link?", "“" + (l[i].nome || hostDe(l[i].url)) + "” sai da lista.", "Remover", true)) return; l.splice(i, 1); if (!l.length) homeEditLinks = false; gravarLinks(l); }
+  else if (ac === "up") { if (i > 0) { [l[i - 1], l[i]] = [l[i], l[i - 1]]; gravarLinks(l); } }
+  else if (ac === "ren") { const n = await pedirTexto("Nome do link", l[i].nome || "", "Salvar"); if (n == null) return; l[i].nome = n || hostDe(l[i].url); gravarLinks(l); }
+}
 function renderHome() {
   const box = $("homeExtra"); if (!box) return;
   const novo = f => f.id && f.id !== f.visto;
@@ -3107,6 +3321,7 @@ function renderHome() {
   const lista = [];
   const nNovos = favs.filter(novo).length;
   let rec = []; try { rec = (JSON.parse(LS.get("n34_recentes", "[]")) || []).slice(0, 8); } catch {}
+  let fix = []; try { fix = (JSON.parse(LS.get("n34_buscas", "[]")) || []).filter(x => typeof x === "string").slice(0, 8); } catch {}
   const tam = k => { try { const v = JSON.parse(LS.get(k, "[]")); return Array.isArray(v) ? v.length : Object.keys(v || {}).length; } catch { return 0; } };
   let nGrp = 0; try { nGrp = Array.isArray(cols) ? cols.length : 0; } catch {}
   const nGal = tam("n34_galeria");
@@ -3115,6 +3330,7 @@ function renderHome() {
         const u = foto(f);
         return `<button class="hav${novo(f) ? " hnew" : ""}" data-tag="${esc(f.tag)}" title="${esc(f.tag)}"><span class="ring">${u ? `<img src="${esc(u)}" referrerpolicy="no-referrer" loading="lazy" alt="">` : `<i>${esc((f.tag.replace(/[^a-z0-9]/gi, "")[0] || "?").toUpperCase())}</i>`}</span><small>${esc(f.tag)}</small></button>`;
       }).join("")}</div></div>` : "")
+    + (fix.length ? `<div class="hsec"><h3>Buscas salvas</h3><div class="hrec">${fix.map(t => `<button data-q="${esc(t)}">★ ${esc(t)}</button>`).join("")}</div></div>` : "")
     + (rec.length ? `<div class="hsec"><h3>Pesquisas recentes</h3><div class="hrec">${rec.map(t => `<button data-q="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>` : "")
     + `<div class="hstats"><span class="hstat"><b>${favs.length}</b>Favoritos</span>${nNovos ? `<span class="hstat hot"><b>${nNovos}</b>Novos Posts</span>` : ""}<span class="hstat"><b>${nGrp}</b>Grupos</span><span class="hstat"><b>${nGal}</b>Galeria</span></div>`;
 }
@@ -3222,7 +3438,7 @@ $("vCopiar").onclick = () => { const p = gridPosts[vI]; if (p) copiarImg({ v: ti
 $("galCopiar").onclick = () => { const it = galItens[galI]; if (it) copiarImg({ v: it.tipo === "video", f: it.full, s: it.sample, id: it.id }); };
 
 /* ---------- Sincronização entre aparelhos (mesmo User ID + API Key) ---------- */
-const SYNC_KEYS = ["r34_favs", "r34_black", "r34_cols", "n34_galeria", "r34_semia", "n34_seguindo"];
+const SYNC_KEYS = ["r34_favs", "r34_black", "r34_cols", "n34_galeria", "r34_semia", "n34_seguindo", "n34_buscas", "n34_links"];
 /* ---------- Servidor opcional ----------
    No GitHub Pages não há servidor: a sincronização é feita pelo token do GitHub (Gist) e a cópia de imagens por servidor fica desligada. */
 const N34_API = "";
@@ -3232,8 +3448,14 @@ const API_BASE = NO_GITHUB ? N34_API.replace(/\/+$/, "") : "";
 const SYNC_OFF = "cole o token do GitHub abaixo para sincronizar entre aparelhos";
 let SYNC_URL = API_BASE + "/api/sync";
 const SYNC_FALTA = "a função de sincronização não está publicada neste site (404)";
+let syncSemServidor = !/^https?:$/.test(location.protocol);   // vira true quando este site não tem a função /api/sync (ex.: a versão do GitHub hospedada fora do github.io)
+const htmlResp = t => /^\s*<(!doctype|html)/i.test(t || "");
 let aplicandoRemoto = false, pushT = null, syncBusy = false, syncPend = false, syncUltima = 0;
-const syncSt = t => { const el = $("syncSt"); if (el) el.textContent = "Sincronização: " + t; };
+const syncSt = t => {
+  const el = $("syncSt"); if (el) el.textContent = "Sincronização: " + t;
+  const e = /^(erro|indispon)/.test(t) ? "erro" : /^(sincronizando|testando)/.test(t) ? "busy" : /^ok/.test(t) ? "ok" : "";
+  const dt = $("syncDot"); if (dt) { if (e) dt.dataset.s = e; else delete dt.dataset.s; }
+};
 const _si = Storage.prototype.setItem;
 Storage.prototype.setItem = function (k, v) {
   const antes = this === localStorage && SYNC_KEYS.includes(k) ? this.getItem(k) : undefined;
@@ -3358,29 +3580,33 @@ async function tdEnviar(k, v) {
     const r = await tdFetch(TD_ESC, init());
     if (!r.ok) throw new Error("serviço de sincronização " + r.status);
     const j = await r.json().catch(() => null); if (j && j.status === 0) throw new Error("o serviço recusou o envio (limite diário?)");
-    return;
+    return !!(j && j.status === 1);   // true = o serviço confirmou que guardou
   } catch (e) {
     if (e.name === "AbortError") throw new Error("o serviço de sincronização demorou demais");
     if (!(e instanceof TypeError)) throw e;   // TypeError = o navegador bloqueou a resposta (CORS): o envio pode ter ido, então tenta sem ler a resposta
   }
-  try { await tdFetch(TD_ESC, { ...init(), mode: "no-cors" }); }
+  try { await tdFetch(TD_ESC, { ...init(), mode: "no-cors" }); return false; }
   catch { throw new Error("não consegui falar com o serviço de sincronização (textdb.online)"); }
 }
 async function tdGravar(txt) {
   const T = 150000, partes = []; for (let i = 0; i < txt.length; i += T) partes.push(txt.slice(i, i + T));
   const cab = `n34c:${partes.length}:${partes[0]}`;
-  for (let i = partes.length - 1; i >= 0; i--) await tdEnviar(await tdChave(i), i === 0 ? cab : partes[i]);   // o cabeçalho (parte 0) é gravado por último
+  let confirmado = true;
+  for (let i = partes.length - 1; i >= 0; i--) if (!(await tdEnviar(await tdChave(i), i === 0 ? cab : partes[i]))) confirmado = false;   // o cabeçalho (parte 0) é gravado por último
   const k0 = await tdChave(0);
   for (let t = 0; t < 4; t++) {   // confere se o serviço realmente guardou
     await dormir(t ? 2000 : 900);
     let lido = null; try { lido = await tdTexto(k0); } catch {}
     if (lido === cab) return;
   }
+  if (confirmado) return;   // o serviço respondeu "ok" a todos os envios; a leitura de volta só atrasou (cache)
   throw new Error("o serviço não confirmou a gravação; tente de novo em instantes");
 }
 async function testarSync() {   // diagnóstico: mostra em qual etapa a sincronização falha
   const k = "n34-teste-" + Date.now().toString(36), r = [];
   syncSt("testando…");
+  if (API_OK && !syncSemServidor) { try { const q = await fetch(SYNC_URL + "?id=teste", { cache: "no-store" }); if (q.status === 404 || htmlResp(q.status === 200 ? await q.text() : "")) syncSemServidor = true; } catch {} }
+  r.push(!API_OK || syncSemServidor ? "usa textdb.online" : "usa o servidor do site");
   try { await tdEnviar(k, "ok"); r.push("envio ✓"); } catch (e) { r.push("envio ✗ (" + e.message + ")"); }
   try { await dormir(1200); const t = await tdTexto(k); r.push(t === "ok" ? "leitura ✓" : "leitura ✗ (o valor não voltou)"); } catch (e) { r.push("leitura ✗ (" + e.message + ")"); }
   try { await tdEnviar(k, ""); } catch {}
@@ -3388,11 +3614,14 @@ async function testarSync() {   // diagnóstico: mostra em qual etapa a sincroni
 }
 async function enviarSync(d, v) {
   if (ghToken()) return ghGravar(await cifrar({ d, v }));
-  if (!API_OK) return tdGravar(await cifrar({ d, v }));
+  if (!API_OK || syncSemServidor) return tdGravar(await cifrar({ d, v }));
   const { id } = await chaveSync();
   const c = creds(), proof = toHex(await crypto.subtle.digest("SHA-256", _enc.encode("n34-proof:" + c.uid + ":" + c.key)));
-  const r = await fetch(`${SYNC_URL}?id=${id}`, { method: "PUT", headers: { "x-n34-proof": proof }, body: await cifrar({ d, v }) });
-  if (r.status === 404) throw new Error(SYNC_FALTA);
+  const corpo = await cifrar({ d, v });
+  let r;
+  try { r = await fetch(`${SYNC_URL}?id=${id}`, { method: "PUT", headers: { "x-n34-proof": proof }, body: corpo }); }
+  catch (e) { if (e instanceof TypeError) { syncSemServidor = true; return tdGravar(corpo); } throw e; }
+  if (r.status === 404) { syncSemServidor = true; return tdGravar(await cifrar({ d, v })); }
   if (!r.ok) throw new Error("servidor " + r.status);
 }
 function resumoSync(d) {
@@ -3415,15 +3644,21 @@ async function lerRemoto() {   // devolve os dados do outro aparelho (já decifr
     const t = await ghLer(); if (!t) return null;
     try { return await decifrar(t); } catch { throw new Error("não consegui abrir os dados salvos: confira se o User ID e a API key são os mesmos do outro aparelho"); }
   }
-  if (!API_OK) return tdLer();
+  if (!API_OK || syncSemServidor) return tdLer();
   const { id } = await chaveSync();
-  let r = await fetch(`${SYNC_URL}?id=${id}`, { cache: "no-store" });
+  let r;
+  try { r = await fetch(`${SYNC_URL}?id=${id}`, { cache: "no-store" }); }
+  catch (e) { if (e instanceof TypeError) { syncSemServidor = true; return tdLer(); } throw e; }   // o servidor do site não respondeu: usa o textdb.online
   if (r.status === 404 && SYNC_URL !== API_BASE + "/.netlify/functions/sync") {   // tenta o endereço direto da função
     const r2 = await fetch(`${API_BASE}/.netlify/functions/sync?id=${id}`, { cache: "no-store" });
     if (r2.status !== 404) { SYNC_URL = API_BASE + "/.netlify/functions/sync"; r = r2; }
   }
-  if (r.status === 404) throw new Error(SYNC_FALTA);
-  if (r.status === 200) { try { return await decifrar(await r.text()); } catch { throw new Error("função de sincronização não encontrada"); } }
+  if (r.status === 404) { syncSemServidor = true; return tdLer(); }   // sem função neste site: usa o textdb.online
+  if (r.status === 200) {
+    const t = await r.text();
+    if (htmlResp(t)) { syncSemServidor = true; return tdLer(); }   // o site devolveu uma página em vez da função
+    try { return await decifrar(t); } catch { throw new Error("não consegui abrir os dados salvos: confira se o User ID e a API key são os mesmos do outro aparelho"); }
+  }
   if (r.status !== 204) throw new Error("servidor " + r.status);
   return null;
 }
@@ -3440,7 +3675,7 @@ async function sincronizar(manual) {
     for (let t = 0; remoto && remoto.v && remoto.v < vSalvo() && t < 3; t++) { await dormir(2500); remoto = await lerRemoto(); }   // o serviço pode devolver uma cópia antiga (cache)
     if (remoto && remoto.v && remoto.v < vSalvo()) throw new Error("o serviço ainda mostra dados antigos (cache); tente de novo em instantes");
     if (remoto && remoto.v) _si.call(localStorage, "n34_sync_v", String(Math.max(vSalvo(), remoto.v)));
-    const base = baseLer(), final = {}, nova = {};
+    const base = baseLer(), final = {}, nova = {}, pre = {};
     let mudou = false, push = !remoto;
     aplicandoRemoto = true;
     for (const k of SYNC_KEYS) {   // base = o que os dois lados tinham na última sincronização
@@ -3452,17 +3687,20 @@ async function sincronizar(manual) {
         if (lm && !rm) push = true;                                   // só este aparelho mudou
         else if (!lm && rm) v = R;                                    // só o outro mudou
         else { v = uniao(k, L ?? "", R ?? ""); push = true; }         // os dois mudaram: junta
-        if (v !== L) { _si.call(localStorage, k, v ?? vazioDe(k)); mudou = true; }
+        if (v !== L) { if (L != null) pre[k] = L; _si.call(localStorage, k, v ?? vazioDe(k)); mudou = true; }   // pre = cópia do que este aparelho tinha, para poder desfazer
       }
       final[k] = v ?? vazioDe(k); nova[k] = hashV(v);
     }
     aplicandoRemoto = false;
     if (push) { const vNovo = Date.now(); await enviarSync(final, vNovo); _si.call(localStorage, "n34_sync_v", String(vNovo)); }
     _si.call(localStorage, "n34_sync_base", JSON.stringify({ ...base, ...nova }));
-    syncUltima = Date.now(); syncErros = 0; syncSt("ok · " + resumoSync(final));
+    syncUltima = Date.now(); syncErros = 0; syncSt("ok às " + new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }));
+    { const rs = $("syncResumo"); if (rs) rs.textContent = resumoSync(final) + (ghToken() ? " · via GitHub" : !API_OK || syncSemServidor ? " · via textdb.online" : ""); }
+    if (mudou && Object.keys(pre).length) { try { _si.call(localStorage, "n34_pre_sync", JSON.stringify({ t: Date.now(), d: pre })); } catch {} pintarDesfazer(); }
     if (mudou) aplicarEstadoRemoto();
   } catch (e) {
-    syncSt("erro (" + e.message + ")" + (/GitHub (401|403|404)|GitHub recusou/.test(e.message) ? ". Confira o token do GitHub (precisa da permissão “gist”) ou apague-o em “Avançado” para usar a sincronização padrão" : "")); syncErros++;
+    const msg = /failed to fetch|networkerror|load failed/i.test(e.message) ? "sem conexão ou a rede bloqueou o serviço de sincronização (confira a internet, VPN ou bloqueador de anúncios)" : e.message;
+    syncSt("erro (" + msg + ")" + (/GitHub (401|403|404)|GitHub recusou/.test(e.message) ? ". Confira o token do GitHub (precisa da permissão “gist”) ou apague-o em “Avançado” para usar a sincronização padrão" : "")); syncErros++; syncUltima = Date.now();
     if (syncErros <= 3) { clearTimeout(syncRetry); syncRetry = setTimeout(() => sincronizar(), 30000 * syncErros); }   // tenta de novo sozinho
   }
   finally { aplicandoRemoto = false; syncBusy = false; if (syncPend) { syncPend = false; setTimeout(sincronizar, 600); } }
@@ -3475,12 +3713,23 @@ $("ghToken").addEventListener("change", e => {
   if (!creds().uid || !creds().key) return syncSt("configure o User ID e a API Key");
   sincronizar(true);
 });
+function pintarDesfazer() { let s = null; try { s = JSON.parse(LS.get("n34_pre_sync", "null")); } catch {} const b = $("syncDesfaz"); b.hidden = !(s && s.d); if (s && s.t) b.title = "Voltar ao que este aparelho tinha antes da sincronização de " + fmtData(new Date(s.t)); }
+async function desfazerSync() {
+  let s = null; try { s = JSON.parse(LS.get("n34_pre_sync", "null")); } catch {}
+  if (!s || !s.d) { pintarDesfazer(); return toast("Nada para desfazer"); }
+  if (!await confirmar("Desfazer a última sincronização?", "Este aparelho volta ao que tinha antes de receber as mudanças do outro aparelho. Essa versão também será enviada aos outros aparelhos.", "Desfazer", true)) return;
+  aplicandoRemoto = true; try { for (const k of Object.keys(s.d)) _si.call(localStorage, k, s.d[k]); } finally { aplicandoRemoto = false; }
+  localStorage.removeItem("n34_pre_sync"); pintarDesfazer(); aplicarEstadoRemoto(); toast("Sincronização desfeita"); sincronizar(true);
+}
+$("syncDesfaz").onclick = desfazerSync; pintarDesfazer();
 $("syncTeste").onclick = testarSync;
 $("syncAgora").onclick = () => { if (!creds().uid || !creds().key) return syncSt("configure o User ID e a API Key"); sincronizar(true); };
 document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - syncUltima > 30000) sincronizar(); });
+setInterval(() => { if (!document.hidden && !syncBusy && creds().uid && Date.now() - syncUltima > 120000) sincronizar(); }, 30000);   // com dois aparelhos abertos, um recebe as mudanças do outro
+addEventListener("online", () => { if (!syncBusy) sincronizar(); });
 setTimeout(sincronizar, 900);
 /* ---------- Backup, armazenamento, modo economia ---------- */
-const BK_KEYS = ["r34_favs", "r34_cols", "n34_galeria", "r34_black", "r34_semia", "n34_recentes", "n34_tipoF", "n34_lay"];
+const BK_KEYS = ["r34_favs", "r34_cols", "n34_galeria", "r34_black", "r34_semia", "n34_recentes", "n34_buscas", "n34_links", "n34_tipoF", "n34_lay"];
 function usoLS() { let b = 0; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); b += (k.length + (localStorage.getItem(k) || "").length) * 2; } } catch {} return b; }
 function pintarUso() {
   const b = usoLS(), pct = Math.round(b / (5 * 1048576) * 100), el = $("usoLS");
