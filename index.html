@@ -1474,7 +1474,7 @@
       </section>
       <section class="cfgsec">
         <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></svg>Sincronização</h4>
-        <div class="sync"><span class="syncl"><i id="syncDot" class="sdot" aria-hidden="true"></i><span id="syncSt">Sincronização: aguardando</span></span><span class="syncbtns"><button type="button" id="syncAgora" class="ghost">Sincronizar agora</button><button id="syncTeste" class="ghost" type="button">Testar</button><button id="syncDesfaz" class="ghost" type="button" hidden>Desfazer última</button></span></div>
+        <div class="sync"><span class="syncl"><i id="syncDot" class="sdot" aria-hidden="true"></i><span id="syncSt">Sincronização: aguardando</span></span><span class="syncbtns"><button type="button" id="syncAgora" class="ghost">Sincronizar agora</button><button id="syncTeste" class="ghost" type="button">Testar</button><button id="syncForca" class="ghost" type="button">Reenviar daqui</button><button id="syncDesfaz" class="ghost" type="button" hidden>Desfazer última</button></span></div>
         <small id="syncResumo" class="cfgdica" role="status"></small>
         <small class="cfgdica">Seus favoritos, grupos, galeria, seguindo e blacklist ficam iguais em todos os aparelhos onde você entrar com o mesmo User ID e API key.</small>
       </section>
@@ -3501,15 +3501,23 @@ async function chaveSync() {   // o servidor só recebe um hash e texto cifrado;
   const k = await crypto.subtle.deriveKey({ name: "PBKDF2", salt: _enc.encode("n34-sync-v1:" + uid), iterations: 120000, hash: "SHA-256" }, base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
   _skFor = seg; return (_sk = { id, k });
 }
+async function gzip(u8, dir) {   // comprime/descomprime (a galeria tem milhares de endereços parecidos: cai para ~1/8 do tamanho)
+  const s = new (dir ? CompressionStream : DecompressionStream)("gzip"), w = s.writable.getWriter(); w.write(u8); w.close();
+  return new Uint8Array(await new Response(s.readable).arrayBuffer());
+}
 async function cifrar(obj) {
   const { k } = await chaveSync(), iv = crypto.getRandomValues(new Uint8Array(12));
-  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, k, _enc.encode(JSON.stringify(obj))));
+  let dados = _enc.encode(JSON.stringify(obj)), pre = "n34v1.";
+  if (window.CompressionStream) { try { dados = await gzip(dados, true); pre = "n34v2."; } catch {} }
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, k, dados));
   const all = new Uint8Array(12 + ct.length); all.set(iv); all.set(ct, 12);
-  return "n34v1." + toB64(all);
+  return pre + toB64(all);
 }
 async function decifrar(txt) {
-  const { k } = await chaveSync(), all = fromB64(txt.replace(/^n34v1\./, ""));
-  return JSON.parse(_dec.decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: all.slice(0, 12) }, k, all.slice(12))));
+  const { k } = await chaveSync(), v2 = txt.startsWith("n34v2."), all = fromB64(txt.replace(/^n34v[12]\./, ""));
+  let dados = new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: all.slice(0, 12) }, k, all.slice(12)));   // se falhar aqui, a chave (User ID + API key) não confere
+  if (v2) dados = await gzip(dados, false);
+  return JSON.parse(_dec.decode(dados));
 }
 function uniao(k, a, b) {   // 1ª vez neste aparelho: junta o que já existe nos dois lados
   try {
@@ -3537,22 +3545,34 @@ function tdFetch(url, init = {}, ms = 15000) {   // com tempo limite, para não 
   const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
   return fetch(url, { ...init, signal: c.signal }).finally(() => clearTimeout(t));
 }
-async function tdTexto(k) {
+async function tdTexto(k, fresco) {
   const ler = async url => {
     const r = await tdFetch(url, { cache: "no-store" });
     if (r.status === 404) return null;
     if (!r.ok) throw new Error("serviço de sincronização " + r.status);
     const t = (await r.text()).trim(); return !t || /^<(!doctype|html)/i.test(t) ? null : t;
   };
-  try { let t = await ler(TD_LER + k + "?t=" + Date.now()); if (t == null) t = await ler(TD_LER + k); return t; }
+  try { let t = await ler(TD_LER + k + "?t=" + Date.now() + (fresco ? "&r=" + Math.random().toString(36).slice(2) : "")); if (t == null && !fresco) t = await ler(TD_LER + k); return t; }
   catch (e) { throw new Error(e.name === "AbortError" ? "o serviço de sincronização demorou demais" : e.message.startsWith("serviço") ? e.message : "sem conexão com o serviço de sincronização"); }
 }
+const ERRO_CHAVE = "não consegui abrir os dados salvos: confira se o User ID e a API key são os mesmos do outro aparelho (ou toque em “Reenviar daqui” para substituir os dados salvos pelos deste aparelho)";
 async function tdLer() {   // devolve os dados já decifrados, ou null se ainda não há nada salvo
-  const c0 = await tdTexto(await tdChave(0)); if (!c0) return null;
-  const m = /^n34c:(\d+):/.exec(c0); if (!m) throw new Error("dados salvos em formato desconhecido");
+  let c0 = await tdTexto(await tdChave(0)); if (!c0) return null;
+  const novo = /^n34d:(\d+):([a-z0-9]+):/.exec(c0), velho = /^n34c:(\d+):/.exec(c0), m = novo || velho;
+  if (!m) throw new Error("dados salvos em formato desconhecido");
+  const n = +m[1], tok = novo ? novo[2] : null;
   let txt = c0.slice(m[0].length);
-  for (let i = 1; i < +m[1]; i++) { const c = await tdTexto(await tdChave(i)); if (c == null) throw new Error("dados incompletos no serviço; tente de novo"); txt += c; }
-  try { return await decifrar(txt); } catch { throw new Error("não consegui abrir os dados salvos: confira se o User ID e a API key são os mesmos do outro aparelho"); }
+  for (let i = 1; i < n; i++) {
+    let c = null;
+    for (let t = 0; t < 4; t++) {   // o serviço pode devolver uma parte antiga (cache): tenta de novo até bater com o cabeçalho
+      c = await tdTexto(await tdChave(i), t > 0);
+      if (c != null && (!tok || c.startsWith(tok + ":"))) break;
+      c = null; await dormir(1200);
+    }
+    if (c == null) throw new Error("dados incompletos no serviço (partes de envios diferentes); aguarde um instante e toque em “Sincronizar agora”, ou em “Reenviar daqui”");
+    txt += tok ? c.slice(tok.length + 1) : c;
+  }
+  try { return await decifrar(txt); } catch { throw new Error(ERRO_CHAVE); }
 }
 async function tdEnviar(k, v) {
   const init = () => ({ method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ key: k, value: v }) });
@@ -3569,14 +3589,15 @@ async function tdEnviar(k, v) {
   catch { throw new Error("não consegui falar com o serviço de sincronização (textdb.online)"); }
 }
 async function tdGravar(txt) {
-  const T = 150000, partes = []; for (let i = 0; i < txt.length; i += T) partes.push(txt.slice(i, i + T));
-  const cab = `n34c:${partes.length}:${partes[0]}`;
+  const T = 120000, partes = []; for (let i = 0; i < txt.length; i += T) partes.push(txt.slice(i, i + T));
+  const tok = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);   // marca todas as partes deste envio, para nunca juntar partes de envios diferentes
+  const cab = `n34d:${partes.length}:${tok}:${partes[0]}`;
   let confirmado = true;
-  for (let i = partes.length - 1; i >= 0; i--) if (!(await tdEnviar(await tdChave(i), i === 0 ? cab : partes[i]))) confirmado = false;   // o cabeçalho (parte 0) é gravado por último
+  for (let i = partes.length - 1; i >= 0; i--) if (!(await tdEnviar(await tdChave(i), i === 0 ? cab : tok + ":" + partes[i]))) confirmado = false;   // o cabeçalho (parte 0) é gravado por último
   const k0 = await tdChave(0);
   for (let t = 0; t < 4; t++) {   // confere se o serviço realmente guardou
     await dormir(t ? 2000 : 900);
-    let lido = null; try { lido = await tdTexto(k0); } catch {}
+    let lido = null; try { lido = await tdTexto(k0, t > 0); } catch {}
     if (lido === cab) return;
   }
   if (confirmado) return;   // o serviço respondeu "ok" a todos os envios; a leitura de volta só atrasou (cache)
@@ -3632,7 +3653,7 @@ async function lerRemoto() {   // devolve os dados do outro aparelho (já decifr
   if (r.status === 200) {
     const t = await r.text();
     if (htmlResp(t)) { syncSemServidor = true; return tdLer(); }   // o site devolveu uma página em vez da função
-    try { return await decifrar(t); } catch { throw new Error("não consegui abrir os dados salvos: confira se o User ID e a API key são os mesmos do outro aparelho"); }
+    try { return await decifrar(t); } catch { throw new Error(ERRO_CHAVE); }
   }
   if (r.status !== 204) throw new Error("servidor " + r.status);
   return null;
@@ -3693,6 +3714,24 @@ async function desfazerSync() {
   aplicandoRemoto = true; try { for (const k of Object.keys(s.d)) _si.call(localStorage, k, s.d[k]); } finally { aplicandoRemoto = false; }
   localStorage.removeItem("n34_pre_sync"); pintarDesfazer(); aplicarEstadoRemoto(); toast("Sincronização desfeita"); sincronizar(true);
 }
+async function reenviarDaqui() {   // substitui o que está salvo no serviço pelo que este aparelho tem agora
+  const c = creds(); if (!c.uid || !c.key) return syncSt("configure o User ID e a API Key");
+  if (!window.crypto || !crypto.subtle) return syncSt("indisponível (precisa de https)");
+  if (!await confirmar("Reenviar os dados deste aparelho?", "Os dados que estão salvos no serviço de sincronização serão substituídos pelos deste aparelho (favoritos, grupos, galeria, seguindo e blacklist). Os outros aparelhos vão receber esta versão.", "Reenviar", true)) return;
+  if (syncBusy) return toast("Já está sincronizando, tente de novo em instantes");
+  syncBusy = true; syncSt("reenviando...");
+  try {
+    const final = {}, nova = {};
+    for (const k of SYNC_KEYS) { const v = LS.get(k, null); final[k] = vz(v) ? vazioDe(k) : v; nova[k] = hashV(vz(v) ? null : v); }
+    const vNovo = Date.now(); await enviarSync(final, vNovo);
+    _si.call(localStorage, "n34_sync_v", String(vNovo)); _si.call(localStorage, "n34_sync_base", JSON.stringify(nova));
+    syncUltima = Date.now(); syncErros = 0; syncSt("ok às " + new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }));
+    const rs = $("syncResumo"); if (rs) rs.textContent = resumoSync(final) + (!API_OK || syncSemServidor ? " · via textdb.online" : "");
+    toast("Dados reenviados");
+  } catch (e) { syncSt("erro (" + e.message + ")"); }
+  finally { syncBusy = false; }
+}
+$("syncForca").onclick = reenviarDaqui;
 $("syncDesfaz").onclick = desfazerSync; pintarDesfazer();
 $("syncTeste").onclick = testarSync;
 $("syncAgora").onclick = () => { if (!creds().uid || !creds().key) return syncSt("configure o User ID e a API Key"); sincronizar(true); };
