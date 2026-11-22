@@ -17,22 +17,17 @@ PUBLICAR
 Para atualizar depois: envie o index.html novo por cima (e o sw.js, se ele mudar).
 
 CONFIGURAR (⚙ no site)
-- Cole o User ID e a API key do Rule34 (rule34.xxx > Minha conta > Opções) e toque em Testar conexão.
+- Cole o User ID e a API key do Rule34 (rule34.xxx > Minha conta > Opções) e toque em Salvar.
   Ficam salvos só no navegador.
 
 INSTALAR NO CELULAR
 - Botão "Instalar o N34 no celular" na página inicial.
   Android/Chrome: instala com um toque. iPhone: Safari > Compartilhar > Adicionar à Tela de Início.
 
-SINCRONIZAR ENTRE APARELHOS (pelo GitHub)
-Seus dados vão cifrados para um gist SECRETO da sua conta GitHub.
-1. Em github.com/settings/tokens crie um token CLÁSSICO e marque só a permissão "gist". Copie o token (ghp_...).
-2. Em cada aparelho: ⚙ > coloque o MESMO User ID e a MESMA API key do Rule34 > cole o token em
-   "Sincronizar pelo GitHub". A sincronização começa sozinha (o ⚙ mostra "Sincronização: ok · N favoritos...").
-3. Favoritos, Seguindo, grupos, galeria e blacklist passam a acompanhar você em todos os aparelhos.
-- O token fica só no aparelho (não é sincronizado nem entra no backup).
-- Os dados são cifrados no aparelho com User ID + API key antes de sair: o GitHub só vê texto embaralhado.
-- Se trocar a API key do Rule34, os aparelhos deixam de achar os dados antigos (cria-se um gist novo).
+SINCRONIZAR ENTRE APARELHOS
+Entre no site em cada aparelho, abra ⚙ e use o MESMO User ID e a MESMA API key do Rule34. A sincronização começa sozinha.
+Seus dados vão cifrados no aparelho (com User ID + API key) para o textdb.online; o serviço só vê texto embaralhado.
+A bolinha em ⚙ > Sincronização mostra o estado: verde = em dia, amarela = sincronizando, vermelha = erro.
 
 IMAGENS E VÍDEOS
 - O visualizador abre a imagem na versão reduzida e troca sozinho pela ORIGINAL.
@@ -110,3 +105,14 @@ MEUS LINKS (menu ☰)
 - "Copiar todos" copia uma linha por link neste formato:
   * || https://linkteste.com || - ** Título do Link **
 - Só aceita endereços http/https. Os links entram na sincronização e no backup (iguais no PC e no celular).
+
+ATUALIZAÇÃO — SINCRONIZAÇÃO E CONFIGURAÇÕES
+- Removida a sincronização pelo GitHub (token/gist). Se havia um token guardado no aparelho, ele é apagado ao abrir o site.
+- Removido o botão "Testar conexão" (o botão Salvar basta).
+- A dica "Como conseguir o User ID e a API key" virou um popup que aparece só na primeira vez que as configurações abrem.
+- O cartão "Instalar o N34 no celular" da página inicial aparece no máximo a cada 3 dias (e some por 30 dias depois que você toca nele).
+  O botão "Instalar o N34 como app" nas configurações continua sempre disponível.
+- Sincronização mais segura:
+  * Se o serviço não devolver nada (apagou os dados ou mostrou uma página de erro), o site NÃO apaga mais o que está no aparelho: envia de novo.
+  * Se o serviço devolver uma cópia mais antiga que o último envio, o site reenvia a versão do aparelho em vez de ficar em erro.
+  * O servidor do site e o textdb.online têm tempo limite; se travar, aparece o erro e dá para tentar de novo (Sincronizar agora).

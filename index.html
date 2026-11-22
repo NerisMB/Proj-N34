@@ -649,18 +649,20 @@
   .hinst:focus-visible, #instModal button:focus-visible { outline:2px solid #e9d5ff; outline-offset:2px; }
   @media (min-width:641px) { .hinst { max-width:720px; } }
 
-  #instModal { position:fixed; inset:0; z-index:95; display:flex; align-items:flex-end; justify-content:center; padding:16px; background:rgba(5,2,9,.72); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
+  #instModal, #ajudaModal { position:fixed; inset:0; z-index:95; display:flex; align-items:flex-end; justify-content:center; padding:16px; background:rgba(5,2,9,.72); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
   .instbox { position:relative; width:min(440px,100%); max-height:88vh; overflow:auto; padding:22px 20px calc(20px + env(safe-area-inset-bottom,0px)); border-radius:22px;
     background:#0e0620; border:1px solid var(--bd); box-shadow:0 20px 60px rgba(0,0,0,.6); animation:sobeFolha .3s cubic-bezier(.2,.8,.2,1); }
   .instbox h3 { margin:0 40px 4px 0; font:800 1.25rem/1.2 var(--fd); }
   .instsub { margin:0 0 14px; color:var(--muted); font-size:.92rem; }
   .instx { position:absolute; top:12px; right:12px; width:38px; height:38px; padding:0; }
-  #instPassos { list-style:none; counter-reset:p; margin:0 0 16px; padding:0; display:grid; gap:10px; }
-  #instPassos li { counter-increment:p; display:flex; gap:12px; align-items:flex-start; font-size:.95rem; line-height:1.4; }
-  #instPassos li::before { content:counter(p); flex:none; display:grid; place-items:center; width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); font:700 .8rem var(--fd); }
+  #ajudaModal { z-index:130; }   /* acima das configurações */
+  #instPassos, #ajudaPassos { list-style:none; counter-reset:p; margin:0 0 16px; padding:0; display:grid; gap:10px; }
+  #instPassos li, #ajudaPassos li { counter-increment:p; display:flex; gap:12px; align-items:flex-start; font-size:.95rem; line-height:1.4; }
+  #instPassos li::before, #ajudaPassos li::before { content:counter(p); flex:none; display:grid; place-items:center; width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); font:700 .8rem var(--fd); }
   #instPassos svg { display:inline-block; width:1.1em; height:1.1em; vertical-align:-.2em; stroke:#d8b4fe; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
   #instAgora { width:100%; }
-  @media (min-width:700px) { #instModal { align-items:center; } }
+  #ajudaOk { width:100%; }
+  @media (min-width:700px) { #instModal, #ajudaModal { align-items:center; } }
 
   /* ---------- tipo de arquivo ---------- */
   .tipos { display:flex; gap:6px; }
@@ -1059,11 +1061,7 @@
   .syncbtns { display:flex; gap:8px; flex-wrap:wrap; }
   .cfgsec .cfgchk { display:flex; gap:10px; align-items:flex-start; margin-top:12px; font-size:.88rem; line-height:1.35; }
   .cfgsec .cfgchk input { flex:none; margin-top:2px; }
-  .cfgajuda { margin-top:10px; }
-  .cfgajuda summary { cursor:pointer; color:#d8b4fe; font-size:.88rem; }
-  .cfgajuda .passos { margin:8px 0 0; }
   .cfgdica { display:block; margin-top:10px; color:var(--muted); line-height:1.4; }
-  .cfgsec #ghBox { margin-top:12px; }
   .cfgfoot { display:flex; gap:10px; padding:12px 18px calc(14px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--line); background:rgba(14,6,26,.92); }
   .cfgfoot .btn, .cfgfoot .ghost { flex:1; min-height:46px; margin:0; }
   .temas { display:flex; flex-wrap:wrap; gap:10px; margin:2px 0 12px; }
@@ -1470,7 +1468,6 @@
       <div><label for="uid">User ID</label><input id="uid" inputmode="numeric" autocomplete="off"></div>
       <div><label for="key">API key</label><input id="key" type="password" autocomplete="off"></div>
     </div>
-        <details class="cfgajuda"><summary>Como conseguir o User ID e a API key</summary><ol class="passos"><li>Entre em <b>rule34.xxx</b> e abra <b>Minha conta → Opções</b>.</li><li>Copie o <b>User ID</b> e gere/copie a <b>API key</b>.</li><li>Cole aqui e toque em <b>Testar conexão</b>. Fica salvo só neste navegador.</li></ol></details>
         <div hidden><label for="proxy">Proxy CORS</label>
     <input id="proxy" placeholder="https://seu-proxy.exemplo/?url="></div>
         <label class="cfgchk"><input type="checkbox" id="optNoKey"> Não lembrar a API key neste aparelho (peço de novo ao reabrir)</label>
@@ -1480,12 +1477,6 @@
         <div class="sync"><span class="syncl"><i id="syncDot" class="sdot" aria-hidden="true"></i><span id="syncSt">Sincronização: aguardando</span></span><span class="syncbtns"><button type="button" id="syncAgora" class="ghost">Sincronizar agora</button><button id="syncTeste" class="ghost" type="button">Testar</button><button id="syncDesfaz" class="ghost" type="button" hidden>Desfazer última</button></span></div>
         <small id="syncResumo" class="cfgdica" role="status"></small>
         <small class="cfgdica">Seus favoritos, grupos, galeria, seguindo e blacklist ficam iguais em todos os aparelhos onde você entrar com o mesmo User ID e API key.</small>
-        <details class="cfgbox" id="ghBox">
-      <summary>Avançado: sincronizar pelo GitHub (opcional)</summary>
-      <label for="ghToken">Token do GitHub</label>
-      <input id="ghToken" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ghp_...">
-      <ol class="passos"><li>Abra <b>github.com/settings/tokens</b> e crie um <b>token clássico</b> marcando só a permissão <b>gist</b>.</li><li>Cole aqui e use o <b>mesmo token</b> e o mesmo User ID/API key nos outros aparelhos.</li><li>Seus dados vão cifrados para um gist secreto da sua conta. O token fica só neste aparelho.</li></ol>
-    </details>
       </section>
       <section class="cfgsec">
         <h4><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10" r="1"/></svg>Aparência</h4>
@@ -1503,9 +1494,22 @@
         <button id="diag" class="ghost" type="button" style="margin-top:12px;width:100%">Copiar diagnóstico (para pedir ajuda)</button>
       </section>
     </div>
-    <div class="cfgfoot"><button id="testarCfg" class="ghost" type="button">Testar conexão</button><button id="salvarCfg" class="btn">Salvar</button></div>
+    <div class="cfgfoot"><button id="salvarCfg" class="btn">Salvar</button></div>
     <button id="instalar" class="ghost" type="button" style="margin:0 18px 16px;width:calc(100% - 36px)" hidden>Instalar o N34 como app</button>
   </section>
+</div>
+<div id="ajudaModal" hidden role="dialog" aria-modal="true" aria-labelledby="ajudaTitulo">
+  <div class="instbox">
+    <button class="ghost instx" id="ajudaFechar" type="button" aria-label="Fechar">✕</button>
+    <h3 id="ajudaTitulo">Como conseguir o User ID e a API key</h3>
+    <p class="instsub">Esta dica aparece só desta vez.</p>
+    <ol id="ajudaPassos">
+      <li><span>Entre em <b>rule34.xxx</b> e abra <b>Minha conta → Opções</b>.</span></li>
+      <li><span>Copie o <b>User ID</b> e gere/copie a <b>API key</b>.</span></li>
+      <li><span>Cole nos campos das configurações e toque em <b>Salvar</b>. Fica salvo só neste navegador.</span></li>
+    </ol>
+    <button id="ajudaOk" class="btn" type="button">Entendi</button>
+  </div>
 </div>
 <div id="instModal" hidden role="dialog" aria-modal="true" aria-labelledby="instTitulo">
   <div class="instbox">
@@ -1617,7 +1621,14 @@ function guardarKey(v) {
   try { if (LS.get("n34_nolembrar") === "1") { sessionStorage.setItem("r34_key", v); localStorage.removeItem("r34_key"); } else LS.set("r34_key", v); } catch { LS.set("r34_key", v); }
 }
 const creds = () => ({ uid: LS.get("r34_uid").trim(), key: credKey().trim(), proxy: LS.get("r34_proxy").trim() });
-function abrirCfg(msg) { menuAbrir(false); pintarUso(); pintarBackup(); $("cfgModal").hidden = false; $("cfgmsg").textContent = msg || ""; }
+function abrirCfg(msg) { menuAbrir(false); pintarUso(); pintarBackup(); $("cfgModal").hidden = false; $("cfgmsg").textContent = msg || ""; ajudaUmaVez(); }
+function ajudaUmaVez() {   // a dica de como conseguir User ID e API key aparece na primeira vez que as configurações abrem e nunca mais
+  if (LS.get("n34_ajudaCfg", "")) return;
+  LS.set("n34_ajudaCfg", "1"); $("ajudaModal").hidden = false;
+}
+$("ajudaFechar").onclick = $("ajudaOk").onclick = () => { $("ajudaModal").hidden = true; };
+$("ajudaModal").addEventListener("click", e => { if (e.target === $("ajudaModal")) $("ajudaModal").hidden = true; });
+addEventListener("keydown", e => { if (e.key === "Escape" && !$("ajudaModal").hidden) { e.stopPropagation(); $("ajudaModal").hidden = true; } }, true);
 function fecharCfg() { $("cfgModal").hidden = true; }
 $("gear").onclick = () => { $("cfgModal").hidden ? abrirCfg() : fecharCfg(); };
 $("cfgFechar").onclick = fecharCfg;
@@ -2056,6 +2067,7 @@ const ovPilha = [];
 const FECHAR_OV = {
   viewer: () => fecharViewer(), itemView: () => fecharItem(), galView: () => galFechar(),
   favModal: () => fecharFav(), grpModal: () => fecharPicker(), cfgModal: () => fecharCfg(),
+  ajudaModal: () => { $("ajudaModal").hidden = true; },
 };
 const ovObserver = new MutationObserver(ms => {
   for (const m of ms) {
@@ -3189,10 +3201,19 @@ const ehAndroid = () => /android/i.test(navigator.userAgent);
 const ICO_SHARE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
 const ICO_MENU = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="19" r="1.2"/></svg>';
 
+function instCartaoHoje() {   // o cartão da página inicial aparece só de vez em quando (no máximo a cada 3 dias) para não incomodar
+  if (jaInstalado()) return false;
+  try { const sess = sessionStorage.getItem("n34_instSess"); if (sess != null) return sess === "1"; } catch {}
+  const agora = Date.now(), ult = +LS.get("n34_instUlt", "0") || 0, ate = +LS.get("n34_instAte", "0") || 0;
+  const mostrar = agora >= ate && agora - ult > 3 * 864e5;
+  if (mostrar) LS.set("n34_instUlt", String(agora));
+  try { sessionStorage.setItem("n34_instSess", mostrar ? "1" : "0"); } catch {}
+  return mostrar;
+}
 function atualizarBotoesInstalar() {
-  const mostrar = !jaInstalado();
-  $("instHome").hidden = !mostrar;
-  $("instalar").hidden = !mostrar;
+  const instalado = jaInstalado();
+  $("instHome").hidden = !instCartaoHoje();
+  $("instalar").hidden = instalado;   // o botão das configurações fica sempre disponível
 }
 function abrirInstalar() {
   const sub = $("instSub"), ol = $("instPassos"), go = $("instAgora");
@@ -3227,7 +3248,7 @@ async function pedirInstalar() {
 }
 addEventListener("beforeinstallprompt", e => { e.preventDefault(); promptInstalar = e; atualizarBotoesInstalar(); });
 addEventListener("appinstalled", () => { promptInstalar = null; $("instModal").hidden = true; atualizarBotoesInstalar(); toast("N34 instalado ✓"); });
-$("instHome").onclick = pedirInstalar;
+$("instHome").onclick = () => { LS.set("n34_instAte", String(Date.now() + 30 * 864e5)); pedirInstalar(); };   // depois de tocar, some por 30 dias
 $("instalar").onclick = () => { fecharCfg(); pedirInstalar(); };
 $("instFechar").onclick = () => { $("instModal").hidden = true; };
 $("instModal").addEventListener("click", e => { if (e.target === $("instModal")) $("instModal").hidden = true; });
@@ -3252,17 +3273,6 @@ try { const _rf = renderFavs; renderFavs = function () { const r = _rf.apply(thi
 try { const _cf = contarFavs; contarFavs = function () { const r = _cf.apply(this, arguments); atualizarNovos(); return r; }; } catch (e) { /* segue sem o gancho */ }
 atualizarNovos();
 
-$("testarCfg").onclick = async () => {
-  const m = $("cfgmsg"), b = $("testarCfg");
-  LS.set("r34_uid", $("uid").value.trim()); guardarKey($("key").value.trim()); LS.set("r34_proxy", $("proxy").value.trim());
-  if (!creds().uid || !creds().key) { m.textContent = "Preencha o User ID e a API key primeiro."; return; }
-  b.disabled = true; m.textContent = "Testando conexão…";
-  try {
-    const r = await buscarLista("", 0, 1, true);
-    m.textContent = r.posts.length ? "✓ Conexão OK! Está tudo certo." : "Conectou, mas não veio nenhum post. Confira o User ID e a API key.";
-  } catch (e) { m.innerHTML = "✗ " + msgErro(e); }
-  b.disabled = false;
-};
 
 /* Erro na grade: botão para tentar de novo */
 (function () {
@@ -3457,12 +3467,11 @@ $("galCopiar").onclick = () => { const it = galItens[galI]; if (it) copiarImg({ 
 /* ---------- Sincronização entre aparelhos (mesmo User ID + API Key) ---------- */
 const SYNC_KEYS = ["r34_favs", "r34_black", "r34_cols", "n34_galeria", "r34_semia", "n34_seguindo", "n34_buscas", "n34_links"];
 /* ---------- Servidor opcional ----------
-   No GitHub Pages não há servidor: a sincronização é feita pelo token do GitHub (Gist) e a cópia de imagens por servidor fica desligada. */
+   No GitHub Pages não há servidor: a sincronização é feita pelo textdb.online e a cópia de imagens por servidor fica desligada. */
 const N34_API = "";
 const NO_GITHUB = /\.github\.io$/i.test(location.hostname);
 const API_OK = !NO_GITHUB || !!N34_API;
 const API_BASE = NO_GITHUB ? N34_API.replace(/\/+$/, "") : "";
-const SYNC_OFF = "cole o token do GitHub abaixo para sincronizar entre aparelhos";
 let SYNC_URL = API_BASE + "/api/sync";
 const SYNC_FALTA = "a função de sincronização não está publicada neste site (404)";
 let syncSemServidor = !/^https?:$/.test(location.protocol);   // vira true quando este site não tem a função /api/sync (ex.: a versão do GitHub hospedada fora do github.io)
@@ -3520,52 +3529,6 @@ const hashV = v => { if (v == null) return "-"; let h = 5381; for (let i = 0; i 
 const vz = v => v == null || v === "" || v === "[]";
 const vazioDe = k => k === "r34_black" ? "" : k === "r34_semia" ? "0" : "[]";
 const baseLer = () => { try { return JSON.parse(LS.get("n34_sync_base", "{}")) || {}; } catch { return {}; } };
-/* ---------- Sincronização pelo GitHub (Gist secreto): funciona no github.io, sem servidor ---------- */
-const ghToken = () => (LS.get("n34_gh_token", "") || "").trim();
-const GH_API = "https://api.github.com", GH_ARQ = "n34-sync.txt";
-const ghCab = () => ({ Authorization: "Bearer " + ghToken(), Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" });
-async function ghChamar(url, init = {}) {
-  const r = await fetch(url, { cache: "no-store", ...init, headers: { ...ghCab(), ...(init.headers || {}) } });
-  if (r.status === 401) throw new Error("token do GitHub inválido ou vencido");
-  if (r.status === 403 || r.status === 429) throw new Error("GitHub recusou (limite de uso ou token sem a permissão gist)");
-  return r;
-}
-async function ghDesc() { const { id } = await chaveSync(); return "n34-sync-" + id.slice(0, 20); }
-async function ghAcharGist() {
-  const guardado = LS.get("n34_gh_gist", ""); if (guardado) return guardado;
-  const desc = await ghDesc();
-  for (let pg = 1; pg <= 5; pg++) {
-    const r = await ghChamar(`${GH_API}/gists?per_page=100&page=${pg}`);
-    if (!r.ok) throw new Error("GitHub " + r.status);
-    const l = await r.json(), g = l.find(x => x.description === desc);
-    if (g) { _si.call(localStorage, "n34_gh_gist", g.id); return g.id; }
-    if (l.length < 100) break;
-  }
-  return "";
-}
-async function ghLer() {   // devolve o texto cifrado salvo, ou null se ainda não existe
-  let id = await ghAcharGist(); if (!id) return null;
-  let r = await ghChamar(`${GH_API}/gists/${id}`);
-  if (r.status === 404) { localStorage.removeItem("n34_gh_gist"); id = await ghAcharGist(); if (!id) return null; r = await ghChamar(`${GH_API}/gists/${id}`); }
-  if (!r.ok) throw new Error("GitHub " + r.status);
-  const f = (await r.json()).files?.[GH_ARQ]; if (!f) return null;
-  if (f.truncated && f.raw_url) { const rr = await fetch(f.raw_url, { cache: "no-store" }); if (!rr.ok) throw new Error("GitHub " + rr.status); return rr.text(); }
-  return f.content || null;
-}
-async function ghGravar(texto) {
-  const files = { [GH_ARQ]: { content: texto } };
-  let id = await ghAcharGist();
-  if (id) {
-    const r = await ghChamar(`${GH_API}/gists/${id}`, { method: "PATCH", body: JSON.stringify({ files }) });
-    if (r.ok) return;
-    if (r.status !== 404) throw new Error("GitHub " + r.status);
-    localStorage.removeItem("n34_gh_gist");
-  }
-  const r = await ghChamar(`${GH_API}/gists`, { method: "POST", body: JSON.stringify({ description: await ghDesc(), public: false, files }) });
-  if (!r.ok) throw new Error("GitHub " + r.status);
-  _si.call(localStorage, "n34_gh_gist", (await r.json()).id);
-}
-
 /* ---------- Sincronização pela conta do Rule 34 (User ID + API key): cifrada no aparelho e guardada no textdb.online ---------- */
 const TD_LER = "https://textdb.online/", TD_ESC = "https://api.textdb.online/update/";
 const dormir = ms => new Promise(r => setTimeout(r, ms));
@@ -3622,7 +3585,7 @@ async function tdGravar(txt) {
 async function testarSync() {   // diagnóstico: mostra em qual etapa a sincronização falha
   const k = "n34-teste-" + Date.now().toString(36), r = [];
   syncSt("testando…");
-  if (API_OK && !syncSemServidor) { try { const q = await fetch(SYNC_URL + "?id=teste", { cache: "no-store" }); if (q.status === 404 || htmlResp(q.status === 200 ? await q.text() : "")) syncSemServidor = true; } catch {} }
+  if (API_OK && !syncSemServidor) { try { const q = await tdFetch(SYNC_URL + "?id=teste", { cache: "no-store" }, 8000); if (q.status === 404 || htmlResp(q.status === 200 ? await q.text() : "")) syncSemServidor = true; } catch {} }
   r.push(!API_OK || syncSemServidor ? "usa textdb.online" : "usa o servidor do site");
   try { await tdEnviar(k, "ok"); r.push("envio ✓"); } catch (e) { r.push("envio ✗ (" + e.message + ")"); }
   try { await dormir(1200); const t = await tdTexto(k); r.push(t === "ok" ? "leitura ✓" : "leitura ✗ (o valor não voltou)"); } catch (e) { r.push("leitura ✗ (" + e.message + ")"); }
@@ -3630,14 +3593,13 @@ async function testarSync() {   // diagnóstico: mostra em qual etapa a sincroni
   syncSt("teste · " + r.join(" · "));
 }
 async function enviarSync(d, v) {
-  if (ghToken()) return ghGravar(await cifrar({ d, v }));
   if (!API_OK || syncSemServidor) return tdGravar(await cifrar({ d, v }));
   const { id } = await chaveSync();
   const c = creds(), proof = toHex(await crypto.subtle.digest("SHA-256", _enc.encode("n34-proof:" + c.uid + ":" + c.key)));
   const corpo = await cifrar({ d, v });
   let r;
-  try { r = await fetch(`${SYNC_URL}?id=${id}`, { method: "PUT", headers: { "x-n34-proof": proof }, body: corpo }); }
-  catch (e) { if (e instanceof TypeError) { syncSemServidor = true; return tdGravar(corpo); } throw e; }
+  try { r = await tdFetch(`${SYNC_URL}?id=${id}`, { method: "PUT", headers: { "x-n34-proof": proof }, body: corpo }); }
+  catch (e) { if (e instanceof TypeError || e.name === "AbortError") { syncSemServidor = true; return tdGravar(corpo); } throw e; }
   if (r.status === 404) { syncSemServidor = true; return tdGravar(await cifrar({ d, v })); }
   if (!r.ok) throw new Error("servidor " + r.status);
 }
@@ -3646,7 +3608,7 @@ function resumoSync(d) {
   let imgs = 0; try { imgs = JSON.parse(d.r34_cols || "[]").reduce((t, g) => t + (g.itens || []).length, 0); } catch {}
   return `${n("r34_favs")} favoritos · ${n("r34_cols")} grupos (${imgs} imagens) · ${n("n34_galeria")} na galeria · ${n("n34_seguindo")} seguindo · ${String(d.r34_black || "").split(/\s+/).filter(Boolean).length} na blacklist`;
 }
-var syncRetry = null; let syncErros = 0;
+var syncRetry = null; let syncErros = 0, syncGen = 0;
 function overlayAberto() { return ["favModal", "grpModal", "viewer", "itemView", "galView", "blkModal"].some(id => { const el = $(id); return el && !el.hidden; }); }
 function aplicarEstadoRemoto() {   // dados novos do outro aparelho entram na tela na hora, sem recarregar
   try { favs = JSON.parse(LS.get("r34_favs", "[]")); } catch {}
@@ -3657,17 +3619,13 @@ function aplicarEstadoRemoto() {   // dados novos do outro aparelho entram na te
   if (aba === "favs") renderFavs(); else if (aba === "grupos") renderGrupos(); else if (aba === "galeria") galCarregar(); else if (aba === "inicio") renderHome(); else if (aba === "seg") segRender(false);
 }
 async function lerRemoto() {   // devolve os dados do outro aparelho (já decifrados) ou null se ainda não há nada salvo
-  if (ghToken()) {
-    const t = await ghLer(); if (!t) return null;
-    try { return await decifrar(t); } catch { throw new Error("não consegui abrir os dados salvos: confira se o User ID e a API key são os mesmos do outro aparelho"); }
-  }
   if (!API_OK || syncSemServidor) return tdLer();
   const { id } = await chaveSync();
   let r;
-  try { r = await fetch(`${SYNC_URL}?id=${id}`, { cache: "no-store" }); }
-  catch (e) { if (e instanceof TypeError) { syncSemServidor = true; return tdLer(); } throw e; }   // o servidor do site não respondeu: usa o textdb.online
+  try { r = await tdFetch(`${SYNC_URL}?id=${id}`, { cache: "no-store" }); }
+  catch (e) { if (e instanceof TypeError || e.name === "AbortError") { syncSemServidor = true; return tdLer(); } throw e; }   // o servidor do site não respondeu: usa o textdb.online
   if (r.status === 404 && SYNC_URL !== API_BASE + "/.netlify/functions/sync") {   // tenta o endereço direto da função
-    const r2 = await fetch(`${API_BASE}/.netlify/functions/sync?id=${id}`, { cache: "no-store" });
+    const r2 = await tdFetch(`${API_BASE}/.netlify/functions/sync?id=${id}`, { cache: "no-store" });
     if (r2.status !== 404) { SYNC_URL = API_BASE + "/.netlify/functions/sync"; r = r2; }
   }
   if (r.status === 404) { syncSemServidor = true; return tdLer(); }   // sem função neste site: usa o textdb.online
@@ -3686,11 +3644,14 @@ async function sincronizar(manual) {
   if (!manual && overlayAberto()) { clearTimeout(syncRetry); syncRetry = setTimeout(() => sincronizar(), 8000); return; }   // não mexe nos dados com algo aberto
   if (!window.crypto || !crypto.subtle) return syncSt("indisponível (precisa de https)");
   syncBusy = true; syncSt("sincronizando...");
+  const meu = ++syncGen, vivo = () => meu === syncGen;
+  // vigia: se algo travar, para de mostrar "sincronizando…" e libera uma nova tentativa
+  const vigia = setTimeout(() => { if (vivo() && syncBusy) { syncGen++; syncBusy = false; aplicandoRemoto = false; syncErros++; syncUltima = Date.now(); syncSt("erro (demorou demais; confira a internet e toque em Sincronizar agora)"); if (syncErros <= 3) { clearTimeout(syncRetry); syncRetry = setTimeout(() => sincronizar(), 30000 * syncErros); } } }, 90000);
   try {
-    let remoto = await lerRemoto();
+    let remoto = await lerRemoto(); if (!vivo()) return;
     const vSalvo = () => +LS.get("n34_sync_v", "0");
-    for (let t = 0; remoto && remoto.v && remoto.v < vSalvo() && t < 3; t++) { await dormir(2500); remoto = await lerRemoto(); }   // o serviço pode devolver uma cópia antiga (cache)
-    if (remoto && remoto.v && remoto.v < vSalvo()) throw new Error("o serviço ainda mostra dados antigos (cache); tente de novo em instantes");
+    for (let t = 0; remoto && remoto.v && remoto.v < vSalvo() && t < 3; t++) { await dormir(2500); if (!vivo()) return; remoto = await lerRemoto(); if (!vivo()) return; }   // o serviço pode devolver uma cópia antiga (cache)
+    if (remoto && remoto.v && remoto.v < vSalvo()) remoto = null;   // o serviço perdeu o último envio: o que está neste aparelho vale e é enviado de novo (antes isso virava um erro que não saía mais)
     if (remoto && remoto.v) _si.call(localStorage, "n34_sync_v", String(Math.max(vSalvo(), remoto.v)));
     const base = baseLer(), final = {}, nova = {}, pre = {};
     let mudou = false, push = !remoto;
@@ -3699,7 +3660,7 @@ async function sincronizar(manual) {
       const lv = LS.get(k, null), rv = remoto && remoto.d ? remoto.d[k] : null;
       const L = vz(lv) ? null : lv, R = vz(rv) ? null : rv, hl = hashV(L), hr = hashV(R), b = base[k];
       let v = L;
-      if (hl !== hr) {
+      if (remoto && hl !== hr) {   // sem nada salvo no serviço, nunca se apaga o que está aqui: só envia
         const lm = b === undefined ? L != null : hl !== b, rm = b === undefined ? R != null : hr !== b;
         if (lm && !rm) push = true;                                   // só este aparelho mudou
         else if (!lm && rm) v = R;                                    // só o outro mudou
@@ -3709,27 +3670,21 @@ async function sincronizar(manual) {
       final[k] = v ?? vazioDe(k); nova[k] = hashV(v);
     }
     aplicandoRemoto = false;
-    if (push) { const vNovo = Date.now(); await enviarSync(final, vNovo); _si.call(localStorage, "n34_sync_v", String(vNovo)); }
+    if (push) { const vNovo = Date.now(); await enviarSync(final, vNovo); if (!vivo()) return; _si.call(localStorage, "n34_sync_v", String(vNovo)); }
     _si.call(localStorage, "n34_sync_base", JSON.stringify({ ...base, ...nova }));
     syncUltima = Date.now(); syncErros = 0; syncSt("ok às " + new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }));
-    { const rs = $("syncResumo"); if (rs) rs.textContent = resumoSync(final) + (ghToken() ? " · via GitHub" : !API_OK || syncSemServidor ? " · via textdb.online" : ""); }
+    { const rs = $("syncResumo"); if (rs) rs.textContent = resumoSync(final) + (!API_OK || syncSemServidor ? " · via textdb.online" : ""); }
     if (mudou && Object.keys(pre).length) { try { _si.call(localStorage, "n34_pre_sync", JSON.stringify({ t: Date.now(), d: pre })); } catch {} pintarDesfazer(); }
     if (mudou) aplicarEstadoRemoto();
   } catch (e) {
+    if (!vivo()) return;
     const msg = /failed to fetch|networkerror|load failed/i.test(e.message) ? "sem conexão ou a rede bloqueou o serviço de sincronização (confira a internet, VPN ou bloqueador de anúncios)" : e.message;
-    syncSt("erro (" + msg + ")" + (/GitHub (401|403|404)|GitHub recusou/.test(e.message) ? ". Confira o token do GitHub (precisa da permissão “gist”) ou apague-o em “Avançado” para usar a sincronização padrão" : "")); syncErros++; syncUltima = Date.now();
+    syncSt("erro (" + msg + ")"); syncErros++; syncUltima = Date.now();
     if (syncErros <= 3) { clearTimeout(syncRetry); syncRetry = setTimeout(() => sincronizar(), 30000 * syncErros); }   // tenta de novo sozinho
   }
-  finally { aplicandoRemoto = false; syncBusy = false; if (syncPend) { syncPend = false; setTimeout(sincronizar, 600); } }
+  finally { clearTimeout(vigia); if (vivo()) { aplicandoRemoto = false; syncBusy = false; if (syncPend) { syncPend = false; setTimeout(sincronizar, 600); } } }
 }
-$("ghToken").value = ghToken();
-$("ghToken").addEventListener("change", e => {
-  const t = e.target.value.trim();
-  _si.call(localStorage, "n34_gh_token", t); localStorage.removeItem("n34_gh_gist");
-  if (!t) { if (creds().uid && creds().key) sincronizar(true); return; }
-  if (!creds().uid || !creds().key) return syncSt("configure o User ID e a API Key");
-  sincronizar(true);
-});
+try { localStorage.removeItem("n34_gh_token"); localStorage.removeItem("n34_gh_gist"); } catch {}   // apaga do aparelho o token do GitHub que o site guardava antes
 function pintarDesfazer() { let s = null; try { s = JSON.parse(LS.get("n34_pre_sync", "null")); } catch {} const b = $("syncDesfaz"); b.hidden = !(s && s.d); if (s && s.t) b.title = "Voltar ao que este aparelho tinha antes da sincronização de " + fmtData(new Date(s.t)); }
 async function desfazerSync() {
   let s = null; try { s = JSON.parse(LS.get("n34_pre_sync", "null")); } catch {}
