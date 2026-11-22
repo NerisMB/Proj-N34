@@ -1176,6 +1176,18 @@
   .tabs .tab.cfgitem { margin-top:auto; color:#b39ddb; }
   @media (prefers-reduced-motion:no-preference) { .tabs.open .tab, .tabs.open .mhead { animation:mItem .32s cubic-bezier(.2,.7,.2,1) backwards; } .tabs.open .tab:nth-child(2) { animation-delay:.04s; } .tabs.open .tab:nth-child(3) { animation-delay:.08s; } .tabs.open .tab:nth-child(4) { animation-delay:.12s; } .tabs.open .tab:nth-child(5) { animation-delay:.16s; } .tabs.open .tab:nth-child(6) { animation-delay:.20s; } .tabs.open .tab:nth-child(7) { animation-delay:.24s; } .tabs.open .tab:nth-child(8) { animation-delay:.28s; } .tabs.open .tab:nth-child(9) { animation-delay:.32s; } }
   @keyframes mItem { from { opacity:0; transform:translateX(18px); } to { opacity:1; transform:none; } }
+  /* ===== Celular: posts não estouram mais a largura da tela ===== */
+  #grid, #galGrid, .grpgrid { min-width:0; }
+  #grid > *, #galGrid > *, .grpgrid > * { min-width:0; max-width:100%; }
+  @media (max-width:640px) {
+    #galGrid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    #grid:not([data-cols]):not([data-lay="mosaico"]) { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .grpgrid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .gcell, .gcell .gth { width:100%; min-width:0; }
+    .gcell .gth img, .gcell .gth video { width:100%; height:100%; object-fit:cover; }
+  }
+  @media (min-width:420px) and (max-width:640px) { #grid:not([data-cols]):not([data-lay="mosaico"]) { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+  #view-galeria { max-width:100%; overflow-x:clip; }
 </style>
 <script>
 /* Tema: troca a cor do site todo mexendo na matiz (hue) de tudo que é roxo/rosa/violeta; o resto (branco, cinza, vermelho de erro…) não muda */
@@ -1405,6 +1417,7 @@
         <option value="antigo">Salvos há mais tempo</option>
         <option value="nota">Maior nota</option>
         <option value="data">Mais novos no site</option>
+        <option value="aleatorio">Ordem aleatória</option>
       </select>
     </div>
     <div id="galSelBar" hidden>
@@ -2470,7 +2483,7 @@ function galToggle(p) {
 }
 let galFiltro = LS.get("n34_galFiltro", "todos"), galOrdem = LS.get("n34_galOrdem", "salvo"), galSel = null, galVista = [], galQtd = 0, galRend = 0;
 const GAL_LOTE = 80, GAL_TIPOS = [["todos", "Todos"], ["imagem", "Imagens"], ["gif", "GIFs"], ["video", "Vídeos"]];
-$("galOrdem").value = ["salvo", "manual", "antigo", "nota", "data"].includes(galOrdem) ? galOrdem : "salvo";
+$("galOrdem").value = ["salvo", "manual", "antigo", "nota", "data", "aleatorio"].includes(galOrdem) ? galOrdem : "salvo";
 /* menu suspenso do site: troca a lista azul do navegador por uma no tema roxo (o <select> continua guardando o valor) */
 function menuSuspenso(sel) {
   const w = document.createElement("div"); w.className = "dd";
@@ -2503,6 +2516,7 @@ function menuSuspenso(sel) {
   pintar(); return pintar;
 }
 const galOrdemPintar = menuSuspenso($("galOrdem"));
+const galAleat = new Map();   // sorteio da ordem aleatória (muda ao escolher a opção de novo)
 function galCalcVista() {
   let ix = galItens.map((_, i) => i);
   if (galFiltro !== "todos") ix = ix.filter(i => galItens[i].tipo === galFiltro);
@@ -2510,6 +2524,10 @@ function galCalcVista() {
   if (galOrdem === "antigo") ix.reverse();
   else if (galOrdem === "nota") ix.sort((x, y) => nota(y) - nota(x) || x - y);
   else if (galOrdem === "data") ix.sort((x, y) => dt(y) - dt(x) || x - y);
+  else if (galOrdem === "aleatorio") {
+    const r = i => { const id = galItens[i].id; if (!galAleat.has(id)) galAleat.set(id, Math.random()); return galAleat.get(id); };
+    ix.sort((x, y) => r(x) - r(y));
+  }
   return ix;
 }
 function galCelula(i) {
@@ -2596,7 +2614,7 @@ $("galFiltro").addEventListener("click", e => {
   const b = e.target.closest("[data-f]"); if (!b) return;
   galFiltro = b.dataset.f; LS.set("n34_galFiltro", galFiltro); galCarregar(true);
 });
-$("galOrdem").onchange = e => { galOrdem = e.target.value; LS.set("n34_galOrdem", galOrdem); galCarregar(true); };
+$("galOrdem").onchange = e => { galOrdem = e.target.value; galAleat.clear(); LS.set("n34_galOrdem", galOrdem); galCarregar(true); };
 $("galMais").onclick = () => { galQtd += GAL_LOTE; galPintar(true); galAtualizarSel(); };
 new IntersectionObserver(es => { if (es[0].isIntersecting && !$("galMais").hidden && !$("view-galeria").hidden) $("galMais").click(); }, { rootMargin: "600px" }).observe($("galMais"));
 $("galSelBtn").onclick = () => galModoSel(!galSel);
