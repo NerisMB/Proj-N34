@@ -1026,7 +1026,7 @@
   .dd-btn:hover, .dd.open .dd-btn { border-color:var(--accent); }
   .dd.open .dd-btn, .dd-btn:focus-visible { outline:none; box-shadow:0 0 0 2px rgba(168,85,247,.55); }
   .dd-btn svg { width:14px; height:14px; flex:none; fill:none; stroke:#c084fc; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; transition:transform .18s; }
-  .dd.open .dd-btn svg { transform:rotate(180deg); }
+  .dd.open .dd-btn .dd-ch { transform:rotate(180deg); }
   .dd-list { position:absolute; z-index:60; top:calc(100% + 6px); right:0; min-width:100%; width:max-content; max-width:80vw; margin:0; padding:6px; list-style:none; border:1px solid rgba(192,132,252,.35); border-radius:14px; background:rgba(16,8,28,.97); box-shadow:0 18px 40px -10px rgba(0,0,0,.7), 0 0 0 1px rgba(168,85,247,.12); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); animation:entra .16s cubic-bezier(.2,.8,.2,1) both; }
   .dd-list[hidden] { display:none; }
   .dd-list li { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:10px 12px; border-radius:10px; color:var(--muted); font-size:.88rem; cursor:pointer; white-space:nowrap; }
@@ -1186,6 +1186,71 @@
   }
   @media (min-width:420px) and (max-width:640px) { #grid:not([data-cols]):not([data-lay="mosaico"]) { grid-template-columns:repeat(3,minmax(0,1fr)); } }
   #view-galeria { max-width:100%; overflow-x:clip; }
+
+  /* ===== ajustes: grupos, seguindo, galeria, sincronização, links ===== */
+  .dd[hidden] { display:none; }
+  .dd-btn .dd-ic, .dd-list .dd-ic { width:16px; height:16px; flex:none; fill:none; stroke:#c084fc; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .dd-list .dd-tx { flex:1; }
+  .dd-list li { justify-content:flex-start; gap:10px; }
+  .dd-list li[aria-selected="true"]::after { margin-left:auto; }
+  .dd-list li[aria-selected="true"] .dd-ic { stroke:#fff; }
+  .dd-cur { flex:1; text-align:left; white-space:nowrap; }
+  .dd-cur small { margin-right:6px; color:var(--muted); font-size:.78rem; }
+  .dd-btn { gap:10px; }
+  .dd-btn .dd-ch { margin-left:auto; }
+  #filtros .dd { display:block; margin-top:8px; }
+  #filtros .dd-btn { width:100%; }
+  #filtros .dd-list { left:0; right:auto; min-width:100%; }
+  .galtools { padding:10px 12px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.035); }
+  .galtools .dd-btn { min-height:40px; background:rgba(168,85,247,.14); border-color:rgba(192,132,252,.35); }
+  .galacts .ghost.danger { color:#ff9a9a; border-color:rgba(255,120,120,.35); }
+  .galacts .ghost.danger:hover { background:rgba(255,80,80,.14); border-color:#ff8a8a; color:#fff; }
+  .chev { width:16px; height:16px; flex:none; fill:none; stroke:currentColor; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; transition:transform .22s ease; }
+  .grptag .chev { width:15px; height:15px; }
+  .grptag.min .chev, .segtog.min .chev { transform:rotate(-90deg); }
+  .grptag:hover { filter:brightness(1.08); }
+  .grpbar { display:flex; justify-content:flex-end; margin-bottom:12px; }
+  .grpbar .ghost { min-height:36px; padding:0 14px; font-size:.84rem; }
+  .segtog { display:flex; align-items:center; gap:8px; width:100%; min-height:40px; margin:0 0 10px; padding:0 14px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.04); color:#e9d5ff; font:600 .88rem var(--fd); text-align:left; cursor:pointer; }
+  .segtog:hover { border-color:var(--accent); }
+  .segtog[hidden], #segChips[hidden] { display:none; }
+  @media (min-width:641px) { .grpgrid { grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:8px; } }
+  .favact .ext { width:15px; height:15px; margin-left:8px; flex:none; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; opacity:.8; }
+  .favedit summary { display:flex; align-items:center; gap:10px; list-style:none; }
+  .favedit summary::-webkit-details-marker { display:none; }
+  .favedit summary::before { content:""; width:8px; height:8px; flex:none; border-right:2px solid #c084fc; border-bottom:2px solid #c084fc; transform:rotate(-45deg); transition:transform .2s; }
+  .favedit[open] summary::before { transform:rotate(45deg); }
+  .cfgsec .sync { display:block; margin-top:0; }
+  .cfgsec .sync .syncl { display:flex; align-items:center; gap:10px; width:100%; margin-bottom:12px; padding:10px 14px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.04); font-size:.92rem; font-weight:600; color:#f1e7ff; }
+  .cfgsec .sync > span:first-child { flex:none; font-size:.92rem; }
+  .cfgsec .syncbtns { display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:8px; }
+  .cfgsec .syncbtns .ghost { min-height:42px; width:100%; }
+  .cfgsec .syncbtns #syncAgora { border-color:var(--accent); background:rgba(168,85,247,.2); color:#fff; }
+  .synchips { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+  .synchips span { padding:5px 11px; border:1px solid var(--line); border-radius:999px; background:rgba(168,85,247,.12); color:#e5d4ff; font-size:.8rem; line-height:1.2; }
+  .synchips span.via { background:transparent; color:var(--muted); border-style:dashed; }
+  .synchips:empty { display:none; }
+  @media (min-width:641px) { #view-galeria .galtop { justify-content:flex-end; } }
+
+  .cfgsec .sync.drow { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin:0 0 10px; }
+  .cfgsec .sync.drow > span:first-child { flex:1 1 180px; }
+  .cfgsec .sync.drow .ghost { flex:none; min-height:38px; padding:0 16px; }
+  .hstat.go, #homeCount[data-go] { cursor:pointer; transition:transform .18s, border-color .18s, background .18s; }
+  .hstat.go:hover, #homeCount[data-go]:hover { transform:translateY(-2px); border-color:var(--accent); background:rgba(168,85,247,.22); }
+  .hstat.go:focus-visible, #homeCount[data-go]:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .favprog { display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap; padding:7px 14px; border:1px solid var(--line); border-radius:999px; background:rgba(168,85,247,.12); color:#e9d5ff; font-weight:600; }
+  .favprog .spin { width:16px; height:16px; border-radius:50%; border:2.5px solid rgba(192,132,252,.25); border-top-color:#c084fc; animation:favspin .8s linear infinite; }
+  .favprog .favtx b { font-variant-numeric:tabular-nums; color:#fff; }
+  .favprog .dots u { text-decoration:none; animation:favdot 1.2s infinite; opacity:.2; }
+  .favprog .dots u:nth-child(2) { animation-delay:.2s; } .favprog .dots u:nth-child(3) { animation-delay:.4s; }
+  .favprog .bar2 { width:110px; height:6px; overflow:hidden; border-radius:99px; background:rgba(255,255,255,.1); }
+  .favprog .bar2 s { display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,#a855f7,#e879f9); transition:width .35s ease; }
+  .favprog.ok { animation:favpop .35s ease; }
+  .favprog.ok svg { width:16px; height:16px; fill:none; stroke:#4ade80; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  @keyframes favspin { to { transform:rotate(360deg); } }
+  @keyframes favdot { 0%,100% { opacity:.2; } 50% { opacity:1; } }
+  @keyframes favpop { from { transform:scale(.85); opacity:0; } to { transform:none; opacity:1; } }
+  @media (prefers-reduced-motion:reduce) { .favprog .spin, .favprog .dots u { animation-duration:2.5s; } }
 </style>
 <script>
 /* Tema: troca a cor do site todo mexendo na matiz (hue) de tudo que é roxo/rosa/violeta; o resto (branco, cinza, vermelho de erro…) não muda */
@@ -1309,7 +1374,7 @@
         <span class="htxt"><b>Instalar o N34 no celular</b><small>Abre em tela cheia, direto da tela inicial</small></span>
       </button>
       <div id="homeExtra"></div>
-      <p id="homeCount" class="muted"></p>
+      <p id="homeCount" class="muted" role="button" tabindex="0" data-go="explorar"></p>
     </div>
   </section>
 
@@ -1375,14 +1440,15 @@
 
   <section id="view-grupos" hidden>
     <div class="phead"><h2>Grupos</h2><p>Organize suas imagens em coleções coloridas.</p></div>
-    <button id="novoGrupo" class="btn" style="width:100%;margin-bottom:16px">＋ Novo grupo</button>
+    <button id="novoGrupo" class="btn" style="width:100%;margin-bottom:10px">＋ Novo grupo</button>
+    <div class="grpbar" id="grpBar" hidden><button id="grpTodos" class="ghost" type="button"></button></div>
     <div id="grupoLista"></div>
   </section>
 
   <section id="view-top" hidden>
     <div class="phead"><h2>TOP 10</h2><p id="topSub">Os 10 posts mais bem avaliados de hoje.</p></div>
     <div class="topper" id="topPer" role="tablist" aria-label="Período">
-      <button type="button" data-p="0.0417">1 hora</button><button type="button" data-p="0.5">12 horas</button><button type="button" data-p="1" class="on">Hoje</button><button type="button" data-p="7">Semana</button><button type="button" data-p="30">Mês</button>
+      <button type="button" data-p="0.0417">1 Hora</button><button type="button" data-p="0.5">12 Horas</button><button type="button" data-p="1" class="on">Hoje</button><button type="button" data-p="7">Semana</button><button type="button" data-p="30">Mês</button>
     </div>
     <ol id="topList"></ol>
     <p id="topMsg" class="muted" role="status"></p>
@@ -1391,6 +1457,7 @@
   <section id="view-seg" hidden>
     <div class="phead"><h2>Seguindo</h2></div>
     <div class="segadd"><input id="segIn" placeholder="Nome do personagem" autocomplete="off" autocapitalize="off" spellcheck="false"><button id="segAdd" class="btn" type="button">Seguir</button></div>
+    <button id="segTogChips" class="segtog" type="button" aria-expanded="true" hidden><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span id="segTogTx">Personagens seguidos</span></button>
     <div id="segChips" class="segchips"></div>
     <div class="segtop"><p id="segMsg" class="muted" role="status"></p><span class="segacoes"><label class="chk segchk"><input type="checkbox" id="segInf"> Rolagem infinita</label><button id="segShuf" class="ghost" type="button">Embaralhar</button></span></div>
     <div id="segGrid"></div>
@@ -1404,18 +1471,18 @@
       <p id="galMsg" class="muted" role="status" hidden style="display:none"></p>
       <span class="galacts">
         <button id="galSelBtn" class="ghost" type="button" hidden>Selecionar</button>
-        <button id="galLimpar" class="ghost" type="button" hidden>Limpar tudo</button>
+        <button id="galLimpar" class="ghost danger" type="button" hidden>Limpar tudo</button>
       </span>
     </div>
     <div class="galtools" id="galTools" hidden>
       <div id="galFiltro" class="galchips" role="group" aria-label="Filtrar por tipo"></div>
-      <select id="galOrdem" aria-label="Ordenar">
-        <option value="salvo">Salvos recentemente</option>
-        <option value="manual">Minha ordem (arraste)</option>
-        <option value="antigo">Salvos há mais tempo</option>
-        <option value="nota">Maior nota</option>
-        <option value="data">Mais novos no site</option>
-        <option value="aleatorio">Ordem aleatória</option>
+      <select id="galOrdem" aria-label="Ordenar" data-rot="Ordenar:">
+        <option value="salvo" data-ic="M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0">Salvos recentemente</option>
+        <option value="manual" data-ic="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20">Minha ordem (arraste)</option>
+        <option value="antigo" data-ic="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2">Salvos há mais tempo</option>
+        <option value="nota" data-ic="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z">Maior nota</option>
+        <option value="data" data-ic="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4">Mais novos no site</option>
+        <option value="aleatorio" data-ic="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5">Ordem aleatória</option>
       </select>
     </div>
     <div id="galSelBar" hidden>
@@ -1470,12 +1537,11 @@
     </div>
         <div hidden><label for="proxy">Proxy CORS</label>
     <input id="proxy" placeholder="https://seu-proxy.exemplo/?url="></div>
-        <label class="cfgchk"><input type="checkbox" id="optNoKey"> Não lembrar a API key neste aparelho (peço de novo ao reabrir)</label>
       </section>
       <section class="cfgsec">
         <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></svg>Sincronização</h4>
         <div class="sync"><span class="syncl"><i id="syncDot" class="sdot" aria-hidden="true"></i><span id="syncSt">Sincronização: aguardando</span></span><span class="syncbtns"><button type="button" id="syncAgora" class="ghost">Sincronizar agora</button><button id="syncTeste" class="ghost" type="button">Testar</button><button id="syncForca" class="ghost" type="button">Reenviar daqui</button><button id="syncDesfaz" class="ghost" type="button" hidden>Desfazer última</button></span></div>
-        <small id="syncResumo" class="cfgdica" role="status"></small>
+        <div id="syncResumo" class="synchips" role="status"></div>
         <small class="cfgdica">Seus favoritos, grupos, galeria, seguindo e blacklist ficam iguais em todos os aparelhos onde você entrar com o mesmo User ID e API key.</small>
       </section>
       <section class="cfgsec">
@@ -1489,9 +1555,9 @@
       </section>
       <section class="cfgsec">
         <h4><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>Dados</h4>
-        <div class="sync"><span id="usoLS">Armazenamento: calculando...</span><button type="button" id="bkExp" class="ghost">Exportar backup</button></div>
-        <div class="sync"><span id="bkSt">Backup: nunca feito</span><button type="button" id="bkImp" class="ghost">Importar backup</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div>
-        <button id="diag" class="ghost" type="button" style="margin-top:12px;width:100%">Copiar diagnóstico (para pedir ajuda)</button>
+        <div class="sync drow"><span id="usoLS">Armazenamento: calculando...</span><button type="button" id="bkExp" class="ghost">Exportar backup</button></div>
+        <div class="sync drow"><span id="bkSt">Backup: nunca feito</span><button type="button" id="bkImp" class="ghost">Importar backup</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div>
+        <button id="diag" class="ghost" type="button" style="margin-top:12px;width:100%">Copiar Diagnóstico</button>
       </section>
     </div>
     <div class="cfgfoot"><button id="salvarCfg" class="btn">Salvar</button></div>
@@ -1921,6 +1987,7 @@ async function completarAvatares() {
 }
 
 /* detalhes do artista (folha) */
+const ICO_EXT = '<svg class="ext" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
 function abrirFav(tag) {
   const f = favs.find(x => x.tag === tag); if (!f) return;
   const grupos = gruposFav(), sheet = $("favSheet");
@@ -1931,9 +1998,9 @@ function abrirFav(tag) {
       : f.ts ? (f.thumb ? "" : `<div class="data">${fmtData(new Date(f.ts))}</div>`) : '<div class="muted">Ainda não consultado</div>'}
     ${f.thumb ? `<a class="imgwrap${f.video ? " hasvid" : ""}" href="${linkPost(f.id)}" data-n34post="${esc(f.id)}" target="_blank" rel="noopener"><img class="thumb" src="${esc(f.thumb)}" referrerpolicy="no-referrer" alt="">${f.video && f.vurl ? vidBadge(f.vurl) : ""}${f.ts && !errs[f.tag] ? `<span class="datebadge">${fmtData(new Date(f.ts))}</span>` : ""}</a>` : ""}
     <div class="favact">
-      ${f.id ? `<a class="btn" href="${linkPost(f.id)}" data-n34post="${esc(f.id)}">Abrir no N34</a><a class="ghost" href="${linkPost(f.id)}" target="_blank" rel="noopener">Post no Rule 34 ↗</a>` : ""}
+      ${f.id ? `<a class="btn" href="${linkPost(f.id)}" data-n34post="${esc(f.id)}">Abrir no N34</a><a class="ghost" href="${linkPost(f.id)}" target="_blank" rel="noopener">Post no Rule 34${ICO_EXT}</a>` : ""}
       <button class="ghost" type="button" id="favPosts">Ver posts do artista</button>
-      <a class="ghost" href="${linkTag(f.tag)}" target="_blank" rel="noopener">Artista no Rule 34 ↗</a>
+      <a class="ghost" href="${linkTag(f.tag)}" target="_blank" rel="noopener">Artista no Rule 34${ICO_EXT}</a>
     </div>
     <details class="favedit"><summary>Editar perfil e foto</summary>
     <label for="twIn">Perfil do X/Twitter (foto de perfil)</label>
@@ -1987,15 +2054,22 @@ async function atualizarFav(f) {
     if (!f.avatar && !avTentado.has(f.tag)) { avTentado.add(f.tag); try { Object.assign(f, (await buscarFamosa(f.tag)) || {}); } catch {} }
   } catch (e) { errs[f.tag] = e.message; }
 }
+function favProg(i, n) {   // "Atualizando" com anel girando e barra de progresso
+  const el = $("favStatus");
+  el.innerHTML = `<span class="favprog"><i class="spin" aria-hidden="true"></i><span class="favtx">Atualizando <b>${i}</b>/${n}<span class="dots" aria-hidden="true"><u>.</u><u>.</u><u>.</u></span></span><span class="bar2" aria-hidden="true"><s style="width:${Math.round(i / n * 100)}%"></s></span></span>`;
+}
+function favOk() {
+  $("favStatus").innerHTML = favs.length ? '<span class="favprog ok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Tudo atualizado</span>' : "";
+}
 async function atualizarTodos() {
   if (!creds().uid || !creds().key) return abrirCfg("Preencha User ID e API key.");
   const btn = $("attFavs"); btn.disabled = true;
   for (let i = 0; i < favs.length; i++) {
-    $("favStatus").textContent = `Atualizando ${i + 1}/${favs.length}...`;
+    favProg(i + 1, favs.length);
     await atualizarFav(favs[i]);
     saveFavs(); renderFavs(); contarFavs();
   }
-  $("favStatus").textContent = favs.length ? "Atualizado." : "";
+  favOk();
   btn.disabled = false;
 }
 $("attFavs").onclick = () => { LS.set("r34_ultauto", String(Date.now())); atualizarTodos(); };
@@ -2107,6 +2181,8 @@ addEventListener("popstate", () => {
 })();
 $("tab-links").onclick = () => { menuAbrir(false); abrirLinks(); };
 $("hcLinks").onclick = e => { e.preventDefault(); abrirLinks(); };
+document.addEventListener("click", e => { const g = e.target.closest("[data-go]"); if (g) showTab(g.dataset.go); });
+document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches("[data-go]")) { e.preventDefault(); showTab(e.target.dataset.go); } });
 $("tab-inicio").onclick = () => showTab("inicio");
 $("tab-explorar").onclick = () => showTab("explorar");
 $("tab-top").onclick = () => showTab("top");
@@ -2399,10 +2475,13 @@ $("semIA").addEventListener("change", () => {
   LS.set("r34_semia", $("semIA").checked ? "1" : "0");
   carregarGrid(0);
 });
+const perPintar = menuSuspenso($("periodo"));   // troca a lista azul do navegador pelo menu roxo do site
+const perMostrar = on => { const w = $("periodo").nextElementSibling; if (w) w.hidden = !on; };
+perMostrar(false);
 document.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => {
   expModo = b.dataset.modo;
   document.querySelectorAll(".seg").forEach(x => x.classList.toggle("active", x === b));
-  $("periodo").hidden = expModo !== "trending";
+  perMostrar(expModo === "trending");
   carregarGrid(0);
 }));
 $("periodo").addEventListener("change", () => carregarGrid(0));
@@ -2414,8 +2493,8 @@ try {
   const m = JSON.parse(localStorage.getItem("n34_modo") || "null"), btn = m && document.querySelector('.seg[data-modo="' + m.m + '"]');
   if (btn) {
     expModo = m.m; document.querySelectorAll(".seg").forEach(x => x.classList.toggle("active", x === btn));
-    if ([...$("periodo").options].some(o => o.value === String(m.p))) $("periodo").value = String(m.p);
-    $("periodo").hidden = expModo !== "trending";
+    if ([...$("periodo").options].some(o => o.value === String(m.p))) { $("periodo").value = String(m.p); perPintar(); }
+    perMostrar(expModo === "trending");
   }
 } catch {}
 function tiposAtivos() {
@@ -2502,13 +2581,14 @@ function menuSuspenso(sel) {
   const b = document.createElement("button"); b.type = "button"; b.className = "dd-btn"; b.setAttribute("aria-haspopup", "listbox"); b.setAttribute("aria-expanded", "false");
   if (sel.getAttribute("aria-label")) b.setAttribute("aria-label", sel.getAttribute("aria-label"));
   const ul = document.createElement("ul"); ul.className = "dd-list"; ul.setAttribute("role", "listbox"); ul.hidden = true; ul.tabIndex = -1;
-  ul.innerHTML = [...sel.options].map(o => `<li role="option" data-v="${esc(o.value)}">${esc(o.textContent)}</li>`).join("");
+  const ico = o => o.dataset.ic ? `<svg class="dd-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="${esc(o.dataset.ic)}"/></svg>` : "";
+  ul.innerHTML = [...sel.options].map(o => `<li role="option" data-v="${esc(o.value)}">${ico(o)}<span class="dd-tx">${esc(o.textContent)}</span></li>`).join("");
   w.append(b, ul); sel.after(w); sel.hidden = true;
   const lis = () => [...ul.children];
   let foco = -1;
   const pintar = () => {
     const o = sel.options[sel.selectedIndex];
-    b.innerHTML = `<span>${esc(o ? o.textContent : "")}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>`;
+    b.innerHTML = `${o ? ico(o) : ""}<span class="dd-cur">${sel.dataset.rot ? `<small>${esc(sel.dataset.rot)}</small>` : ""}${esc(o ? o.textContent : "")}</span><svg class="dd-ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>`;
     lis().forEach(li => li.setAttribute("aria-selected", String(li.dataset.v === sel.value)));
   };
   const marcar = i => { foco = (i + lis().length) % lis().length; lis().forEach((li, k) => li.classList.toggle("foco", k === foco)); lis()[foco].scrollIntoView({ block: "nearest" }); };
@@ -2664,10 +2744,16 @@ $("galDel").onclick = async () => {
   galCarregar(false); toast("Removido da galeria");
   if (galVista.length) galAbrir(galVista[Math.min(Math.max(pos, 0), galVista.length - 1)]); else galFechar();
 };
+let galLimpando = false;   // enquanto houver uma confirmação aberta, novos cliques em "Limpar tudo" são ignorados
 $("galLimpar").onclick = async () => {
-  if (!galItens.length) return;
-  const n = galItens.length;
-  if (await confirmar("Limpar a galeria", `Remover ${n === 1 ? "o único item" : "todos os " + n + " itens"} da galeria? Isso não pode ser desfeito.`, "Limpar tudo", true)) { galItens = []; galSel = null; galGravar(); galCarregar(); toast("Galeria limpa"); }
+  if (!galItens.length || galLimpando || !$("cfmModal").hidden) return;
+  galLimpando = true;
+  try {
+    const n = galItens.length;
+    if (!await confirmar("Limpar a galeria", `Remover ${n === 1 ? "o único item" : "todos os " + n + " itens"} da galeria? Isso não pode ser desfeito.`, "Continuar", true)) return;
+    if (!await confirmar("Tem certeza mesmo?", `Última chance: ${n === 1 ? "o item será apagado" : "os " + n + " itens serão apagados"} da galeria para sempre. O botão libera em 5 segundos.`, "Apagar tudo", true, 5)) return;
+    galItens = []; galSel = null; galGravar(); galCarregar(); toast("Galeria limpa");
+  } finally { galLimpando = false; }
 };
 addEventListener("keydown", e => {
   if ($("galView").hidden) return;
@@ -2850,13 +2936,22 @@ function abrirPicker(item, deGrupo) {
   };
 }
 
+const CHEV_SVG = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+function grpBarPintar() {
+  const bar = $("grpBar"); if (!bar) return;
+  bar.hidden = cols.length < 2;
+  const todosMin = cols.length && cols.every(g => g.fechado);
+  $("grpTodos").textContent = todosMin ? "Expandir todos" : "Minimizar todos";
+  $("grpTodos").dataset.min = todosMin ? "0" : "1";
+}
 function renderGrupos() {
   const box = $("grupoLista");
+  grpBarPintar();
   if (!cols.length) { box.innerHTML = '<p class="muted">Nenhum grupo ainda. Abra uma imagem no Explorar e toque em “＋ Grupo”, ou crie um grupo vazio acima.</p>'; return; }
   box.innerHTML = cols.map(g => `
     <section class="grp" data-g="${g.id}" style="--c:${g.cor}">
       <div class="grphead">
-        <button class="grphandle" data-act="arrastar" type="button" aria-label="Arrastar para reordenar o grupo" title="Arraste para reordenar">⠿</button>${capaHtml(g)}<button class="grptag" data-act="tog" aria-expanded="${!g.fechado}"><span>${g.fechado ? "▸" : "▾"}</span><span class="grpnome">${esc(g.nome)}</span><span class="grpn">${g.itens.length}</span></button>
+        <button class="grphandle" data-act="arrastar" type="button" aria-label="Arrastar para reordenar o grupo" title="Arraste para reordenar">⠿</button>${capaHtml(g)}<button class="grptag${g.fechado ? " min" : ""}" data-act="tog" aria-expanded="${!g.fechado}" title="${g.fechado ? "Expandir" : "Minimizar"} grupo">${CHEV_SVG}<span class="grpnome">${esc(g.nome)}</span><span class="grpn">${g.itens.length}</span></button>
         <button class="ghost grpmenu" data-act="menu" aria-label="Opções do grupo">⋯</button>
       </div>
       ${g.fechado ? "" : `<div class="grpgrid">${g.itens.length ? g.itens.map((it, i) => `<button class="gth" data-act="item" data-i="${i}"><img src="${esc(thumbItem(it))}" ${fbAttr({ preview_url: it.p })} referrerpolicy="no-referrer" loading="lazy" decoding="async" alt="">${it.v ? vidBadge(it.f) : ""}</button>`).join("") : '<span class="muted" style="grid-column:1/-1;padding:6px">Vazio</span>'}</div>`}
@@ -2870,6 +2965,7 @@ $("grupoLista").addEventListener("click", e => {
   else if (b.dataset.act === "menu") menuGrupo(g);
   else if (b.dataset.act === "item") abrirItem(gid, +b.dataset.i);
 });
+$("grpTodos").onclick = () => { const min = $("grpTodos").dataset.min === "1"; cols.forEach(g => { g.fechado = min; }); saveCols(); renderGrupos(); };
 $("novoGrupo").onclick = async () => { const n = ((await pedirTexto("Novo grupo", "", "Criar")) || "").trim(); if (n) { criarGrupo(n); renderGrupos(); } };
 
 function menuGrupo(g) {
@@ -3034,14 +3130,14 @@ async function autoAtualizar(forcar) {
   const antes = new Set(favs.filter(f => f.id && f.id !== f.visto).map(f => f.tag));
   try {
     for (let i = 0; i < favs.length; i++) {
-      $("favStatus").textContent = `Atualizando ${i + 1}/${favs.length}...`;
+      favProg(i + 1, favs.length);
       await atualizarFav(favs[i]);
       saveFavs(); contarFavs();
       if (!$("view-favs").hidden) renderFavs();
       await new Promise(r => setTimeout(r, 250));
     }
     const novos = favs.filter(f => f.id && f.id !== f.visto && !antes.has(f.tag)).length;
-    $("favStatus").textContent = "Atualizado.";
+    favOk();
     if (novos) toast(`${novos} artista(s) com post novo ★`);
   } finally { autoBusy = false; }
 }
@@ -3359,7 +3455,7 @@ function renderHome() {
       }).join("")}</div></div>` : "")
     + (fix.length ? `<div class="hsec"><h3>Buscas salvas</h3><div class="hrec">${fix.map(t => `<button data-q="${esc(t)}">★ ${esc(t)}</button>`).join("")}</div></div>` : "")
     + (rec.length ? `<div class="hsec"><h3>Pesquisas recentes</h3><div class="hrec">${rec.map(t => `<button data-q="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>` : "")
-    + `<div class="hstats"><span class="hstat"><b>${favs.length}</b>Favoritos</span>${nNovos ? `<span class="hstat hot"><b>${nNovos}</b>Novos Posts</span>` : ""}<span class="hstat"><b>${nGrp}</b>Grupos</span><span class="hstat"><b>${nGal}</b>Galeria</span></div>`;
+    + `<div class="hstats"><span class="hstat go" role="button" tabindex="0" data-go="favs"><b>${favs.length}</b>Favoritos</span>${nNovos ? `<span class="hstat hot go" role="button" tabindex="0" data-go="favs"><b>${nNovos}</b>Novos Posts</span>` : ""}<span class="hstat go" role="button" tabindex="0" data-go="grupos"><b>${nGrp}</b>Grupos</span><span class="hstat go" role="button" tabindex="0" data-go="galeria"><b>${nGal}</b>Galeria</span></div>`;
 }
 $("homeExtra").addEventListener("click", e => {
   const a = e.target.closest(".hav"); if (a) return abrirFav(a.dataset.tag);
@@ -3478,7 +3574,8 @@ let syncSemServidor = !/^https?:$/.test(location.protocol);   // vira true quand
 const htmlResp = t => /^\s*<(!doctype|html)/i.test(t || "");
 let aplicandoRemoto = false, pushT = null, syncBusy = false, syncPend = false, syncUltima = 0;
 const syncSt = t => {
-  const el = $("syncSt"); if (el) el.textContent = "Sincronização: " + t;
+  const el = $("syncSt");
+  if (el) { const x = /^ok\b/.test(t) ? "Em dia" + t.slice(2).replace(/^\s*às/, " · atualizado às") : t; el.textContent = x.charAt(0).toUpperCase() + x.slice(1); }
   const e = /^(erro|indispon)/.test(t) ? "erro" : /^(sincronizando|testando)/.test(t) ? "busy" : /^ok/.test(t) ? "ok" : "";
   const dt = $("syncDot"); if (dt) { if (e) dt.dataset.s = e; else delete dt.dataset.s; }
 };
@@ -3624,6 +3721,9 @@ async function enviarSync(d, v) {
   if (r.status === 404) { syncSemServidor = true; return tdGravar(await cifrar({ d, v })); }
   if (!r.ok) throw new Error("servidor " + r.status);
 }
+function pintarResumo(el, txt) {   // transforma "15 favoritos · 2 grupos · ..." em etiquetas separadas
+  el.innerHTML = String(txt || "").split(" · ").filter(Boolean).map(t => `<span class="${/^via /.test(t) ? "via" : ""}">${esc(t)}</span>`).join("");
+}
 function resumoSync(d) {
   const n = k => { try { return JSON.parse(d[k] || "[]").length; } catch { return 0; } };
   let imgs = 0; try { imgs = JSON.parse(d.r34_cols || "[]").reduce((t, g) => t + (g.itens || []).length, 0); } catch {}
@@ -3694,7 +3794,7 @@ async function sincronizar(manual) {
     if (push) { const vNovo = Date.now(); await enviarSync(final, vNovo); if (!vivo()) return; _si.call(localStorage, "n34_sync_v", String(vNovo)); }
     _si.call(localStorage, "n34_sync_base", JSON.stringify({ ...base, ...nova }));
     syncUltima = Date.now(); syncErros = 0; syncSt("ok às " + new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }));
-    { const rs = $("syncResumo"); if (rs) rs.textContent = resumoSync(final) + (!API_OK || syncSemServidor ? " · via textdb.online" : ""); }
+    { const rs = $("syncResumo"); if (rs) pintarResumo(rs, resumoSync(final) + (!API_OK || syncSemServidor ? " · via textdb.online" : "")); }
     if (mudou && Object.keys(pre).length) { try { _si.call(localStorage, "n34_pre_sync", JSON.stringify({ t: Date.now(), d: pre })); } catch {} pintarDesfazer(); }
     if (mudou) aplicarEstadoRemoto();
   } catch (e) {
@@ -3726,7 +3826,7 @@ async function reenviarDaqui() {   // substitui o que está salvo no serviço pe
     const vNovo = Date.now(); await enviarSync(final, vNovo);
     _si.call(localStorage, "n34_sync_v", String(vNovo)); _si.call(localStorage, "n34_sync_base", JSON.stringify(nova));
     syncUltima = Date.now(); syncErros = 0; syncSt("ok às " + new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }));
-    const rs = $("syncResumo"); if (rs) rs.textContent = resumoSync(final) + (!API_OK || syncSemServidor ? " · via textdb.online" : "");
+    const rs = $("syncResumo"); if (rs) pintarResumo(rs, resumoSync(final) + (!API_OK || syncSemServidor ? " · via textdb.online" : ""));
     toast("Dados reenviados");
   } catch (e) { syncSt("erro (" + e.message + ")"); }
   finally { syncBusy = false; }
@@ -3773,11 +3873,8 @@ $("optEco").onchange = e => { LS.set("n34_eco", e.target.checked ? "1" : "0"); a
 $("optQual").checked = LS.get("n34_qual", "1") !== "0";
 $("optQual").onchange = e => LS.set("n34_qual", e.target.checked ? "1" : "0");
 aplicarEco();
-$("optNoKey").checked = LS.get("n34_nolembrar") === "1";
-$("optNoKey").onchange = e => {
-  const k = credKey(); LS.set("n34_nolembrar", e.target.checked ? "1" : "0"); guardarKey(k);
-  toast(e.target.checked ? "A API key não será mais guardada neste aparelho. Digite de novo ao reabrir." : "A API key voltou a ser lembrada neste aparelho.");
-};
+/* a opção "não lembrar a API key" foi removida: quem tinha ligado volta a ter a key lembrada normalmente */
+if (LS.get("n34_nolembrar") === "1") { const k = credKey(); LS.set("n34_nolembrar", "0"); if (k) guardarKey(k); }
 if (usoLS() > 0.85 * 5 * 1048576) setTimeout(() => toast("Armazenamento do navegador quase cheio. Exporte um backup."), 2500);
 
 /* ---------- Grade: libera imagens longe da tela (poupa memória) ---------- */
@@ -3883,7 +3980,16 @@ function toggleSeguir(t) {
   else { seguindo.unshift({ tag: t, ts: Date.now(), ico: "" }); toast("Seguindo " + bonitoTag(t)); setTimeout(() => iconeAuto(t), 0); }
   segGravar(); return seguindoTem(t);
 }
+let segChipsOculto = LS.get("n34_segOculto") === "1";
+function segTogPintar() {
+  const b = $("segTogChips"); if (!b) return;
+  b.hidden = !seguindo.length; $("segChips").hidden = !seguindo.length || segChipsOculto;
+  b.setAttribute("aria-expanded", String(!segChipsOculto)); b.classList.toggle("min", segChipsOculto);
+  $("segTogTx").textContent = `Personagens seguidos (${seguindo.length})` + (segChipsOculto ? (segSel ? " · filtrando: " + bonitoTag(segSel) : " · escondidos") : "");
+}
+$("segTogChips").onclick = () => { segChipsOculto = !segChipsOculto; LS.set("n34_segOculto", segChipsOculto ? "1" : "0"); segTogPintar(); };
 function segChips() {
+  segTogPintar();
   $("segChips").innerHTML = seguindo.length ? `<span class="schip${segSel ? "" : " on"}"><button type="button" data-t="">Todos (${seguindo.length})</button></span>` + seguindo.map(x => `<span class="schip${segSel === x.tag ? " on" : ""}">${avatarSeg(x, true)}<button type="button" data-t="${esc(x.tag)}">${esc(bonitoTag(x.tag))}</button><button type="button" data-x="${esc(x.tag)}" aria-label="Deixar de seguir">✕</button></span>`).join("") : "";
 }
 function segRender(reset) {
@@ -4073,13 +4179,20 @@ function pedirTexto(titulo, valor = "", ok = "Salvar") {
 }
 
 /* ================= Confirmação do site (no lugar do confirm do navegador) ================= */
-function confirmar(titulo, msg, ok = "Confirmar", perigo = false) {
+function confirmar(titulo, msg, ok = "Confirmar", perigo = false, espera = 0) {
   return new Promise(res => {
     const m = $("cfmModal"), sim = $("cfmSim"), nao = $("cfmNao"), antes = document.activeElement;
     $("cfmT").textContent = titulo; $("cfmM").textContent = msg; sim.textContent = ok;
     sim.classList.toggle("perigo", !!perigo); m.hidden = false;
-    setTimeout(() => (perigo ? nao : sim).focus(), 40);
+    let tick = null;
+    if (espera > 0) {   // botão só libera depois da contagem (evita apagar sem querer)
+      let falta = espera; sim.disabled = true; sim.textContent = `${ok} (${falta})`;
+      tick = setInterval(() => { falta--; if (falta > 0) sim.textContent = `${ok} (${falta})`; else { clearInterval(tick); tick = null; sim.disabled = false; sim.textContent = ok; } }, 1000);
+    }
+    setTimeout(() => (perigo || espera > 0 ? nao : sim).focus(), 40);
     const fim = v => {
+      if (tick) { clearInterval(tick); tick = null; }
+      sim.disabled = false; sim.textContent = ok;
       m.hidden = true; sim.onclick = nao.onclick = m.onclick = null;
       removeEventListener("keydown", tecla, true);
       try { if (antes && antes.focus) antes.focus(); } catch {}
@@ -4088,12 +4201,12 @@ function confirmar(titulo, msg, ok = "Confirmar", perigo = false) {
     const tecla = e => {
       if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); fim(false); }
       else if (e.key === "Tab") {
-        const bs = [nao, sim], i = bs.indexOf(document.activeElement);
+        const bs = sim.disabled ? [nao] : [nao, sim], i = bs.indexOf(document.activeElement);
         e.preventDefault(); bs[(i + (e.shiftKey ? -1 : 1) + 2) % 2].focus();
-      } else if (e.key === "Enter" && document.activeElement !== nao && document.activeElement !== sim) { e.preventDefault(); fim(true); }
+      } else if (e.key === "Enter" && document.activeElement !== nao && document.activeElement !== sim) { e.preventDefault(); if (!sim.disabled) fim(true); }
     };
     addEventListener("keydown", tecla, true);
-    sim.onclick = () => fim(true); nao.onclick = () => fim(false);
+    sim.onclick = () => { if (!sim.disabled) fim(true); }; nao.onclick = () => fim(false);
     m.onclick = e => { if (e.target === m) fim(false); };
   });
 }
