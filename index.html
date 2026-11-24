@@ -1251,6 +1251,18 @@
   @keyframes favdot { 0%,100% { opacity:.2; } 50% { opacity:1; } }
   @keyframes favpop { from { transform:scale(.85); opacity:0; } to { transform:none; opacity:1; } }
   @media (prefers-reduced-motion:reduce) { .favprog .spin, .favprog .dots u { animation-duration:2.5s; } }
+
+  /* galeria mais leve: sem animação/sombra por célula */
+  #galGrid .gth { animation:none; transition:none; box-shadow:none; }
+  #galGrid .gth:hover { transform:none; box-shadow:none; }
+  #galGrid .gth:hover img { transform:none; }
+  #galGrid .gth img { transition:none; }
+  #galGrid .gcell { contain:layout paint; }
+  .gfav { position:absolute; top:6px; left:6px; z-index:3; width:32px; height:32px; padding:0; display:grid; place-items:center; border:1px solid rgba(255,255,255,.22); border-radius:50%; background:rgba(10,4,20,.6); color:#fff; font-size:1.05rem; line-height:1; cursor:pointer; }
+  .gfav.on { color:#fbbf24; border-color:rgba(251,191,36,.6); background:rgba(40,24,4,.7); }
+  .gfav:hover { background:rgba(124,58,237,.7); }
+  #galFavBtn.on { color:#fbbf24; border-color:rgba(251,191,36,.55); }
+  .galchips button[data-f="fav"].on { background:linear-gradient(135deg,rgba(251,191,36,.35),rgba(245,158,11,.25)); border-color:rgba(251,191,36,.6); }
 </style>
 <script>
 /* Tema: troca a cor do site todo mexendo na matiz (hue) de tudo que é roxo/rosa/violeta; o resto (branco, cinza, vermelho de erro…) não muda */
@@ -1393,6 +1405,7 @@
           <button class="seg active" data-modo="recentes">Recentes</button>
           <button class="seg" data-modo="populares" title="Maiores notas de todos os tempos">Mais populares</button>
           <button class="seg" data-modo="trending" title="Maiores notas em um período recente">Trending</button>
+          <button class="seg" data-modo="aleatorio" title="Posts sorteados. Toque de novo para sortear outros">Aleatório</button>
           <select id="periodo" hidden>
             <option value="1">Últimas 24 horas</option>
             <option value="7" selected>Últimos 7 dias</option>
@@ -1607,7 +1620,7 @@
   <button class="vnav" id="galPrev" style="left:6px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
   <div id="galMid"></div>
   <button class="vnav" id="galNext" style="right:6px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
-  <div class="vbar"><span id="galInfo"></span><a id="galSite" target="_blank" rel="noopener">Abrir no site</a><button class="ghost" id="galCopiar">Copiar</button><button class="btn" id="galBaixar">Baixar</button><button class="ghost" id="galDel">Remover</button></div>
+  <div class="vbar"><span id="galInfo"></span><a id="galSite" target="_blank" rel="noopener">Abrir no site</a><button class="ghost" id="galFavBtn" type="button">☆ Favoritar</button><button class="ghost" id="galCopiar">Copiar</button><button class="btn" id="galBaixar">Baixar</button><button class="ghost" id="galDel">Remover</button></div>
 </div>
 <div id="grpModal" hidden><div class="sheet" id="grpSheet"></div></div>
 <div id="itemView" hidden>
@@ -2110,7 +2123,7 @@ function showTab(nome, modo) {
   if (nome === "seg") segRender(true);
   if (nome === "favs") { renderFavs(); }
   if (nome === "grupos") renderGrupos();
-  if (nome === "galeria") galCarregar();
+  if (nome === "galeria") { const sig = [galVer, galItens.length, galFiltro, galOrdem, !!galSel].join("|"); if (sig !== galSig || !$("galGrid").children.length) galCarregar(); }
   if (nome === "explorar" && !$("grid").children.length) carregarGrid(0);
   document.body.dataset.aba = nome;
   document.querySelectorAll(".bnav a").forEach(a => a.classList.toggle("active", a.dataset.go === nome));
@@ -2272,6 +2285,7 @@ async function carregarGrid(pag = 0) {
   try {
     let extra = "";
     if (expModo === "populares") extra = "sort:score:desc";
+    else if (expModo === "aleatorio") extra = "sort:random";
     else if (expModo === "trending") {
       $("expMsg").textContent = "Calculando o período...";
       extra = `sort:score:desc id:>${await idDesde(Number($("periodo").value))}`;
@@ -2283,7 +2297,8 @@ async function carregarGrid(pag = 0) {
     do {
       const r = await buscarLista([tags, extra].filter(Boolean).join(" "), p);
       if (seq !== expSeq) return;
-      const ok = r.posts.filter(passaFiltros);
+      const vistos = expModo === "aleatorio" ? new Set(gridPosts.map(x => x.id)) : null;   // no sorteio o mesmo post pode voltar em outra página
+      const ok = r.posts.filter(x => passaFiltros(x) && !(vistos && vistos.has(x.id)));
       oculto += r.posts.length - ok.length; gridPosts.push(...ok);
       temMais = r.posts.length === POR_PAGINA && gridPosts.length < GRID_MAX; expPag = p++; tent++;
     } while (temMais && gridPosts.length - ini < 12 && tent < 6);
@@ -2560,7 +2575,9 @@ function renderResultado(div, artista, post) {
 /* ---------- Galeria do site (posts salvos do Explorar, guardados neste navegador) ---------- */
 let galItens = [], galI = -1;
 try { const g = JSON.parse(LS.get("n34_galeria", "[]")); if (Array.isArray(g)) galItens = g; } catch {}
+let galVer = 0, galSig = "";
 function galGravar() {
+  galVer++;
   try { localStorage.setItem("n34_galeria", JSON.stringify(galItens)); return true; }
   catch { toast("Não consegui salvar (armazenamento cheio)"); return false; }
 }
@@ -2573,7 +2590,7 @@ function galToggle(p) {
   toast("Salvo na galeria"); return true;
 }
 let galFiltro = LS.get("n34_galFiltro", "todos"), galOrdem = LS.get("n34_galOrdem", "salvo"), galSel = null, galVista = [], galQtd = 0, galRend = 0;
-const GAL_LOTE = 80, GAL_TIPOS = [["todos", "Todos"], ["imagem", "Imagens"], ["gif", "GIFs"], ["video", "Vídeos"]];
+const GAL_LOTE = 36, GAL_TIPOS = [["todos", "Todos"], ["fav", "★ Favoritos"], ["imagem", "Imagens"], ["gif", "GIFs"], ["video", "Vídeos"]];
 $("galOrdem").value = ["salvo", "manual", "antigo", "nota", "data", "aleatorio"].includes(galOrdem) ? galOrdem : "salvo";
 /* menu suspenso do site: troca a lista azul do navegador por uma no tema roxo (o <select> continua guardando o valor) */
 function menuSuspenso(sel) {
@@ -2611,7 +2628,8 @@ const galOrdemPintar = menuSuspenso($("galOrdem"));
 const galAleat = new Map();   // sorteio da ordem aleatória (muda ao escolher a opção de novo)
 function galCalcVista() {
   let ix = galItens.map((_, i) => i);
-  if (galFiltro !== "todos") ix = ix.filter(i => galItens[i].tipo === galFiltro);
+  if (galFiltro === "fav") ix = ix.filter(i => galItens[i].fav);
+  else if (galFiltro !== "todos") ix = ix.filter(i => galItens[i].tipo === galFiltro);
   const nota = i => Number(galItens[i].score) || 0, dt = i => galItens[i].data || 0;
   if (galOrdem === "antigo") ix.reverse();
   else if (galOrdem === "nota") ix.sort((x, y) => nota(y) - nota(x) || x - y);
@@ -2625,7 +2643,7 @@ function galCalcVista() {
 function galCelula(i) {
   const it = galItens[i], marcado = !!(galSel && galSel.has(it.id));
   const nota = it.score != null && it.score !== "" ? "▲ " + esc(it.score) : "", dia = it.data ? fmtData(new Date(it.data)) : "";
-  return `<div class="gcell${marcado ? " sel" : ""}" data-id="${esc(it.id)}"><button class="gth" data-i="${i}" type="button" aria-label="${galSel ? (marcado ? "Desmarcar" : "Marcar") : "Abrir"} item ${esc(it.id)}"${galSel ? ` aria-pressed="${marcado}"` : ""}><img src="${esc(it.thumb || it.prev)}" data-fb="${esc(it.prev)}" onerror="if(this.dataset.fb&&this.src!==this.dataset.fb)this.src=this.dataset.fb" referrerpolicy="no-referrer" loading="lazy" decoding="async" alt="">${it.tipo === "video" ? vidBadge(it.full) : ""}${it.tipo === "gif" ? '<span class="gbadge">GIF</span>' : ""}${nota || dia ? `<span class="gmeta"><span>${nota}</span><span>${dia}</span></span>` : ""}</button>${galSel ? `<span class="gchk" aria-hidden="true">${marcado ? "✓" : ""}</span>` : `<button class="gx" data-i="${i}" type="button" aria-label="Remover da galeria">✕</button>`}</div>`;
+  return `<div class="gcell${marcado ? " sel" : ""}" data-id="${esc(it.id)}"><button class="gth" data-i="${i}" type="button" aria-label="${galSel ? (marcado ? "Desmarcar" : "Marcar") : "Abrir"} item ${esc(it.id)}"${galSel ? ` aria-pressed="${marcado}"` : ""}><img src="${esc(it.thumb || it.prev)}" data-fb="${esc(it.prev)}" onerror="if(this.dataset.fb&&this.src!==this.dataset.fb)this.src=this.dataset.fb" referrerpolicy="no-referrer" loading="lazy" decoding="async" alt="">${it.tipo === "video" ? '<span class="vidbadge"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 .4 9.4 5 1 9.6z"/></svg></span>' : ""}${it.tipo === "gif" ? '<span class="gbadge">GIF</span>' : ""}${nota || dia ? `<span class="gmeta"><span>${nota}</span><span>${dia}</span></span>` : ""}</button>${galSel ? `<span class="gchk" aria-hidden="true">${marcado ? "✓" : ""}</span>` : `<button class="gfav${it.fav ? " on" : ""}" data-i="${i}" type="button" aria-pressed="${!!it.fav}" aria-label="${it.fav ? "Tirar dos favoritos" : "Favoritar"}">${it.fav ? "★" : "☆"}</button><button class="gx" data-i="${i}" type="button" aria-label="Remover da galeria">✕</button>`}</div>`;
 }
 function galPintar(anexar) {
   const g = $("galGrid"), fim = Math.min(galQtd, galVista.length);
@@ -2635,7 +2653,6 @@ function galPintar(anexar) {
   g.classList.toggle("selmode", !!galSel);
   const resta = galVista.length - galRend;
   $("galMais").hidden = resta <= 0; $("galMais").textContent = `Mostrar mais (${resta})`;
-  observarDur(g);
 }
 function galAtualizarSel() {
   const n = galSel ? galSel.size : 0;
@@ -2654,14 +2671,15 @@ function galCarregar(reset = true) {
     $("galIr").onclick = () => showTab("explorar");
     return;
   }
-  const cont = { todos: n }; for (const it of galItens) cont[it.tipo] = (cont[it.tipo] || 0) + 1;
-  if (galFiltro !== "todos" && !cont[galFiltro]) galFiltro = "todos";
-  $("galFiltro").innerHTML = GAL_TIPOS.filter(([k]) => k === "todos" || cont[k]).map(([k, nome]) => `<button type="button" data-f="${k}" class="${k === galFiltro ? "on" : ""}" aria-pressed="${k === galFiltro}">${nome}<b>${cont[k] || 0}</b></button>`).join("");
+  const cont = { todos: n, fav: 0 }; for (const it of galItens) { cont[it.tipo] = (cont[it.tipo] || 0) + 1; if (it.fav) cont.fav++; }
+  if (galFiltro !== "todos" && galFiltro !== "fav" && !cont[galFiltro]) galFiltro = "todos";
+  $("galFiltro").innerHTML = GAL_TIPOS.filter(([k]) => k === "todos" || k === "fav" || cont[k]).map(([k, nome]) => `<button type="button" data-f="${k}" class="${k === galFiltro ? "on" : ""}" aria-pressed="${k === galFiltro}">${nome}<b>${cont[k] || 0}</b></button>`).join("");
   galVista = galCalcVista();
   if (reset || !galQtd) galQtd = GAL_LOTE;
   galQtd = Math.max(galQtd, GAL_LOTE);
-  $("galMsg").textContent = galFiltro === "todos" ? `${n} ${n === 1 ? "item salvo" : "itens salvos"} neste navegador.` : `${galVista.length} de ${n} itens.`;
+  $("galMsg").textContent = galFiltro === "todos" ? `${n} ${n === 1 ? "item salvo" : "itens salvos"} neste navegador.` : (galFiltro === "fav" && !galVista.length ? "Nenhum favorito ainda. Toque na ☆ de uma imagem para marcar." : `${galVista.length} de ${n} itens.`);
   galPintar(false); galAtualizarSel();
+  galSig = [galVer, galItens.length, galFiltro, galOrdem, !!galSel].join("|");
 }
 function galAbrir(i) {
   const it = galItens[i]; if (!it) return;
@@ -2671,6 +2689,7 @@ function galAbrir(i) {
   playerMidia($("galMid"), galMi(it)); playerPrefetch([galMi(viz(1)), galMi(viz(-1))]);
   $("galInfo").textContent = `${pos + 1}/${galVista.length}${it.data ? " · " + fmtData(new Date(it.data)) : ""}${it.score != null && it.score !== "" ? " · ▲ " + it.score : ""}`;
   $("galSite").href = linkPost(it.id);
+  $("galFavBtn").textContent = it.fav ? "★ Favorito" : "☆ Favoritar"; $("galFavBtn").classList.toggle("on", !!it.fav);
 }
 function galFechar() { $("galView").hidden = true; $("galMid").innerHTML = ""; document.body.style.overflow = ""; galI = -1; }
 function galMover(d) {
@@ -2694,6 +2713,15 @@ async function galRemover(ids, titulo, msg, ok) {
 $("galGrid").addEventListener("click", async e => {
   const cel = e.target.closest(".gcell"); if (!cel) return;
   if (galSel) { galMarcar(cel.dataset.id); return; }
+  const fv = e.target.closest(".gfav");
+  if (fv) {
+    const it = galItens[+fv.dataset.i]; if (!it) return;
+    it.fav = !it.fav; if (!it.fav) delete it.fav; galGravar();
+    if (galFiltro === "fav") { galCarregar(false); toast("Removido dos favoritos"); return; }
+    fv.classList.toggle("on", !!it.fav); fv.textContent = it.fav ? "★" : "☆"; fv.setAttribute("aria-pressed", String(!!it.fav));
+    const b = $("galFiltro").querySelector('[data-f="fav"] b'); if (b) b.textContent = galItens.filter(x => x.fav).length;
+    toast(it.fav ? "Favoritado" : "Removido dos favoritos"); return;
+  }
   const x = e.target.closest(".gx");
   if (x) {
     const it = galItens[+x.dataset.i]; if (!it) return;
@@ -2707,6 +2735,7 @@ $("galFiltro").addEventListener("click", e => {
   galFiltro = b.dataset.f; LS.set("n34_galFiltro", galFiltro); galCarregar(true);
 });
 $("galOrdem").onchange = e => { galOrdem = e.target.value; galAleat.clear(); LS.set("n34_galOrdem", galOrdem); galCarregar(true); };
+new IntersectionObserver(es => { if (es[0].isIntersecting && !$("galMais").hidden && !$("view-galeria").hidden) $("galMais").click(); }, { rootMargin: "700px" }).observe($("galMais"));
 $("galMais").onclick = () => { galQtd += GAL_LOTE; galPintar(true); galAtualizarSel(); };
 new IntersectionObserver(es => { if (es[0].isIntersecting && !$("galMais").hidden && !$("view-galeria").hidden) $("galMais").click(); }, { rootMargin: "600px" }).observe($("galMais"));
 $("galSelBtn").onclick = () => galModoSel(!galSel);
@@ -3558,6 +3587,12 @@ $("blkModal").addEventListener("click", e => { if (e.target === $("blkModal")) f
 $("blackSalvar").addEventListener("click", () => { if (!$("blkModal").hidden) setTimeout(fecharBlk, 60); });
 $("vBlk").onclick = abrirBlk;
 $("vCopiar").onclick = () => { const p = gridPosts[vI]; if (p) copiarImg({ v: tipoDe(p) === "video", f: p.file_url, s: p.sample_url, id: p.id }); };
+$("galFavBtn").onclick = () => {
+  const it = galItens[galI]; if (!it) return;
+  it.fav = !it.fav; if (!it.fav) delete it.fav; galGravar();
+  $("galFavBtn").textContent = it.fav ? "★ Favorito" : "☆ Favoritar"; $("galFavBtn").classList.toggle("on", !!it.fav);
+  galSig = ""; toast(it.fav ? "Favoritado" : "Removido dos favoritos");
+};
 $("galCopiar").onclick = () => { const it = galItens[galI]; if (it) copiarImg({ v: it.tipo === "video", f: it.full, s: it.sample, id: it.id }); };
 
 /* ---------- Sincronização entre aparelhos (mesmo User ID + API Key) ---------- */
