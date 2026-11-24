@@ -1078,8 +1078,6 @@
   #temaPadrao { margin-top:12px; width:100%; }
 
   /* ===== acabamento geral: transições, barra de carregamento, aviso offline e brilho nos cartões ===== */
-  @keyframes vin { from { opacity:0; transform:translateY(10px); } }
-  section[id^="view-"]:not([hidden]) { animation:vin .32s cubic-bezier(.2,.8,.2,1) both; }
   .topbar { transition:background .25s, box-shadow .25s; }
   body.rolou .topbar { background:rgba(8,3,16,.94); box-shadow:0 8px 30px rgba(0,0,0,.45); }
   a.gitem img:not(.ok), .gth img:not(.ok), .segc img:not(.ok), .htc img:not(.ok), .topit img:not(.ok), .reccard .rimg:not(.ok) { opacity:0; }
@@ -1264,36 +1262,8 @@
   #galFavBtn.on { color:#fbbf24; border-color:rgba(251,191,36,.55); }
   .galchips button[data-f="fav"].on { background:linear-gradient(135deg,rgba(251,191,36,.35),rgba(245,158,11,.25)); border-color:rgba(251,191,36,.6); }
 
-  /* ===== visual: fundo aurora, brilho, transição, temas prontos ===== */
-  .segsm { display:inline-flex; padding:3px; gap:2px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.04); }
-  .segsm button { min-height:32px; padding:0 12px; border:0; border-radius:9px; background:transparent; color:var(--muted); font:600 .8rem var(--fb); cursor:pointer; }
-  .segsm button.on { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; }
-  .cfgopt { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:12px; font-size:.88rem; }
-  .presets { display:grid; grid-template-columns:repeat(auto-fit,minmax(92px,1fr)); gap:8px; margin-top:8px; }
-  .presets button { position:relative; min-height:46px; padding:0 10px; border:1px solid rgba(255,255,255,.18); border-radius:12px; background:var(--g); color:#fff; font:700 .82rem var(--fb); text-shadow:0 1px 6px rgba(0,0,0,.55); cursor:pointer; transition:transform .15s, box-shadow .15s; }
-  .presets button:hover { transform:translateY(-2px); box-shadow:0 8px 22px -8px rgba(0,0,0,.7); }
-  #aurora { display:none; position:fixed; inset:-20%; z-index:0; pointer-events:none; filter:blur(70px); opacity:.5; }
-  #aurora i { position:absolute; width:60vmax; height:60vmax; border-radius:50%; }
-  #aurora i:nth-child(1) { left:-10%; top:-10%; background:radial-gradient(circle,var(--accent),transparent 65%); animation:aur1 24s ease-in-out infinite alternate; }
-  #aurora i:nth-child(2) { right:-15%; top:20%; background:radial-gradient(circle,var(--accent2),transparent 65%); animation:aur2 30s ease-in-out infinite alternate; }
-  #aurora i:nth-child(3) { left:20%; bottom:-30%; background:radial-gradient(circle,#22d3ee,transparent 65%); opacity:.55; animation:aur3 36s ease-in-out infinite alternate; }
-  @keyframes aur1 { to { transform:translate(22vw,18vh) scale(1.15); } }
-  @keyframes aur2 { to { transform:translate(-26vw,12vh) scale(.9); } }
-  @keyframes aur3 { to { transform:translate(18vw,-22vh) scale(1.2); } }
-  html[data-fundo="aurora"] #aurora { display:block; }
-  html[data-fundo="aurora"] #bg, html[data-fundo="liso"] #bg { display:none; }
-  html[data-eco="1"] #aurora { display:none !important; }
-  @media (prefers-reduced-motion:reduce) { #aurora i { animation:none; } }
-  .gitem::before, .gth::before { content:""; position:absolute; inset:0; z-index:2; opacity:0; pointer-events:none; background:radial-gradient(170px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.24),transparent 62%); transition:opacity .2s; }
-  @media (hover:hover) { html:not([data-glow="0"]) .gitem:hover::before, html:not([data-glow="0"]) .gth:hover::before { opacity:1; } }
-  @keyframes vin { from { opacity:0; transform:translateY(10px); } }
-  .vin { animation:vin .35s cubic-bezier(.2,.8,.2,1); }
-  @media (prefers-reduced-motion:reduce) { .vin { animation:none; } }
   /* ===== organização: busca, etiquetas ===== */
   .galtools { flex-wrap:wrap; }
-  .galbusca { flex:1 1 100%; order:5; }
-  .galbusca input { width:100%; min-height:42px; padding:0 14px 0 40px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.04) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c084fc' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E") no-repeat 13px center / 18px; color:var(--fg); font:500 .92rem var(--fb); }
-  .galbusca input:focus { outline:none; border-color:var(--accent); }
   .galchips.etiq { flex:1 1 100%; order:6; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
   .galchips.etiq[hidden], .galtagsbtn[hidden] { display:none; }
   .galchips.etiq .etl { color:var(--muted); font-size:.8rem; margin-right:4px; }
@@ -1360,7 +1330,6 @@
 <body data-aba="inicio">
 <noscript><p style="padding:24px;color:#ddd;font:16px system-ui">Ative o JavaScript para usar o N34.</p></noscript>
 <canvas id="bg"></canvas>
-<div id="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <main>
 
   
@@ -1536,9 +1505,6 @@
         <option value="data" data-ic="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4">Mais novos no site</option>
         <option value="aleatorio" data-ic="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5">Ordem aleatória</option>
       </select>
-      <div class="galbusca">
-        <input id="galBusca" type="search" placeholder="Buscar nos seus salvos: tags, etiquetas ou -excluir" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Buscar nos salvos">
-      </div>
       <div id="galEtiq" class="galchips etiq" role="group" aria-label="Etiquetas" hidden></div>
       <button id="galTagsBtn" class="ghost galtagsbtn" type="button" hidden></button>
     </div>
@@ -1608,18 +1574,6 @@
         <div class="temahue"><label for="temaHue">Cor personalizada</label><input id="temaHue" type="range" min="0" max="359" step="1"><output id="temaOut">273°</output></div>
         <small class="cfgdica">Muda as cores do site todo, inclusive o cabelo e a roupa da menina da página inicial.</small>
         <button id="temaPadrao" class="ghost" type="button">Voltar ao roxo padrão</button>
-        <div class="cfgopt"><span>Temas prontos</span></div>
-        <div class="presets" id="presets" role="group" aria-label="Temas prontos">
-          <button type="button" data-h="" data-f="estrelas" style="--g:linear-gradient(135deg,#a855f7,#4c1d95)">Clássico</button>
-          <button type="button" data-h="305" data-f="aurora" style="--g:linear-gradient(135deg,#f0abfc,#7c3aed,#22d3ee)">Neon</button>
-          <button type="button" data-h="200" data-f="aurora" style="--g:linear-gradient(135deg,#22d3ee,#2563eb)">Oceano</button>
-          <button type="button" data-h="18" data-f="aurora" style="--g:linear-gradient(135deg,#fb923c,#e11d48)">Sunset</button>
-          <button type="button" data-h="140" data-f="estrelas" style="--g:linear-gradient(135deg,#4ade80,#047857)">Floresta</button>
-          <button type="button" data-h="335" data-f="estrelas" style="--g:linear-gradient(135deg,#f9a8d4,#db2777)">Sakura</button>
-        </div>
-        <div class="cfgopt"><span>Fundo</span><div class="segsm" id="optFundo" role="group" aria-label="Fundo"><button type="button" data-v="estrelas">Estrelas</button><button type="button" data-v="aurora">Aurora</button><button type="button" data-v="liso">Liso</button></div></div>
-        <label class="cfgchk"><input type="checkbox" id="optGlow"> Brilho que segue o cursor nas miniaturas</label>
-        <label class="cfgchk"><input type="checkbox" id="optTrans"> Transição suave entre as telas</label>
         <label class="cfgchk"><input type="checkbox" id="optEco"> Modo economia (sem partículas e sem desfoque; poupa bateria)</label>
         <label class="cfgchk"><input type="checkbox" id="optQual"> Imagens em qualidade original no visualizador (usa mais dados)</label>
       </section>
@@ -2175,7 +2129,6 @@ function showTab(nome, modo) {
     $("tab-" + n).classList.toggle("active", n === nome);
   }
   document.querySelector("main").classList.toggle("wide", nome === "explorar" || nome === "galeria");
-  if (document.documentElement.dataset.trans !== "0") { const v = $("view-" + nome); v.classList.remove("vin"); void v.offsetWidth; v.classList.add("vin"); }
   if (nome === "inicio") { contarPosts(); try { renderHome(); } catch {} try { topHome(); } catch {} }
   if (nome === "top") carregarTop();
   if (nome === "seg") segRender(true);
@@ -2647,7 +2600,7 @@ function galToggle(p) {
   if (!galGravar()) { galItens.shift(); return false; }
   toast("Salvo na galeria"); return true;
 }
-let galBuscaQ = "", galEtiqSel = "", galBuscaT = null, galTagsBusy = false;
+let galEtiqSel = "", galTagsBusy = false;
 let galFiltro = LS.get("n34_galFiltro", "todos"), galOrdem = LS.get("n34_galOrdem", "salvo"), galSel = null, galVista = [], galQtd = 0, galRend = 0;
 const GAL_LOTE = 36, GAL_TIPOS = [["todos", "Todos"], ["fav", "★ Favoritos"], ["imagem", "Imagens"], ["gif", "GIFs"], ["video", "Vídeos"]];
 $("galOrdem").value = ["salvo", "manual", "antigo", "nota", "data", "aleatorio"].includes(galOrdem) ? galOrdem : "salvo";
@@ -2690,10 +2643,6 @@ function galCalcVista() {
   if (galFiltro === "fav") ix = ix.filter(i => galItens[i].fav);
   else if (galFiltro !== "todos") ix = ix.filter(i => galItens[i].tipo === galFiltro);
   if (galEtiqSel) ix = ix.filter(i => (galItens[i].et || []).some(e => e.toLowerCase() === galEtiqSel.toLowerCase()));
-  if (galBuscaQ) {
-    const ts = galBuscaQ.toLowerCase().split(/\s+/).filter(Boolean).map(t => t.startsWith("-") && t.length > 1 ? { n: true, w: t.slice(1) } : { n: false, w: t });
-    ix = ix.filter(i => { const it = galItens[i], h = " " + (it.tags || "").toLowerCase() + " " + (it.et || []).join(" ").toLowerCase() + " " + it.id + " "; return ts.every(t => h.includes(t.w) !== t.n); });
-  }
   const nota = i => Number(galItens[i].score) || 0, dt = i => galItens[i].data || 0;
   if (galOrdem === "antigo") ix.reverse();
   else if (galOrdem === "nota") ix.sort((x, y) => nota(y) - nota(x) || x - y);
@@ -2743,7 +2692,7 @@ function galCarregar(reset = true) {
     const E = $("galEtiq"); E.hidden = !ec.size;
     E.innerHTML = '<span class="etl">Etiquetas</span>' + [...ec.values()].sort((a, b) => b.n - a.n).map(o => `<button type="button" data-e="${esc(o.nome)}" class="${o.nome.toLowerCase() === galEtiqSel.toLowerCase() ? "on" : ""}" aria-pressed="${o.nome.toLowerCase() === galEtiqSel.toLowerCase()}">🏷 ${esc(o.nome)}<b>${o.n}</b></button>`).join("");
     const falta = galItens.filter(x => x.tags === undefined).length, B = $("galTagsBtn");
-    B.hidden = !falta; if (!galTagsBusy) B.textContent = `Baixar tags de ${falta} ${falta === 1 ? "item antigo" : "itens antigos"} (para buscar neles)`;
+    B.hidden = !falta; if (!galTagsBusy) B.textContent = `Baixar tags de ${falta} ${falta === 1 ? "item antigo" : "itens antigos"}`;
   }
   galVista = galCalcVista();
   if (reset || !galQtd) galQtd = GAL_LOTE;
@@ -4427,7 +4376,7 @@ function galSoltou() {
   if (galOrdem !== "manual") { galOrdem = "manual"; LS.set("n34_galOrdem", "manual"); $("galOrdem").value = "manual"; galOrdemPintar(); }
   galCarregar(false); toast("Ordem salva");
 }
-ordenavel($("galGrid"), ".gcell", { pode: () => !galSel && galFiltro === "todos" && !galBuscaQ && !galEtiqSel, aoSoltar: galSoltou });
+ordenavel($("galGrid"), ".gcell", { pode: () => !galSel && galFiltro === "todos" && !galEtiqSel, aoSoltar: galSoltou });
 { const c0 = galCarregar; galCarregar = function (r) {
   c0(r); $("galGrid").classList.toggle("manual", galOrdem === "manual");
   if (galOrdem === "manual" && galItens.length && galFiltro === "todos") $("galMsg").textContent += " Segure e arraste para reordenar.";
@@ -4444,8 +4393,7 @@ let temaRaf = 0;
 $("temaHue").addEventListener("input", e => { const h = +e.target.value; cancelAnimationFrame(temaRaf); temaRaf = requestAnimationFrame(() => window.N34Tema.set(h)); });
 $("temaPadrao").onclick = () => window.N34Tema.set(null);
 
-/* ---------- Busca, etiquetas e tags nos salvos ---------- */
-$("galBusca").addEventListener("input", e => { clearTimeout(galBuscaT); galBuscaT = setTimeout(() => { galBuscaQ = e.target.value.trim(); galCarregar(true); }, 220); });
+/* ---------- Etiquetas e tags nos salvos ---------- */
 $("galEtiq").addEventListener("click", e => {
   const b = e.target.closest("[data-e]"); if (!b) return;
   galEtiqSel = galEtiqSel.toLowerCase() === b.dataset.e.toLowerCase() ? "" : b.dataset.e; galCarregar(true);
@@ -4487,32 +4435,8 @@ $("galTagsBtn").onclick = async () => {
     }
   } catch (e) { falhou = true; toast("Parou: " + msgErro(e)); }
   galTagsBusy = false; galCarregar(false);
-  if (!falhou) toast("Tags baixadas. Agora dá para buscar nos antigos.");
+  if (!falhou) toast("Tags baixadas.");
 };
-
-/* ---------- Aparência: temas prontos, fundo e efeitos ---------- */
-function aplicarVisual() {
-  const R = document.documentElement;
-  R.dataset.fundo = LS.get("n34_fundo", "estrelas"); R.dataset.glow = LS.get("n34_glow", "1"); R.dataset.trans = LS.get("n34_trans", "1");
-  document.querySelectorAll("#optFundo button").forEach(b => b.classList.toggle("on", b.dataset.v === R.dataset.fundo));
-  $("optGlow").checked = R.dataset.glow !== "0"; $("optTrans").checked = R.dataset.trans !== "0";
-}
-$("optFundo").onclick = e => { const b = e.target.closest("button"); if (b) { LS.set("n34_fundo", b.dataset.v); aplicarVisual(); } };
-$("optGlow").onchange = e => { LS.set("n34_glow", e.target.checked ? "1" : "0"); aplicarVisual(); };
-$("optTrans").onchange = e => { LS.set("n34_trans", e.target.checked ? "1" : "0"); aplicarVisual(); };
-$("presets").onclick = e => {
-  const b = e.target.closest("button"); if (!b) return;
-  window.N34Tema.set(b.dataset.h === "" ? null : +b.dataset.h); LS.set("n34_fundo", b.dataset.f); aplicarVisual(); pintarTemas();
-  toast("Tema " + b.textContent);
-};
-aplicarVisual();
-{ let raf = 0;   // brilho que segue o cursor (só com mouse)
-  document.addEventListener("pointermove", e => {
-    if (e.pointerType !== "mouse" || document.documentElement.dataset.glow === "0" || raf) return;
-    const t = e.target.closest && e.target.closest(".gitem, .gth"); if (!t) return;
-    raf = requestAnimationFrame(() => { raf = 0; const r = t.getBoundingClientRect(); t.style.setProperty("--mx", (e.clientX - r.left) + "px"); t.style.setProperty("--my", (e.clientY - r.top) + "px"); });
-  }, { passive: true });
-}
 
 document.addEventListener("n34tema", pintarTemas);
 pintarTemas();
