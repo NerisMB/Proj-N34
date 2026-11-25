@@ -153,7 +153,8 @@
   #homeCount { margin-top:14px; font-size:.85rem; }
   .hgirl { display:block; margin:6px auto 0; height:min(46vh,380px); max-width:90%; object-fit:contain; filter:drop-shadow(0 0 26px rgba(168,85,247,.45)); }
   @media (max-width:640px) { .hgirl { height:min(40vh,300px); } }
-  .brand { cursor:pointer; }
+  .brand { cursor:pointer; text-decoration:none; }
+  .brand:focus-visible { outline:2px solid #fff; outline-offset:3px; border-radius:10px; }
   @media (max-width:640px) { .home { padding-top:20px; } .hlogo { font-size:2.4rem; } .hsearch { flex-wrap:wrap; } .hsearch input { flex:1 1 100%; } .hsearch button { flex:1; } }
   #togFiltros { display:none; }
   html { -webkit-text-size-adjust:100%; }
@@ -1262,15 +1263,7 @@
   #galFavBtn.on { color:#fbbf24; border-color:rgba(251,191,36,.55); }
   .galchips button[data-f="fav"].on { background:linear-gradient(135deg,rgba(251,191,36,.35),rgba(245,158,11,.25)); border-color:rgba(251,191,36,.6); }
 
-  /* ===== organização: busca, etiquetas ===== */
   .galtools { flex-wrap:wrap; }
-  .galchips.etiq { flex:1 1 100%; order:6; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
-  .galchips.etiq[hidden], .galtagsbtn[hidden] { display:none; }
-  .galchips.etiq .etl { color:var(--muted); font-size:.8rem; margin-right:4px; }
-  .galchips.etiq button { min-height:32px; padding:0 12px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.04); color:#e9d5ff; font:600 .8rem var(--fb); cursor:pointer; }
-  .galchips.etiq button b { margin-left:6px; color:var(--muted); font-weight:600; }
-  .galchips.etiq button.on { background:linear-gradient(135deg,var(--accent),var(--accent2)); border-color:transparent; color:#fff; }
-  .galtagsbtn { flex:1 1 100%; order:7; min-height:38px; font-size:.84rem; }
 
   /* ===== tags do visualizador: seções, sem sobrepor a barra de ações ===== */
   #viewer #vTags { position:static; flex:none; width:100%; max-height:32vh; max-height:32dvh; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; display:block; padding:8px 12px 10px; box-sizing:border-box; scrollbar-width:thin; }
@@ -1301,6 +1294,53 @@
   #vTags .thide { min-height:30px; padding:0 12px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.06); color:#e9d5ff; font:600 .76rem var(--fd); cursor:pointer; }
   #galGrid .gth img { transition:none; }
   #galGrid .gth { background:rgba(255,255,255,.04); }
+
+  /* ===== barras de ação dos visualizadores (galeria e grupos): painel de vidro ===== */
+  #galView .vbar, #itemView .vbar { display:flex; flex-wrap:wrap; justify-content:center; align-items:stretch; gap:8px; width:calc(100% - 20px); max-width:560px; margin:0 auto; padding:10px; box-sizing:border-box; border-radius:20px; border:1px solid var(--bd); background:rgba(14,6,26,.62); -webkit-backdrop-filter:blur(18px) saturate(150%); backdrop-filter:blur(18px) saturate(150%); box-shadow:0 14px 34px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08); }
+  #galView .vbar #galInfo, #itemView .vbar #ivInfo { order:0; flex:1 1 100%; text-align:center; font-size:.82rem; letter-spacing:.01em; color:var(--muted); }
+  #galView .vbar > button, #galView .vbar > a, #itemView .vbar > button { display:inline-flex; align-items:center; justify-content:center; gap:7px; flex:1 1 calc(33.333% - 8px); min-width:0; min-height:46px; margin:0; padding:0 8px; box-sizing:border-box; border-radius:14px; font-size:.82rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-decoration:none; cursor:pointer; }
+  #galView .vbar > [hidden], #itemView .vbar > [hidden] { display:none !important; }
+  #galView .vbar #galFavBtn { order:1; } #galView .vbar #galCopiar { order:2; } #galView .vbar #galBaixar { order:3; }
+  #galView .vbar #galSite { order:4; flex:2 1 calc(66.666% - 8px); border:1px solid rgba(192,132,252,.5); background:linear-gradient(135deg,rgba(168,85,247,.26),rgba(124,58,237,.1)); color:#f3e8ff; transition:background .18s, border-color .18s, transform .12s; }
+  #galView .vbar #galSite:hover { border-color:#c084fc; background:linear-gradient(135deg,rgba(168,85,247,.42),rgba(124,58,237,.22)); }
+  #galView .vbar #galSite:active { transform:scale(.98); }
+  #galView .vbar #galDel { order:5; }
+  #itemView .vbar #ivCopiar { order:1; flex:1 1 100%; min-height:50px; font-size:.92rem; }
+  #itemView .vbar #ivShare { order:2; } #itemView .vbar #ivLink { order:3; } #itemView .vbar #ivMover { order:4; }
+  #itemView .vbar #ivCapa { order:5; flex:2 1 calc(66.666% - 8px); }
+  #itemView .vbar #ivDel { order:6; }
+  #galView .vbar #galDel, #itemView .vbar #ivDel { color:#fda4af; border-color:rgba(251,113,133,.4); background:rgba(244,63,94,.1); }
+  #galView .vbar #galDel:hover, #itemView .vbar #ivDel:hover { border-color:rgba(251,113,133,.75); background:rgba(244,63,94,.22); }
+  #galCopiar::before, #galBaixar::before, #galDel::before, #galSite::before, #ivCopiar::before, #ivShare::before, #ivLink::before, #ivMover::before, #ivCapa::before, #ivDel::before { content:""; flex:none; width:17px; height:17px; background:currentColor; -webkit-mask:var(--i) center/contain no-repeat; mask:var(--i) center/contain no-repeat; }
+  #galCopiar, #ivCopiar { --i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='11' height='11' rx='2'/%3E%3Cpath d='M5 15V6a2 2 0 0 1 2-2h9'/%3E%3C/svg%3E"); } #ivShare { --i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='6' cy='12' r='2.5'/%3E%3Ccircle cx='18' cy='6' r='2.5'/%3E%3Ccircle cx='18' cy='18' r='2.5'/%3E%3Cpath d='M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6'/%3E%3C/svg%3E"); } #ivLink { --i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1'/%3E%3Cpath d='M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1'/%3E%3C/svg%3E"); } #ivMover { --i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpath d='M9 13h6M13 10l3 3-3 3'/%3E%3C/svg%3E"); }
+  #ivCapa { --i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Ccircle cx='9' cy='10' r='1.6'/%3E%3Cpath d='M21 16l-5-5-8 8'/%3E%3C/svg%3E"); } #galDel, #ivDel { --i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3'/%3E%3C/svg%3E"); } #galSite { --i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5'/%3E%3C/svg%3E"); } #galBaixar { --i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v11M7 11l5 5 5-5M5 20h14'/%3E%3C/svg%3E"); }
+  @media (max-width:430px) {
+    #galView .vbar, #itemView .vbar { gap:6px; padding:8px; }
+    #galView .vbar > button, #galView .vbar > a, #itemView .vbar > button { padding:0 4px; font-size:.78rem; }
+    #galCopiar::before, #galBaixar::before, #galDel::before, #ivShare::before, #ivLink::before, #ivMover::before, #ivDel::before { display:none; }
+  }
+
+  /* ===== Top: abas "Top 10" / "Melhores tags" e lista de artistas ===== */
+  #topList[hidden], #topTags[hidden] { display:none !important; }
+  .topper.topmodo { margin-bottom:10px; }
+  #topTags { display:flex; flex-direction:column; gap:10px; margin:0; padding:0; list-style:none; }
+  .atop { display:flex; align-items:center; gap:8px; }
+  .atop .acard { flex:1; min-width:0; display:flex; align-items:center; gap:12px; padding:10px 14px 10px 8px; border:1px solid var(--line); border-radius:18px; background:rgba(255,255,255,.04); color:var(--fg); text-align:left; cursor:pointer; transition:transform .2s, border-color .2s, box-shadow .2s; }
+  .atop .acard:hover { transform:translateY(-2px); border-color:rgba(192,132,252,.7); box-shadow:0 14px 32px -14px rgba(168,85,247,.6); }
+  .atop .arank { flex:none; width:36px; text-align:center; font:800 1.5rem/1 var(--fd); color:#e9d5ff; }
+  .atop.r1 .arank { color:#fcd34d; font-size:1.9rem; } .atop.r2 .arank { color:#e5e7eb; } .atop.r3 .arank { color:#fdba74; }
+  .atop.r1 .acard { border-color:rgba(252,211,77,.45); background:linear-gradient(135deg,rgba(252,211,77,.1),rgba(255,255,255,.03)); }
+  .atop .aimg { flex:none; width:60px; height:60px; border-radius:14px; overflow:hidden; background:#0c0516; border:1px solid var(--line); }
+  .atop .aimg img { display:block; width:100%; height:100%; object-fit:cover; }
+  .atop .ainfo { min-width:0; display:flex; flex-direction:column; gap:3px; }
+  .atop .ainfo b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:700 1rem var(--fd); }
+  .atop .ainfo small { color:var(--muted); font-size:.8rem; }
+  .atop .afav { flex:none; width:46px; height:46px; display:grid; place-items:center; padding:0; border:1px solid rgba(255,255,255,.22); border-radius:50%; background:rgba(20,8,36,.72); color:#fff; font-size:1.15rem; line-height:1; cursor:pointer; transition:transform .12s, background .18s; }
+  .atop .afav:hover { background:rgba(124,58,237,.6); }
+  .atop .afav:active { transform:scale(.92); }
+  .atop .afav[aria-pressed="true"] { color:#fbbf24; border-color:rgba(251,191,36,.6); }
+  .atop.sk { height:80px; border-radius:18px; background:linear-gradient(100deg,#120824 30%,#24103f 50%,#120824 70%) 0 0/200% 100%; animation:topsk 1.2s linear infinite; }
+  @media (prefers-reduced-motion:reduce) { .atop.sk { animation:none; } }
 </style>
 <script>
 /* Tema: troca a cor do site todo mexendo na matiz (hue) de tudo que é roxo/rosa/violeta; o resto (branco, cinza, vermelho de erro…) não muda */
@@ -1365,10 +1405,10 @@
   
 
   <div class="topbar">
-    <div class="brand">
+    <a class="brand" href="/" aria-label="N34 — ir para o início">
       <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lgN34" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a855f7"/><stop offset="1" stop-color="#220a45"/></linearGradient></defs><rect width="32" height="32" rx="7.2" fill="url(#lgN34)"/><path d="M10.5 22.5V9.5l11 13v-13" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       
-    </div>
+    </a>
     <div class="topact">
       <button id="gear" class="iconbtn" type="button" title="Configurações" aria-label="Configurações"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
       <button id="menuBtn" class="iconbtn" type="button" title="Menu" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
@@ -1497,11 +1537,13 @@
   </section>
 
   <section id="view-top" hidden>
-    <div class="phead"><h2>TOP 10</h2><p id="topSub">Os 10 posts mais bem avaliados de hoje.</p></div>
+    <div class="phead"><h2 id="topTit">TOP 10</h2><p id="topSub">Os 10 posts mais bem avaliados de hoje.</p></div>
+    <div class="topper topmodo" id="topModo" role="tablist" aria-label="Tipo de ranking"><button type="button" data-m="posts" class="on">Top 10</button><button type="button" data-m="tags">Melhores tags</button></div>
     <div class="topper" id="topPer" role="tablist" aria-label="Período">
       <button type="button" data-p="0.0417">1 Hora</button><button type="button" data-p="0.5">12 Horas</button><button type="button" data-p="1" class="on">Hoje</button><button type="button" data-p="7">Semana</button><button type="button" data-p="30">Mês</button>
     </div>
     <ol id="topList"></ol>
+    <ol id="topTags" hidden></ol>
     <p id="topMsg" class="muted" role="status"></p>
   </section>
 
@@ -1535,12 +1577,10 @@
         <option value="data" data-ic="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4">Mais novos no site</option>
         <option value="aleatorio" data-ic="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5">Ordem aleatória</option>
       </select>
-      <div id="galEtiq" class="galchips etiq" role="group" aria-label="Etiquetas" hidden></div>
     </div>
     <div id="galSelBar" hidden>
       <span id="galSelN" role="status"></span>
       <button id="galSelTodos" class="ghost" type="button">Selecionar tudo</button>
-      <button id="galSelEtiq" class="ghost" type="button" disabled title="Aplica etiquetas aos selecionados. Use -nome para tirar uma etiqueta">Etiquetar</button>
       <button id="galSelDel" class="ghost" type="button" disabled>Remover</button>
       <button id="galSelFim" class="ghost" type="button">Concluir</button>
     </div>
@@ -1660,7 +1700,7 @@
   <button class="vnav" id="galPrev" style="left:6px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
   <div id="galMid"></div>
   <button class="vnav" id="galNext" style="right:6px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
-  <div class="vbar"><span id="galInfo"></span><a id="galSite" target="_blank" rel="noopener">Abrir no site</a><button class="ghost" id="galFavBtn" type="button">☆ Favoritar</button><button class="ghost" id="galEtqBtn" type="button">🏷 Etiquetas</button><button class="ghost" id="galCopiar">Copiar</button><button class="btn" id="galBaixar">Baixar</button><button class="ghost" id="galDel">Remover</button></div>
+  <div class="vbar"><span id="galInfo"></span><button class="ghost" id="galFavBtn" type="button">☆ Favoritar</button><button class="ghost" id="galCopiar">Copiar</button><button class="btn" id="galBaixar">Baixar</button><a id="galSite" target="_blank" rel="noopener">Abrir no site</a><button class="ghost" id="galDel">Remover</button></div>
 </div>
 <div id="grpModal" hidden><div class="sheet" id="grpSheet"></div></div>
 <div id="itemView" hidden>
@@ -2067,7 +2107,7 @@ function abrirFav(tag) {
   /* abriu o favorito com post novo: já conta como lido (a etiqueta NOVO fica só nesta abertura) */
   if (novo) { f.visto = f.id; saveFavs(); contarFavs(); renderFavs(); if (typeof renderHome === "function") renderHome(); }
   $("favFechar").onclick = fecharFav;
-  $("favPosts").onclick = () => { fecharFav(); $("expTags").value = f.tag; $("grid").innerHTML = ""; showTab("explorar"); };
+  $("favPosts").onclick = () => { fecharFav(); aposVoltas(() => { $("expTags").value = f.tag; $("grid").innerHTML = ""; showTab("explorar"); }); };
   sheet.querySelector(".star").onclick = () => { toggleFav(f.tag); fecharFav(); };
   sheet.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
     if (f.visto !== f.id) { f.visto = f.id; saveFavs(); contarFavs(); sheet.querySelector(".novo")?.remove(); }
@@ -2178,18 +2218,66 @@ function abaDaUrl() {
   const m = { following: "seg", seguindo: "seg", top: "top", top10: "top", search: "explorar", favorites: "favs", groups: "grupos", gallery: "galeria", explorar: "explorar", explore: "explorar", buscar: "explorar", favoritos: "favs", favs: "favs", grupos: "grupos", galeria: "galeria" };
   return m[p] || "inicio";
 }
+/* o que define "onde estou" no Explorar: a busca, a ordem e (no Trending) o período — vai na URL: /explore?q=limao&o=populares */
+let expQAtual = "", expSemRota = false, expChave = "", expY = 0;
+const expCache = new Map();   // telas já vistas (resultados + rolagem), para o botão voltar não refazer a busca
+function expParams() {
+  const p = new URLSearchParams();
+  if (expQAtual) p.set("q", expQAtual);
+  if (expModo !== "recentes") p.set("o", expModo);
+  if (expModo === "trending") p.set("d", $("periodo").value);
+  return p.toString();
+}
+function expCacheSalvar() {
+  if (!gridPosts.length) return;
+  expCache.set(expChave, { posts: gridPosts, pag: expPag, mais: temMais, msg: $("expMsg").textContent, y: expY });
+  while (expCache.size > 8) expCache.delete(expCache.keys().next().value);
+}
+addEventListener("scroll", () => { if (document.body.dataset.aba === "explorar") expY = scrollY; }, { passive: true });
+function expLerUrl() {   // põe no formulário o que a URL pede (busca, ordem, período); devolve a chave dessa tela
+  const p = new URLSearchParams(location.search), o = p.get("o") || "recentes", d = p.get("d");
+  if (o !== expModo && document.querySelector('.seg[data-modo="' + o + '"]')) aplicarModo(o);
+  if (expModo === "trending" && d && [...$("periodo").options].some(x => x.value === d)) { $("periodo").value = d; perPintar(); }
+  $("expTags").value = normQ(p.get("q")); expQAtual = normQ(p.get("q"));
+  return expParams();
+}
+function expSincronizar() {   // chamado ao voltar/avançar no histórico; devolve a rolagem a aplicar (ou null)
+  const chave = expLerUrl();
+  if (chave === expChave && $("grid").children.length) return null;   // já é a tela certa
+  const c = expCache.get(chave);
+  if (c) {
+    expCacheSalvar(); expSeq++; expBusy = false; limparSkel();
+    gridPosts = c.posts; expPag = c.pag; temMais = c.mais; expChave = chave;
+    $("grid").innerHTML = gridPosts.map((x, i) => cardGrid(x, i)).join("");
+    observarDur($("grid")); $("expMsg").textContent = c.msg || "";
+    setTimeout(checarSentinela, 200);
+    return c.y || 0;
+  }
+  expSemRota = true; try { carregarGrid(0); } finally { expSemRota = false; }
+  return 0;
+}
+const normQ = v => String(v || "").trim().toLowerCase().split(/\s+/).filter(Boolean).join(" ");
 function rotaAtualizar(nome, modo) {
   document.title = TITULOS[nome] || "N34";
   if (modo === "pop") return;
   if (voltasPendentes > 0) { rotaAdiada = { nome, modo }; return; }
   try {
-    const url = N34_BASE + (ROTAS[nome] || "/");
-    if (modo === "replace") history.replaceState({ aba: nome }, "", url);
-    else if (location.pathname.replace(/\/+$/, "") !== url.replace(/\/+$/, "")) { history.pushState({ aba: nome }, "", url); window.scrollTo(0, 0); }
+    const qs = nome === "explorar" ? expParams() : "";
+    const caminho = N34_BASE + (ROTAS[nome] || "/"), url = caminho + (qs ? "?" + qs : "");
+    const estado = { aba: nome, qs };
+    const atual = location.pathname.replace(/\/+$/, "") + location.search, alvo = caminho.replace(/\/+$/, "") + (qs ? "?" + qs : "");
+    if (modo === "replace") history.replaceState(estado, "", url);
+    else if (atual === alvo) return;
+    else if (modo === "busca" && history.state && history.state.aba === "explorar" && !history.state.qs) history.replaceState(estado, "", url);   // o "Explorar" sem busca não precisa ficar no histórico
+    else { history.pushState(estado, "", url); if (modo !== "busca") window.scrollTo(0, 0); }
   } catch (e) { /* ex.: abrindo como arquivo local; segue sem URL */ }
 }
 /* ---------- Voltar fecha janelas abertas (visualizador, grupos, favorito, config) ---------- */
 let voltasPendentes = 0, rotaAdiada = null, fechandoPorVoltar = false;
+const filaAposVoltas = [];
+function aposVoltas(fn) {   // roda fn depois que o "voltar" de fechar a janela terminar (evita desfazer a navegação nova)
+  setTimeout(() => { if (voltasPendentes > 0) filaAposVoltas.push(fn); else fn(); }, 0);
+}
 const ovPilha = [];
 const FECHAR_OV = {
   viewer: () => fecharViewer(), itemView: () => fecharItem(), galView: () => galFechar(),
@@ -2212,7 +2300,10 @@ Object.keys(FECHAR_OV).forEach(id => ovObserver.observe($(id), { attributes: tru
 addEventListener("popstate", () => {
   if (voltasPendentes > 0) {
     voltasPendentes--;
-    if (voltasPendentes === 0 && rotaAdiada) { const r = rotaAdiada; rotaAdiada = null; rotaAtualizar(r.nome, r.modo); }
+    if (voltasPendentes === 0) {
+      const fns = filaAposVoltas.splice(0); for (const f of fns) { try { f(); } catch (e) { /* segue */ } }
+      if (rotaAdiada) { const r = rotaAdiada; rotaAdiada = null; rotaAtualizar(r.nome, r.modo); }
+    }
     return;
   }
   if (ovPilha.length) {
@@ -2223,7 +2314,9 @@ addEventListener("popstate", () => {
     setTimeout(() => { fechandoPorVoltar = false; }, 0);
     return;
   }
-  showTab(abaDaUrl(), "pop");
+  const aba = abaDaUrl(), y = aba === "explorar" ? expSincronizar() : null;
+  showTab(aba, "pop");
+  if (y !== null) { scrollTo(0, y); requestAnimationFrame(() => scrollTo(0, y)); }
 });
 
 /* ---------- Botão de voltar ao topo ---------- */
@@ -2243,8 +2336,15 @@ $("tab-seg").onclick = () => showTab("seg");
 $("tab-favs").onclick = () => showTab("favs");
 $("tab-grupos").onclick = () => showTab("grupos");
 $("tab-galeria").onclick = () => showTab("galeria");
-document.querySelector(".brand").onclick = () => showTab("inicio");
-document.querySelectorAll("[data-go]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); showTab(a.dataset.go); }));
+/* links de verdade: clique normal navega dentro do app; botão do meio, Ctrl/⌘+clique e Shift+clique abrem em outra guia */
+const cliqueNormal = e => e.button === 0 && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey;
+(function () {
+  const web = /^https?:$/.test(location.protocol), brand = document.querySelector(".brand");
+  brand.setAttribute("href", web ? N34_BASE + "/" : "#");
+  brand.addEventListener("click", e => { if (!cliqueNormal(e)) return; e.preventDefault(); showTab("inicio"); });
+  document.querySelectorAll("a[data-go]").forEach(a => { if (web) a.setAttribute("href", N34_BASE + (ROTAS[a.dataset.go] || "/")); });
+})();
+document.querySelectorAll("[data-go]").forEach(a => a.addEventListener("click", e => { if (a.tagName === "A" && !cliqueNormal(e)) return; e.preventDefault(); showTab(a.dataset.go); }));
 
 /* ---------- Página inicial ---------- */
 async function contarPosts() {
@@ -2315,11 +2415,12 @@ const mostrarSkel = n => $("grid").insertAdjacentHTML("beforeend", '<div class="
 const limparSkel = () => $("grid").querySelectorAll("[data-skel]").forEach(x => x.remove());
 async function carregarGrid(pag = 0) {
   if (!creds().uid || !creds().key) return abrirCfg("Preencha User ID e API key.");
-  if (pag === 0) { gridPosts = []; expPag = 0; temMais = false; $("grid").innerHTML = ""; }
+  if (pag === 0) { expCacheSalvar(); gridPosts = []; expPag = 0; temMais = false; $("grid").innerHTML = ""; }
   else if (expBusy || !temMais) return;
   const seq = pag === 0 ? ++expSeq : expSeq;
   expBusy = true;
   const tags = $("expTags").value.trim().toLowerCase().split(/\s+/).filter(Boolean).join(" ");
+  if (pag === 0) { expQAtual = tags; expChave = expParams(); if (!expSemRota) rotaAtualizar("explorar", "busca"); }
   $("expMsg").textContent = "";
   mostrarSkel(pag === 0 ? 12 : 6);
   try {
@@ -2444,7 +2545,11 @@ async function mostrarTags(p) {
   if (!todas.length) { box.innerHTML = '<span class="vazio">Esse post não tem tags.</span>'; return; }
   const grupos = {}; for (const t of todas) { const k = classificarTag(t, cat ? tipoCache[t] : "geral"); (grupos[k] || (grupos[k] = [])).push(t); }
   const chip = (t, k) => {
-    const seg = (k === "artista" || k === "personagem") ? (() => { const on = seguindoTem(t), nome = esc(t.replace(/_/g, " ")); return `<button type="button" class="tfol" data-tag="${esc(t)}" aria-pressed="${on}" aria-label="${on ? "Deixar de seguir" : "Seguir"} ${nome}" title="${on ? "Deixar de seguir" : "Seguir"}">${on ? "★" : "☆"}</button>`; })() : "";
+    const seg = k === "artista"
+      ? (() => { const on = isFav(normTag(t)), nome = esc(t.replace(/_/g, " ")), tx = on ? "Tirar dos favoritos" : "Favoritar artista"; return `<button type="button" class="tfol art" data-kind="artista" data-tag="${esc(t)}" aria-pressed="${on}" aria-label="${tx} ${nome}" title="${tx}">${on ? "★" : "☆"}</button>`; })()
+      : k === "personagem"
+      ? (() => { const on = seguindoTem(t), nome = esc(t.replace(/_/g, " ")), tx = on ? "Deixar de seguir" : "Seguir"; return `<button type="button" class="tfol" data-kind="personagem" data-tag="${esc(t)}" aria-pressed="${on}" aria-label="${tx} ${nome}" title="${tx}">${on ? "★" : "☆"}</button>`; })()
+      : "";
     return `<span class="tpar"><button class="tchip ${k}" data-tag="${esc(t)}">${esc(t.replace(/_/g, " "))}</button>${seg}</span>`;
   };
   const secs = TAG_SECOES.filter(([k]) => grupos[k] && grupos[k].length).map(([k, nome, cor]) => {
@@ -2456,22 +2561,35 @@ async function mostrarTags(p) {
   box.innerHTML = `<div class="ttop"><span>${todas.length} tags</span><span class="tbtns">${nOcultas ? '<button type="button" class="texp" aria-expanded="false">Abrir todas</button>' : ""}<button type="button" class="thide" aria-pressed="${tagsOcultas}">${tagsOcultas ? "Mostrar tags" : "Esconder tags"}</button></span></div>` + secs.join("") +
     (cat ? "" : '<span class="vazio">Não consegui separar artista, copyright e personagem. Tente abrir o post de novo.</span>');
 }
+/* estrela do artista no visualizador: vai para os Favoritos (a do personagem continua sendo "seguir") */
+function favArtista(t) {
+  const tag = normTag(t);
+  if (isFav(tag)) { toggleFav(tag); toast("Tirou dos favoritos: " + nomeBonito(tag.replace(/_/g, " "))); return false; }
+  favs.push({ tag, grupo: grupoAtual }); saveFavs(); contarFavs(); renderFavs();
+  toast("Artista favoritado: " + nomeBonito(tag.replace(/_/g, " ")));
+  if (creds().uid && creds().key) { const f = favs.find(x => x.tag === tag); if (f) atualizarFav(f).then(() => { saveFavs(); renderFavs(); contarFavs(); }).catch(() => {}); }
+  return true;
+}
 $("vTags").addEventListener("click", e => {
   const f = e.target.closest(".tfol");
   if (f) {
-    const on = toggleSeguir(f.dataset.tag), nome = f.dataset.tag.replace(/_/g, " ");
+    const art = f.dataset.kind === "artista", nome = f.dataset.tag.replace(/_/g, " ");
+    const on = art ? favArtista(f.dataset.tag) : toggleSeguir(f.dataset.tag);
+    const tx = art ? (on ? "Tirar dos favoritos" : "Favoritar artista") : (on ? "Deixar de seguir" : "Seguir");
     f.setAttribute("aria-pressed", on); f.textContent = on ? "★" : "☆";
-    f.title = on ? "Deixar de seguir" : "Seguir"; f.setAttribute("aria-label", (on ? "Deixar de seguir " : "Seguir ") + nome);
+    f.title = tx; f.setAttribute("aria-label", tx + " " + nome);
     return;
   }
   const c = e.target.closest(".tchip"); if (!c) return;
   const tag = c.dataset.tag;
   fecharViewer();
-  $("expTags").value = tag;
-  $("grid").innerHTML = "";      // grade vazia: o showTab carrega a pesquisa da tag
-  showTab("explorar");           // vai para a página do Explorar (/explore), onde a pesquisa aparece
-  if (!$("grid").children.length && !expBusy) carregarGrid(0);
-  scrollTo(0, 0);
+  aposVoltas(() => {
+    $("expTags").value = tag;
+    $("grid").innerHTML = "";      // grade vazia: o showTab carrega a pesquisa da tag
+    showTab("explorar");           // vai para a página do Explorar (/explore), onde a pesquisa aparece
+    if (!$("grid").children.length && !expBusy) carregarGrid(0);
+    scrollTo(0, 0);
+  });
 });
 
 /* ---------- Visualizador grande ---------- */
@@ -2564,6 +2682,10 @@ $("semIA").addEventListener("change", () => {
   carregarGrid(0);
 });
 const perPintar = menuSuspenso($("periodo"));   // troca a lista azul do navegador pelo menu roxo do site
+function aplicarModo(m) {
+  const btn = document.querySelector('.seg[data-modo="' + m + '"]'); if (!btn) return;
+  expModo = m; document.querySelectorAll(".seg").forEach(x => x.classList.toggle("active", x === btn)); perMostrar(m === "trending");
+}
 const perMostrar = on => { const w = $("periodo").nextElementSibling; if (w) w.hidden = !on; };
 perMostrar(false);
 document.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => {
@@ -2662,7 +2784,6 @@ function galToggle(p) {
   if (!galGravar()) { galItens.shift(); return false; }
   toast("Salvo na galeria"); return true;
 }
-let galEtiqSel = "";
 let galFiltro = LS.get("n34_galFiltro", "todos"), galOrdem = LS.get("n34_galOrdem", "salvo"), galSel = null, galVista = [], galQtd = 0, galRend = 0;
 const GAL_LOTE = 36, GAL_TIPOS = [["todos", "Todos"], ["fav", "★ Favoritos"], ["imagem", "Imagens"], ["gif", "GIFs"], ["video", "Vídeos"]];
 $("galOrdem").value = ["salvo", "manual", "antigo", "nota", "data", "aleatorio"].includes(galOrdem) ? galOrdem : "salvo";
@@ -2704,7 +2825,6 @@ function galCalcVista() {
   let ix = galItens.map((_, i) => i);
   if (galFiltro === "fav") ix = ix.filter(i => galItens[i].fav);
   else if (galFiltro !== "todos") ix = ix.filter(i => galItens[i].tipo === galFiltro);
-  if (galEtiqSel) ix = ix.filter(i => (galItens[i].et || []).some(e => e.toLowerCase() === galEtiqSel.toLowerCase()));
   const nota = i => Number(galItens[i].score) || 0, dt = i => galItens[i].data || 0;
   if (galOrdem === "antigo") ix.reverse();
   else if (galOrdem === "nota") ix.sort((x, y) => nota(y) - nota(x) || x - y);
@@ -2742,7 +2862,7 @@ function galAtualizarSel() {
   const n = galSel ? galSel.size : 0;
   $("galSelBar").hidden = !galSel; $("galSelBtn").textContent = galSel ? "Concluir" : "Selecionar";
   $("galSelN").textContent = n ? `${n} ${n === 1 ? "selecionado" : "selecionados"}` : "Toque nas imagens para selecionar";
-  $("galSelEtiq").disabled = !n; $("galSelDel").disabled = !n; $("galSelDel").textContent = n ? `Remover (${n})` : "Remover";
+  $("galSelDel").disabled = !n; $("galSelDel").textContent = n ? `Remover (${n})` : "Remover";
   $("galSelTodos").textContent = galVista.length && n >= galVista.length ? "Limpar seleção" : "Selecionar tudo";
 }
 function galCarregar(reset = true) {
@@ -2758,11 +2878,6 @@ function galCarregar(reset = true) {
   const cont = { todos: n, fav: 0 }; for (const it of galItens) { cont[it.tipo] = (cont[it.tipo] || 0) + 1; if (it.fav) cont.fav++; }
   if (galFiltro !== "todos" && galFiltro !== "fav" && !cont[galFiltro]) galFiltro = "todos";
   $("galFiltro").innerHTML = GAL_TIPOS.filter(([k]) => k === "todos" || k === "fav" || cont[k]).map(([k, nome]) => `<button type="button" data-f="${k}" class="${k === galFiltro ? "on" : ""}" aria-pressed="${k === galFiltro}">${nome}<b>${cont[k] || 0}</b></button>`).join("");
-  { const ec = new Map(); for (const it of galItens) for (const e of (it.et || [])) { const k = e.toLowerCase(); const o = ec.get(k) || { nome: e, n: 0 }; o.n++; ec.set(k, o); }
-    if (galEtiqSel && !ec.has(galEtiqSel.toLowerCase())) galEtiqSel = "";
-    const E = $("galEtiq"); E.hidden = !ec.size;
-    E.innerHTML = '<span class="etl">Etiquetas</span>' + [...ec.values()].sort((a, b) => b.n - a.n).map(o => `<button type="button" data-e="${esc(o.nome)}" class="${o.nome.toLowerCase() === galEtiqSel.toLowerCase() ? "on" : ""}" aria-pressed="${o.nome.toLowerCase() === galEtiqSel.toLowerCase()}">🏷 ${esc(o.nome)}<b>${o.n}</b></button>`).join("");
-  }
   galVista = galCalcVista();
   if (reset || !galQtd) galQtd = GAL_LOTE;
   galQtd = Math.max(galQtd, GAL_LOTE);
@@ -4044,11 +4159,13 @@ document.addEventListener("click", e => {
 
 /* ================= TOP 10 (12 h / hoje / semana / mês) ================= */
 const TOP_TXT = { "0.0417": "da última hora", "0.5": "das últimas 12 horas", "1": "de hoje (24 h)", "7": "da semana", "30": "do mês" };
+let topModo = LS.get("n34_topmodo", "posts") === "tags" ? "tags" : "posts";
 let topDias = ["0.0417", "0.5", "1", "7", "30"].includes(LS.get("n34_topper", "1")) ? Number(LS.get("n34_topper", "1")) : 1, topSeq = 0, topPosts = [];
 const topCache = {};
 function pintarPer() {
   document.querySelectorAll("#topPer [data-p]").forEach(b => { const on = Number(b.dataset.p) === topDias; b.classList.toggle("on", on); b.setAttribute("aria-selected", String(on)); });
-  $("topSub").textContent = "Os 10 posts mais bem avaliados " + TOP_TXT[String(topDias)] + ".";
+  pintarModo();
+  $("topSub").textContent = (topModo === "tags" ? "Os 10 artistas que mais pontuaram nos posts melhor avaliados " : "Os 10 posts mais bem avaliados ") + TOP_TXT[String(topDias)] + ".";
 }
 function pintarTop(l) {
   topPosts = l; $("topMsg").textContent = l.length ? "" : "Nenhum post encontrado nesse período.";
@@ -4058,6 +4175,7 @@ function pintarTop(l) {
 async function carregarTop() {
   if (!creds().uid || !creds().key) return abrirCfg("Preencha User ID e API key.");
   pintarPer();
+  if (topModo === "tags") return carregarTopTags();
   const seq = ++topSeq, dias = topDias, c = topCache[dias];
   if (c && Date.now() - c.t < 300000) { pintarTop(c.l); return; }
   $("topMsg").textContent = "Buscando os melhores posts…";
@@ -4065,11 +4183,11 @@ async function carregarTop() {
   try {
     const desde = await idDesde(dias);
     const r = await buscarLista(`sort:score:desc id:>${desde}`, 0, 60);
-    if (seq !== topSeq) return;
+    if (seq !== topSeq || topModo !== "posts") return;
     const l = r.posts.filter(passaFiltros).slice(0, 10);
     topCache[dias] = { l, t: Date.now() }; pintarTop(l);
   } catch (e) {
-    if (seq !== topSeq) return;
+    if (seq !== topSeq || topModo !== "posts") return;
     $("topList").innerHTML = ""; $("topMsg").innerHTML = "Erro: " + msgErro(e) + ' <button id="topRetry" class="ghost" type="button">Tentar de novo</button>';
     $("topRetry").onclick = carregarTop;
   }
@@ -4090,6 +4208,84 @@ new MutationObserver(() => {
   listaTemp = null;
 }).observe($("viewer"), { attributes: true, attributeFilter: ["hidden"] });
 $("topList").addEventListener("click", e => { const b = e.target.closest(".tcard"); if (b) abrirLista(topPosts, +b.dataset.i); });
+
+/* ---------- Melhores tags (só artistas): soma da nota dos posts que ficaram no topo do período ---------- */
+function pintarModo() {
+  document.querySelectorAll("#topModo [data-m]").forEach(b => { const on = b.dataset.m === topModo; b.classList.toggle("on", on); b.setAttribute("aria-selected", String(on)); });
+  $("topTit").textContent = topModo === "tags" ? "Melhores tags" : "TOP 10";
+  $("topList").hidden = topModo === "tags"; $("topTags").hidden = topModo !== "tags";
+}
+const topTagsCache = {}; let topTagsSeq = 0;
+const ART_IGNORAR = /^(unknown_artist|anonymous_artist|artist_request|third-party_edit|unknown_artist_signature|official_artist|artist_name|unknown)$/;
+async function coletarArtistas(dias) {
+  const desde = await idDesde(dias);
+  let posts = [], tipos = new Map(), comTipos = false;
+  try {   // 1 pedido só: a lista já vem com o tipo de cada tag
+    const t = [`sort:score:desc id:>${desde}`, negativas()].filter(Boolean).join(" ");
+    const j = JSON.parse(await r34Texto({ s: "post", tags: t, limit: "100", pid: "0", json: "1", fields: "tag_info" }));
+    const arr = Array.isArray(j) ? j : Array.isArray(j && j.post) ? j.post : [];
+    for (const p of arr) {
+      posts.push({ id: String(p.id), tags: p.tags || "", score: Number(p.score) || 0, preview_url: p.preview_url || "", sample_url: p.sample_url || "", file_url: p.file_url || "" });
+      if (Array.isArray(p.tag_info)) for (const x of p.tag_info) { const n = x.tag || x.name; if (n) { tipos.set(n, normTipo(x.type ?? x.tag_type)); comTipos = true; } }
+    }
+  } catch {}
+  if (!posts.length || !comTipos) {   // reserva: lista normal + consulta do tipo das tags mais frequentes
+    const r = await buscarLista(`sort:score:desc id:>${desde}`, 0, 100);
+    posts = r.posts.map(p => ({ ...p, score: Number(p.score) || 0 })); tipos = new Map();
+    const freq = new Map();
+    for (const p of posts) for (const t of new Set(String(p.tags).trim().split(/\s+/).filter(Boolean))) if (!(t in tipoCache)) freq.set(t, (freq.get(t) || 0) + 1);
+    const falta = [...freq.entries()].sort((a, b) => b[1] - a[1]).map(x => x[0]).slice(0, 480);
+    for (let i = 0; i < falta.length; i += 60) { try { await viaNomes(falta.slice(i, i + 60)); } catch { break; } }
+  }
+  const mapa = new Map();
+  for (const p of posts) {
+    if (!passaFiltros(p)) continue;
+    for (const t of new Set(String(p.tags).trim().split(/\s+/).filter(Boolean))) {
+      const tp = tipos.has(t) ? tipos.get(t) : tipoCache[t];
+      if (tp !== "artista" || ART_IGNORAR.test(t)) continue;
+      const o = mapa.get(t) || { tag: t, n: 0, soma: 0, melhor: p };
+      o.n++; o.soma += p.score; if (p.score > o.melhor.score) o.melhor = p; mapa.set(t, o);
+    }
+  }
+  return [...mapa.values()].sort((a, b) => b.soma - a.soma || b.n - a.n).slice(0, 10);
+}
+function pintarTopTags(l) {
+  $("topMsg").textContent = l.length ? "" : "Nenhum artista encontrado nesse período.";
+  $("topTags").innerHTML = l.map((o, i) => { const on = isFav(o.tag), nome = esc(nomeBonito(o.tag.replace(/_/g, " ")));
+    return `<li class="atop r${i + 1}"><button type="button" class="acard" data-tag="${esc(o.tag)}" aria-label="Ver posts de ${nome}"><span class="arank">${i + 1}</span><span class="aimg"><img src="${esc(o.melhor.preview_url || "")}" referrerpolicy="no-referrer" loading="lazy" decoding="async" alt="" onerror="this.style.visibility='hidden'"></span><span class="ainfo"><b>${nome}</b><small>${o.n} ${o.n === 1 ? "post" : "posts"} no topo · ▲ ${o.soma}</small></span></button><button type="button" class="afav" data-tag="${esc(o.tag)}" aria-pressed="${on}" aria-label="${on ? "Tirar dos favoritos" : "Favoritar"} ${nome}" title="${on ? "Tirar dos favoritos" : "Favoritar artista"}">${on ? "★" : "☆"}</button></li>`; }).join("");
+}
+async function carregarTopTags() {
+  if (!creds().uid || !creds().key) return abrirCfg("Preencha User ID e API key.");
+  const seq = ++topTagsSeq, dias = topDias, c = topTagsCache[dias];
+  if (c && Date.now() - c.t < 300000) { pintarTopTags(c.l); return; }
+  $("topMsg").textContent = "Calculando os melhores artistas…";
+  $("topTags").innerHTML = '<li class="atop sk"></li>'.repeat(6);
+  try {
+    const l = await coletarArtistas(dias);
+    if (seq !== topTagsSeq || topModo !== "tags") return;
+    topTagsCache[dias] = { l, t: Date.now() }; pintarTopTags(l);
+  } catch (e) {
+    if (seq !== topTagsSeq || topModo !== "tags") return;
+    $("topTags").innerHTML = ""; $("topMsg").innerHTML = "Erro: " + msgErro(e) + ' <button id="topRetry" class="ghost" type="button">Tentar de novo</button>';
+    $("topRetry").onclick = carregarTop;
+  }
+}
+$("topModo").addEventListener("click", e => {
+  const b = e.target.closest("[data-m]"); if (!b || b.dataset.m === topModo) return;
+  topModo = b.dataset.m; LS.set("n34_topmodo", topModo); carregarTop();
+});
+$("topTags").addEventListener("click", e => {
+  const f = e.target.closest(".afav");
+  if (f) {
+    const on = favArtista(f.dataset.tag), tx = on ? "Tirar dos favoritos" : "Favoritar artista";
+    f.setAttribute("aria-pressed", String(on)); f.textContent = on ? "★" : "☆"; f.title = tx; return;
+  }
+  const c = e.target.closest(".acard"); if (!c) return;
+  $("expTags").value = c.dataset.tag; $("grid").innerHTML = ""; showTab("explorar");
+  if (!$("grid").children.length && !expBusy) carregarGrid(0);
+  scrollTo(0, 0);
+});
+
 pintarPer();
 
 /* ================= Seguindo: personagens e jogos, posts em ordem aleatória ================= */
@@ -4296,6 +4492,7 @@ $("vTags").addEventListener("click", e => {
 });
 
 /* abre a aba da URL (ex.: /favorites) ao carregar a página — por último, depois de tudo estar declarado */
+if (abaDaUrl() === "explorar") expLerUrl();   // link direto com busca (/explore?q=...)
 showTab(abaDaUrl(), "replace");
 
 /* ================= Caixa de texto do site (no lugar do prompt do navegador) ================= */
@@ -4454,7 +4651,7 @@ function galSoltou() {
   if (galOrdem !== "manual") { galOrdem = "manual"; LS.set("n34_galOrdem", "manual"); $("galOrdem").value = "manual"; galOrdemPintar(); }
   galCarregar(false); toast("Ordem salva");
 }
-ordenavel($("galGrid"), ".gcell", { pode: () => !galSel && galFiltro === "todos" && !galEtiqSel, aoSoltar: galSoltou });
+ordenavel($("galGrid"), ".gcell", { pode: () => !galSel && galFiltro === "todos", aoSoltar: galSoltou });
 { const c0 = galCarregar; galCarregar = function (r) {
   c0(r); $("galGrid").classList.toggle("manual", galOrdem === "manual");
   if (galOrdem === "manual" && galItens.length && galFiltro === "todos") $("galMsg").textContent += " Segure e arraste para reordenar.";
@@ -4471,32 +4668,6 @@ let temaRaf = 0;
 $("temaHue").addEventListener("input", e => { const h = +e.target.value; cancelAnimationFrame(temaRaf); temaRaf = requestAnimationFrame(() => window.N34Tema.set(h)); });
 $("temaPadrao").onclick = () => window.N34Tema.set(null);
 
-/* ---------- Etiquetas e tags nos salvos ---------- */
-$("galEtiq").addEventListener("click", e => {
-  const b = e.target.closest("[data-e]"); if (!b) return;
-  galEtiqSel = galEtiqSel.toLowerCase() === b.dataset.e.toLowerCase() ? "" : b.dataset.e; galCarregar(true);
-});
-const limparEtq = t => [...new Set(String(t || "").split(/[,;]/).map(x => x.trim().replace(/\s+/g, " ")).filter(Boolean).map(x => x.slice(0, 24)))];
-$("galSelEtiq").onclick = async () => {
-  if (!galSel || !galSel.size) return;
-  const v = await pedirTexto("Etiquetas para " + galSel.size + (galSel.size === 1 ? " item" : " itens") + " (separe por vírgula; -nome remove)", "", "Aplicar");
-  if (!v) return;
-  const lista = limparEtq(v), add = lista.filter(x => !x.startsWith("-")), rem = lista.filter(x => x.startsWith("-")).map(x => x.slice(1).toLowerCase());
-  for (const it of galItens) {
-    if (!galSel.has(it.id)) continue;
-    let et = (it.et || []).filter(e => !rem.includes(e.toLowerCase()));
-    for (const a of add) if (!et.some(e => e.toLowerCase() === a.toLowerCase())) et.push(a);
-    if (et.length) it.et = et; else delete it.et;
-  }
-  galGravar(); galCarregar(false); toast("Etiquetas atualizadas");
-};
-$("galEtqBtn").onclick = async () => {
-  const it = galItens[galI]; if (!it) return;
-  const v = await pedirTexto("Etiquetas deste item (separe por vírgula)", (it.et || []).join(", "), "Salvar");
-  if (v === null) return;
-  const et = limparEtq(v); if (et.length) it.et = et; else delete it.et;
-  galGravar(); galSig = ""; toast("Etiquetas salvas");
-};
 
 document.addEventListener("n34tema", pintarTemas);
 pintarTemas();

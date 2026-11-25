@@ -14,6 +14,6 @@
     return;
   }
   var rest = location.pathname.slice(base.length).replace(/^\/+/, "");
-  location.replace(location.origin + base + "/?p=" + encodeURIComponent(rest) + location.hash);
+  location.replace(location.origin + base + "/?p=" + encodeURIComponent(rest + location.search) + location.hash);
 })();
 </script></body></html>
